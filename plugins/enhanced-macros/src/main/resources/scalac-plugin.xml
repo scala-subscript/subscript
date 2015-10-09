@@ -1,0 +1,4 @@
+<plugin>
+  <name>enhancedmacros</name>
+  <classname>subscript.enhancedmacros.Plugin</classname>
+</plugin>
