@@ -7,7 +7,7 @@ lazy val commonSettings = Seq(
 , scalaVersion := "2.11.7"
 
 , pomExtra :=
-    <url>https://github.com/scala-subscript/subscript-parser-plugin</url>
+    <url>https://github.com/scala-subscript/subscript</url>
     <licenses>
       <license>
         <name>GNU GPL</name>
@@ -16,8 +16,8 @@ lazy val commonSettings = Seq(
       </license>
     </licenses>
     <scm>
-      <url>git://github.com/scala-subscript/subscript-parser-plugin.git</url>
-      <connection>scm:git://github.com/scala-subscript/subscript-parser-plugin.git</connection>
+      <url>git://github.com/scala-subscript/subscript.git</url>
+      <connection>scm:git://github.com/scala-subscript/subscript.git</connection>
     </scm>
     <developers>
       <developer>
