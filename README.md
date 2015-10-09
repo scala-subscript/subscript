@@ -13,6 +13,7 @@ To get started using SubScript in your project:
   
   ```scala
   scalaVersion := "2.11.7"
+  libraryDependencies += "org.subscript-lang" %% "subscript-core" % "2.0.0"
   SubscriptSbt.projectSettings
   ```
 4. The sources that need to use SubScript syntax must contain the top-level import:
