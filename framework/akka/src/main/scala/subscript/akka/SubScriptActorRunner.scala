@@ -1,5 +1,5 @@
 package subscript.akka
-import subscript.file
+import subscript.language
 
 import subscript.DSL._
 import scala.collection.mutable.ListBuffer
@@ -42,7 +42,7 @@ object SSARunnerV1Scheduler extends SubScriptActorRunner {
   script..
      // make a local anchor for launched actor processes,
      // so that we will be able to kill those here using the || and / operators
-     live = @{launch_anchor=there.asInstanceOf[N_launch_anchor]}: (** {. .} **)
+     live = @{launch_anchor=there.asInstanceOf[N_launch_anchor]}: [** {. .} **]
 
   def execute(debugger: MsgListener) {
     if (debugger!=null) debugger.attach(executor)

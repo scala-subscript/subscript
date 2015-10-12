@@ -1,5 +1,5 @@
 package subscript.akka
-import subscript.file
+import subscript.language
 
 import subscript.DSL._
 import scala.collection.mutable.ListBuffer

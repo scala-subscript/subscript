@@ -1,5 +1,5 @@
 package subscript.swing
-import subscript.file
+import subscript.language
 
 import subscript.swing.Scripts._
 import subscript.DSL._

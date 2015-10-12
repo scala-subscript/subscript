@@ -25,7 +25,7 @@
 */
 
 package subscript.swing
-import subscript.file
+import subscript.language
 
 
 import scala.swing._
