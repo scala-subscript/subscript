@@ -227,8 +227,8 @@ trait Operators extends Terms {this: SubScript with Exprs =>
     rule {start ~ WLR0 ~ Expr9.? ~ end ~> Trans1}   
   }
 
-  def LaunchAnchor : R[Ast.LaunchAnchor ] = WrappedExpr9("(**", "**)", Ast.LaunchAnchor )
-  def Launch       : R[Ast.Launch       ] = WrappedExpr9("(*" ,  "*)", Ast.Launch       )
+  def LaunchAnchor : R[Ast.LaunchAnchor ] = WrappedExpr9("[**", "**]", Ast.LaunchAnchor )
+  def Launch       : R[Ast.Launch       ] = WrappedExpr9("[*" ,  "*]", Ast.Launch       )
   def Parenthesised: R[Ast.Parenthesised] = WrappedExpr9("["  ,   "]", Ast.Parenthesised)
 
   def Annotation: R[Ast.Annotation] = {
