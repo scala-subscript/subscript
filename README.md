@@ -8,13 +8,13 @@ This section will describe how to create a simple "Hello World" application in S
 To get started using SubScript:
 
 1. Create a new SBT project
-1.1. Create a new directory which will be the root of the project. Hereafter, we'll assume it's name is `root`: `mkdir root`
-1.2. Create the directory for the sources: `mkdir -pv src/main/scala`
-1.3. Create the build file: `touch build.sbt`
-1.4. Create the project configuration directory: `mkdir project`
-1.5. Create the project configuration build file: `touch project/build.sbt`
-1.6. Create the main source file for your project: `touch src/main/scala/Main.scala`
-1.7. Download and install SBT itself, if you haven't done it already, using the [manual](http://www.scala-sbt.org/download.html) on the [official website](http://www.scala-sbt.org/)
+  1. Create a new directory which will be the root of the project. Hereafter, we'll assume it's name is `root`: `mkdir root`
+  2. Create the directory for the sources: `mkdir -pv src/main/scala`
+  3. Create the build file: `touch build.sbt`
+  4. Create the project configuration directory: `mkdir project`
+  5. Create the project configuration build file: `touch project/build.sbt`
+  6. Create the main source file for your project: `touch src/main/scala/Main.scala`
+  7. Download and install SBT itself, if you haven't done it already, using the [manual](http://www.scala-sbt.org/download.html) on the [official website](http://www.scala-sbt.org/)
 2. In `project/build.sbt`, write the following code:
   
   ```scala
