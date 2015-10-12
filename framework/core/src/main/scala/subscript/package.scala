@@ -1,6 +1,6 @@
 package object subscript {
   
-  object file {
+  object language {
     object parserSettings {}    
   }
 

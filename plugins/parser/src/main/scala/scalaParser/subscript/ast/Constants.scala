@@ -149,7 +149,7 @@ object Constants {
     val THERE  = "there"
     val SCRIPT = "script"
 
-    val FILE   = "subscript.file"
+    val FILE   = "subscript.language"
 
     val LAMBDA = "<lambda>"
 
