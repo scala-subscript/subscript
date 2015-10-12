@@ -1,5 +1,5 @@
 package subscript
-import subscript.file
+import subscript.language
 
 // import org.junit.runner.RunWith
 

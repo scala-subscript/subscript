@@ -1,5 +1,5 @@
 package subscript
-import subscript.file
+import subscript.language
 
 //import org.scalatest.FunSuite
 
@@ -611,24 +611,24 @@ class OperatorsSuite extends OperatorsSuiteBase {
    , [ a {**} .. ; b ]         -> "->a a->ab aa->ab aaa->ab ab aab"
 
    // launching
-   , [ (** a **) ]             -> "a"
-   , [ (** a b **)   ]         -> "ab"
-   , [ (** a **) b  ]          -> "ab"
+   , [ [** a **] ]             -> "a"
+   , [ [** a b **]   ]         -> "ab"
+   , [ [** a **] b  ]          -> "ab"
    
-   , [ (*  a  *)]              -> "a"
-   , [ (* a b *)]              -> "a->b ab"
-   , [ (* a *) b  ]            -> "->ab a->b b->a ab ba"
-   , [ (* a b *) c d ]         -> "->ac a->bc  c->ad  ab->c  ac->bd  ca->bd  cd->a  abc->d  acb->d acd->b cab->d cad->b cda->b abcd  acbd acdb cabd cadb cdab"
+   , [ [*  a  *]]              -> "a"
+   , [ [* a b *]]              -> "a->b ab"
+   , [ [* a *] b  ]            -> "->ab a->b b->a ab ba"
+   , [ [* a b *] c d ]         -> "->ac a->bc  c->ad  ab->c  ac->bd  ca->bd  cd->a  abc->d  acb->d acd->b cab->d cad->b cda->b abcd  acbd acdb cabd cadb cdab"
    
-   , [ (** (* a b *) **) c]    -> "->a a->b abc"
-   , [ (** (* a b *) c **) d]  -> "->ac a->bc  c->a ab->c ac->b ca->b abc->d acb->d cab->d abcd acbd cabd"
+   , [ [** [* a b *] **] c]    -> "->a a->b abc"
+   , [ [** [* a b *] c **] d]  -> "->ac a->bc  c->a ab->c ac->b ca->b abc->d acb->d cab->d abcd acbd cabd"
 
    , [ {!here.launch([  a  ])!}     ] -> "a"
    , [ {!here.launch([ a b ])!}     ] -> "ab"
    , [ {!here.launch([  a  ])!} b   ] -> "->ab a->b b->a ab ba"
    , [ {!here.launch([ a b ])!} c d ] -> "->ac a->bc  c->ad  ab->c  ac->bd  ca->bd  cd->a  abc->d  acb->d acd->b cab->d cad->b cda->b abcd  acbd acdb cabd cadb cdab"
-   , [ (**{!here.launch([ a b ])!}**) c]    -> "->a a->b abc"
-   , [ (**{!here.launch([ a b ])!} c**) d]  -> "->ac a->bc  c->a ab->c ac->b ca->b abc->d acb->d cab->d abcd acbd cabd"
+   , [ [**{!here.launch([ a b ])!}**] c]    -> "->a a->b abc"
+   , [ [**{!here.launch([ a b ])!} c**] d]  -> "->ac a->bc  c->a ab->c ac->b ca->b abc->d acb->d cab->d abcd acbd cabd"
    
    // failure
    , [ {?here.fail?} ]        -> "->0"

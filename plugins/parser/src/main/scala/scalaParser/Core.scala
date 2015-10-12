@@ -147,8 +147,8 @@ abstract class Core extends Parser
     | "==>"
     )
 
-    def LaunchAnchorTerminator = rule (SSKeyword | "**)")
-    def LaunchTerminator       = rule (SSKeyword | "*)")
+    def LaunchAnchorTerminator = rule (SSKeyword | "**]")
+    def LaunchTerminator       = rule (SSKeyword | "*]")
 
     def ruleMap = Map(
       NORMAL           -> {() => StandardId}
