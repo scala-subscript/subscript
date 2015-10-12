@@ -45,3 +45,5 @@ To get started using SubScript:
   Here, `import subscript.language` enables SubScript syntax in this file. Each file that needs to use SubScript syntax must have this top-level import.
   `subscript.DSL._execute(live)` calls a core SubScript method that executes the script provided as an argument.
   Finally, `script live = {!println("Hello")!} {!println("World")!}` is a simple script that prints "Hello World" separated by a new line from two Scala code blocks.
+5. Execute the project by running `sbt run`
+6. Debug the project with SubScript Graphical Debugger by running `sbt ssDebug`
