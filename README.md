@@ -13,8 +13,8 @@ To get started using SubScript:
 1. Create a new SBT project, run the following commands:
 
   ```bash
-  mkdir root
-  cd root
+  mkdir subscript-hello-world
+  cd subscript-hello-world
   mkdir -pv src/main/scala
   touch build.sbt
   mkdir project
@@ -22,8 +22,8 @@ To get started using SubScript:
   touch src/main/scala/Main.scala
   ```
   Here is a detailed description of what each of them do:
-  1. Create a new directory which will be the root of the project. Hereafter, we'll assume it's name is `root`: `mkdir root`
-  2. Cd to this directory: `cd root`
+  1. Create a new directory which will be the root of the project. Hereafter, we'll assume it's name is `subscript-hello-world`: `mkdir subscript-hello-world`
+  2. Cd to this directory: `cd subscript-hello-world`
   3. Create the directory for the sources: `mkdir -pv src/main/scala`
   4. Create the build file: `touch build.sbt`
   5. Create the project configuration directory: `mkdir project`
