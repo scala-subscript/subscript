@@ -60,3 +60,4 @@ To get started using SubScript:
   Finally, `script live = {!println("Hello")!} {!println("World")!}` is a simple script that prints "Hello World" from two Scala code blocks.
 5. Execute the project by running `sbt run`
 6. Debug the project with SubScript Graphical Debugger by running `sbt ssDebug`
+7. To check out the official examples, go to the [examples repository](https://github.com/scala-subscript/examples) and check its "Getting Started" guide
