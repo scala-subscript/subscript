@@ -114,6 +114,7 @@ subscript.DSL._maybeVarCall("println(subscript.DSL._maybeVarCall(\"\\\"World\\\"
 find ~/.ivy2/ -type d -name "*subscript*" -print0 | xargs -0 rm -rf
 ```
 It will search for directories containing "subscript" in their name and located under ~/.ivy2, then it will feed all them to the `rm` command.
+
 5. Publish the `plugins` and the `framework` to the local repository with the following two commands:
 ```
 (cd plugins/; sbt publish-local)
