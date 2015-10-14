@@ -78,6 +78,7 @@ This repository consists of two SBT projects under correspondent directories:
 
 ### Compilation procedure
 In a correctly configured SubScript project (see Getting Started guide to see what it is), the following happens when you run `sbt compile`:
+
 1. SubScript *parser plugin* (resides under `plugins/plugin-parser`) uses the *parser* (`plugins/parser`) to process all the files that have `import subscript.language` top-level import.
 2. Pure-Scala synthetic sources are generated as a result of step (1). They go under `target/scala-2.11/src_managed`. The original sources processed during (1) are ignored by the compiler hereafter.
 3. The Scala compiler compiles all the sources under `src/`, except those with `import subscript.language`, and all the synthetic sources under `target/scala-2.11/src_managed`.
