@@ -108,7 +108,7 @@ subscript.DSL._maybeVarCall("println(subscript.DSL._maybeVarCall(\"\\\"World\\\"
 ### Development procedure
 1. Fork this repository and clone your fork to your computer
 2. `cd` to the root of your fork
-3. Do the necessary changes to the proper repositories
+3. Do the necessary changes to the proper projects
 4. Clear your local Ivy2 repository with the following command:
   ```
   find ~/.ivy2/ -type d -name "*subscript*" -print0 | xargs -0 rm -rf
