@@ -104,3 +104,17 @@ subscript.DSL._maybeVarCall("println(subscript.DSL._maybeVarCall(\"\\\"World\\\"
 }, true))}
 }
 ```
+
+### Development procedure
+1. Fork this repository and clone your fork to your computer
+2. `cd` to the root of your fork
+3. Do the necessary changes to the proper repositories
+4. Clear your local Ivy2 repository with the following command:`find ~/.ivy2/ -type d -name "*subscript*" -print0 | xargs -0 rm -rf`. It will search for directories containing "subscript" in their name and located under ~/.ivy2, then it will feed all them to the `rm` command.
+5. Publish the `plugins` and the `framework` to the local repository with the following two commands:
+```
+(cd plugins/; sbt publish-local)
+(cd framework/; sbt publish-local)
+```
+6. Test your changes using any SubScript project on your machine
+7. Commit your changes to your fork
+8. Send us the pull request with your changes
