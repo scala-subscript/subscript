@@ -47,7 +47,7 @@ lazy val core = (project in file("core"))
   )
 
 lazy val akka = (project in file("akka"))
-  .dependsOn(core)
+  .dependsOn(core, corescripts)
   .settings(commonSettings)
   .settings(
     name := "subscript-akka"
@@ -55,10 +55,17 @@ lazy val akka = (project in file("akka"))
   )
 
 lazy val swing = (project in file("swing"))
-  .dependsOn(core)
+  .dependsOn(core, corescripts)
   .settings(commonSettings)
   .settings(
     name := "subscript-swing"
   , libraryDependencies += "org.scala-lang"     %  "scala-swing"    % "2.11.0-M7"
   , excludeFilter in Compile := "Scripts.scala" | "SubScriptDebugger.scala"
+  )
+
+lazy val corescripts = (project in file("core-scripts"))
+  .dependsOn(core)
+  .settings(commonSettings)
+  .settings(
+    name := "subscript-core-scripts"
   )

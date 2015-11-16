@@ -57,16 +57,16 @@ object Predef {
   def _break_up1       = _script(this, 'break_up1) {(script:Script[Unit]) => _call("break_up", (_node:N_call[Unit])=>{implicit val here=_node; _break_up(1)})}
   def _break_up2       = _script(this, 'break_up2) {(script:Script[Unit]) => _call("break_up", (_node:N_call[_])=>{implicit val here=_node; _break_up(2)})}
   */
-/*
+
   script..
     times(n:Int) = while(here.pass<n) // TBD: make here implicit
       
-    delta        = (-)
-    epsilon      = (+)
-    nu           = (+-)
+    delta        = [-]
+    epsilon      = [+]
+    nu           = [+-]
     
-    break_up(n:Int) = {!here.break_up(n)!}
-    break_up1 = break_up(1)
-    break_up2 = break_up(2)
-*/
+//    break_up(n:Int) = {!here.break_up(n)!}
+//    break_up1 = break_up(1)
+//    break_up2 = break_up(2)
+
 }
