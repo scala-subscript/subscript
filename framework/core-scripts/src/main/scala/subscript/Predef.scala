@@ -59,11 +59,13 @@ object Predef {
   */
 
   script..
-    times(n:Int) = while(here.pass<n) // TBD: make here implicit
+    times(n:Int) = while(pass<n)
       
     delta        = [-]
     epsilon      = [+]
     nu           = [+-]
+
+    sleep(t: Long) = {* Thread sleep t *}
     
 //    break_up(n:Int) = {!here.break_up(n)!}
 //    break_up1 = break_up(1)
