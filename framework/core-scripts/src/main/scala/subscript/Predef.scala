@@ -28,6 +28,7 @@ package subscript
 import subscript.language
 
 import scala.util.{Try,Success,Failure}
+
 import subscript.vm._
 import subscript.DSL._
 import subscript.vm.executor._
@@ -35,6 +36,8 @@ import subscript.vm.model.template._
 import subscript.vm.model.template.concrete._
 import subscript.vm.model.callgraph._
 import subscript.vm.model.callgraph.generic._
+
+import subscript.objectalgebra._
 
 // Predefined stuff - pass and some scripts: times, delta, epsilon, nu
 //
@@ -57,6 +60,9 @@ object Predef {
   def _break_up1       = _script(this, 'break_up1) {(script:Script[Unit]) => _call("break_up", (_node:N_call[Unit])=>{implicit val here=_node; _break_up(1)})}
   def _break_up2       = _script(this, 'break_up2) {(script:Script[Unit]) => _call("break_up", (_node:N_call[_])=>{implicit val here=_node; _break_up(2)})}
   */
+  
+  implicit script..
+    process2script(p: SSProcess) = p.lifecycle
 
   script..
     times(n:Int) = while(pass<n)
@@ -66,6 +72,13 @@ object Predef {
     nu           = [+-]
 
     sleep(t: Long) = {* Thread sleep t *}
+
+    // FTTB, success and failure are here. Until there's a better way to set them.
+    success(x  : Any      ) = {!x!}
+
+    failure(msg: String   ): Any = {!throw new RuntimeException(msg)!}
+    failure(t  : Throwable): Any = {!throw t!}
+
     
 //    break_up(n:Int) = {!here.break_up(n)!}
 //    break_up1 = break_up(1)
