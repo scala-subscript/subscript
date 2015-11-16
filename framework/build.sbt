@@ -33,7 +33,7 @@ lazy val commonSettings = Seq(
 ) ++ SubscriptSbt.projectSettings
 
 lazy val root = (project in file("."))
-  .aggregate(core, akka, swing)
+  .aggregate(core, akka, swing, corescripts)
   .settings(
     packagedArtifacts := Map.empty  // Don't publish root to maven
   )
