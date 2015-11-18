@@ -244,8 +244,10 @@ trait Exprs extends Core with Types with Xml with SubScript {
 
   def ArgList: R1 = rule( '(' ~ ((Exprs ~ ((`:` ~ `_*` ~> Concat).? ~> ExtractOpt) ~> Concat).? ~> ExtractOpt) ~ ")" ~> Concat3 | OneNLMax ~ BlockExpr ~> Concat )
 
+  def CaseClauseHeader: R1 = rule {`case` ~ Pat ~ (ExprCtx.Guard.? ~> ExtractOpt) ~> Concat3}
+
   def CaseClauses: R1 = {
-    def CaseClause: R1 = rule( `case` ~ Pat ~ (ExprCtx.Guard.? ~> ExtractOpt) ~ `=>` ~ Block ~> Concat5 )
+    def CaseClause: R1 = rule( CaseClauseHeader ~ `=>` ~ Block ~> Concat3 )
     rule( CaseClause.+ ~> ConcatSeqNoDelim )
   }
 }
