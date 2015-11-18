@@ -4,6 +4,8 @@ import subscript.language
 
 import subscript.vm._
 
+import scala.util.Try
+
 /** Contains DSL scripts. */
 object ScriptDSL {
 
@@ -36,8 +38,9 @@ object ScriptDSL {
   //   }
 
   script..
-    _dataflow_then(s: ScriptNode[Any], t: Any => ScriptNode[Any]) = var s_node: N_call[Any] = null
-                                                                    do @{s_node = there.asInstanceOf[N_call[Any]]}: s then t(s_node.$.get)
+    _dataflow_then(s: ScriptNode[Any], t: Any => ScriptNode[Any], e: Throwable => ScriptNode[Any]) =
+      var s_node: N_call[Any] = null
+      do @{s_node = there.asInstanceOf[N_call[Any]]}: s then t(s_node.$success) else e(s_node.$failure)
 
 
 }

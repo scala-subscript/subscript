@@ -72,6 +72,21 @@ object SubScriptSuite extends TestSuite with Checkers with Symbols {
            |def d""".stripMargin
       )
 
+      * - check(
+        """script..
+          |  a =
+          |    a
+          |     b
+          |   c
+          |  d""".stripMargin
+      , s"""def a = subscript.DSL._script[Any](None, Symbol("a")){(_node: subscript.vm.Script[Any]) =>
+           |  implicit val script = _node
+           |$seq($a, $b)}
+           |def c
+           |def d""".stripMargin
+      )
+
+
       * - checkRuleStr(_.TmplBody,
         """{
           |  script..
