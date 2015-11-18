@@ -91,11 +91,6 @@ trait Operators {this: Ast =>
 
 
   trait DataflowTerm extends ScriptOperator {
-    // This script doesn't communicate with the parent script
-    def nodeToScript(name: String, node: Node): String = ScriptBody(node).compile(
-      t2b = Map(Key.HEADER_NAME -> name)
-    )
-
     def matcher(id: String, tpe: String, rhs: String): String =
       s"(_$id: Any) => _$id match {case $id: $tpe => $rhs}"    
   }
@@ -132,6 +127,36 @@ trait Operators {this: Ast =>
 
   case class DataflowEmpty(node: Node) extends DataflowTerm with IdentityNode {val method = null}
 
+  // === New dataflow ===
+  case class Dataflow(nDo: Node, nThen: Seq[DataflowClause], nElse: Seq[DataflowClause]) extends ScriptOperator {
+    val method = DATAFLOW
+
+    def rewrite(implicit context: Context, output: Output): String = {
+      val nDoStr       = nodeToScript("~~>", nDo)
+      val nThenClauses = nThen.map(_.compile).mkString("\n")
+      val nElseClauses = nElse.map(_.compile).mkString("\n")
+
+      val defaultMatcher = """case _ => throw new RuntimeException("No suitable matcher found")"""
+      def block(content: String) =
+        s"""{
+           |$content
+           |${if (content.isEmpty) defaultMatcher else ""}
+           |}""".stripMargin
+
+      s"""$method(
+         |  $nDoStr
+         |, ${block(nThenClauses)}
+         |, ${block(nElseClauses)}
+         |)""".stripMargin
+    } 
+  }
+
+  case class DataflowClause(pattern: String, expr: Node) extends Node {
+    def rewrite(implicit context: Context, output: Output): String = {
+      val exprStr = nodeToScript(Name.LAMBDA, expr)
+      s"case $pattern => $exprStr"
+    }
+  }
 
   trait Term extends Node
   case class Parenthesised(node: Node) extends Term with IdentityNode

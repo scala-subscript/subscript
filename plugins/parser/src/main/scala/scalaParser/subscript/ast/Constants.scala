@@ -48,6 +48,8 @@ object Constants {
 
       val DATAFLOW_THEN_ELSE = dsl("_dataflow_then_else")
       val DATAFLOW_THEN      = dsl("_dataflow_then"     )
+
+      val DATAFLOW           = "subscript.ScriptDSL._dataflow"
     }
 
     object Term {

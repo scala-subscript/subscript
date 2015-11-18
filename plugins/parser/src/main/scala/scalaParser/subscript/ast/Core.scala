@@ -7,6 +7,11 @@ trait Core {this: Ast =>
   type Context = Map[String, Any]
   type Output  = CommunicationStack
 
+  // This script doesn't communicate with the parent script
+  def nodeToScript(name: String, node: Node): String = ScriptBody(node).compile(
+    t2b = Map(Constants.Key.HEADER_NAME -> name)
+  )
+  
   trait Node extends Communication {
     def rewrite(implicit context: Context, output: Output): String
   }
