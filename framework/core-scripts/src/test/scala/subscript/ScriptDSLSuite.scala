@@ -20,10 +20,6 @@ class ScriptDSLSuite extends FlatSpec with Matchers
     dataflowTest([success: "2"]) shouldBe Success("2")
   }
 
-  it should "not break when the result is not set at all" in {
-    dataflowTest([{:"I do nothing":}]) shouldBe Success("Nothing!")
-  }
-
   it should "work with exceptions" in {
     dataflowTest([failure: "Something went wrong!"]) shouldBe Success("Runtime Exception")
   }
@@ -39,16 +35,16 @@ trait ScriptDSLSuiteHelpers {
   }
 
   // The one from the parser
-  val sampleFunction: Try[Any] => ScriptNode[Any] = {
-    case Success(x: Int)    => [success(x)]
-    case Success(y: String) => [success(y.toString)]
+  val sampleFunction: Any => ScriptNode[Any] = {
+    case x: Int    => [success(x)]
+    case y: String => [success(y.toString)]
+  }
 
-    case Failure(e: RuntimeException) => [success("Runtime Exception")]
-
-    case null => [success: "Nothing!"]
+  val sampleExceptionsFunction: Throwable => ScriptNode[Any] = {
+    case e: RuntimeException => [success: "Runtime Exception"]
   }
 
   def dataflowTest(s: ScriptNode[Any]): Try[Any] =
-    [ScriptDSL._dataflow_then(s, sampleFunction)].e
+    [ScriptDSL._dataflow(s, sampleFunction, sampleExceptionsFunction)].e
 
 }
