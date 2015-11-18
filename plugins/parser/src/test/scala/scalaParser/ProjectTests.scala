@@ -7,7 +7,7 @@ import utest.util.Tree
 
 import scala.util.{Failure, Success}
 
-object ProjectTests extends TestSuite{
+object ProjectTests {//extends TestSuite{
 
   println("running")
   def tests = TestSuite{
