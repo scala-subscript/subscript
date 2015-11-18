@@ -68,4 +68,5 @@ lazy val corescripts = (project in file("core-scripts"))
   .settings(commonSettings)
   .settings(
     name := "subscript-core-scripts"
+  , libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.4" % "test"
   )
