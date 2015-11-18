@@ -2,6 +2,8 @@ package subscript
 
 import subscript.language
 
+import subscript.vm._
+
 /** Contains DSL scripts. */
 object ScriptDSL {
 
@@ -33,6 +35,9 @@ object ScriptDSL {
   //                                             _n.calls(tp.template, (tp.p: _*)); tp}, true))
   //   }
 
-  
+  script..
+    _dataflow_then(s: ScriptNode[Any], t: Any => ScriptNode[Any]) = var s_node: N_call[Any] = null
+                                                                    do @{s_node = there.asInstanceOf[N_call[Any]]}: s then t(s_node.$.get)
+
 
 }
