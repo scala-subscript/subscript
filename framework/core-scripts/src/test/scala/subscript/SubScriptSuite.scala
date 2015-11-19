@@ -13,28 +13,32 @@ class SubScriptSuite extends FlatSpec with Matchers
                                       with SubScriptSuiteHelpers {
 
   "Dataflow" should "work" in {
-    [success: 2 ~~(x: Int)~~> success: x].e shouldBe Success(2)
+    [
+      success: 2 ~~(x: Int)~~> success: x
+    ].e shouldBe Success(2)
   }
 
   it should "work with two clauses" in {
-    [success: "2" ~~(x: Int   )~~> success: x
-                 +~~(x: String)~~> success: "Str"
+    [
+      success: "2" ~~(x: Int   )~~> success: x
+                  +~~(x: String)~~> success: "Str"
     ].e shouldBe Success("Str")
   }
 
   it should "work with exceptions clauses" in {
-    [failure: "Emergency!" ~~(x: Int   )~~> success: x
-                          +~~(x: String)~~> success: "Str"
+    [
+      failure: "Emergency!" ~~(x: Int             )~~> success: x
+                           +~~(x: String          )~~> success: "Str"
                           +~/~(e: RuntimeException)~~> success: e.getMessage
     ].e shouldBe Success("Emergency!")
   }
 
   it should "work with exceptions and non-exceptions clauses given in any order" in {
     [
-      failure: "Emergency!" ~~(x: Int   )~~> success: x
+      failure: "Emergency!" ~~(x: Int                )~~> success: x
                           +~/~(e: java.io.IOException)~~> success: e.getMessage
-                           +~~(x: String)~~> success: "Str"
-                          +~/~(e: RuntimeException)~~> success: "Runtime"
+                           +~~(x: String             )~~> success: "Str"
+                          +~/~(e: RuntimeException   )~~> success: "Runtime"
     ].e shouldBe Success("Runtime")
   }
 
