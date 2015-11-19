@@ -44,6 +44,13 @@ class SubScriptSuite extends FlatSpec with Matchers
     ].e shouldBe Success(3)
   }
 
+  it should "work with if-containing patterns and @'s" in {
+    [
+      success: (1, 2) ~~(p @ (x: Int, y: Int) if x == 2)~~> success: 1
+                     +~~(p @ (x: Int, y: Int) if x < 2 )~~> success: p._1
+    ].e shouldBe Success(1)
+  }
+
 }
 
 trait SubScriptSuiteHelpers {
