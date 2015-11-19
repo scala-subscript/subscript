@@ -9,11 +9,8 @@ import org.scalatest._
 
 /** Tests the usage of the ScriptDSL methods as intended in the parser. */
 class ScriptDSLSuite extends FlatSpec with Matchers
+                                      with CommonHelpers
                                       with ScriptDSLSuiteHelpers {
-
-  "Dataflow" should "work" in {
-    [success: 2 ~~(x: Int)~~> success: x].e shouldBe Success(2)
-  }
 
   "Dataflow DSL method" should "work with one 'then' clause" in {
     dataflowTest([success: 2  ]) shouldBe Success(2)
@@ -26,13 +23,9 @@ class ScriptDSLSuite extends FlatSpec with Matchers
 
 }
 
-trait ScriptDSLSuiteHelpers {
+trait ScriptDSLSuiteHelpers {this: CommonHelpers =>
   import subscript.vm._
   import subscript.DSL._
-  
-  implicit class ScriptNodeEvaluator[T](n: ScriptNode[T]) {
-    def e: Try[T] = _execute(n).$
-  }
 
   // The one from the parser
   val sampleFunction: Any => ScriptNode[Any] = {
