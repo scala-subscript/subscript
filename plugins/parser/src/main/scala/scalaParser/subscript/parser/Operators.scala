@@ -189,28 +189,6 @@ trait Operators extends Terms {this: SubScript with Exprs =>
 
   def Expr1: R[Ast.Expr1] = rule {Dataflow.+(WSR0) ~> Ast.Expr1}
 
-
-  def DataflowTerm: R[Ast.DataflowTerm] = rule (
-    DataflowThenElse
-  | DataflowThen
-  | DataflowEmpty
-  )
-
-  def DataflowThenElse: R[Ast.DataflowThenElse] = {
-    def Parameter = rule {wspChR0('(') ~ IdS ~ wspChR0(':') ~ Spaces {() => ParamType} ~ wspChR0(')')}
-    
-    rule (Term ~ wspStrR0("~~") ~ Parameter ~ wspStrR0("~~>") ~ WLR0 ~ Term ~ wspStrR0("+~/~") ~ Parameter ~ wspStrR0("~~>") ~ WLR0 ~ Term ~> Ast.DataflowThenElse)
-  }
-
-  def DataflowThen: R[Ast.DataflowThen] = {
-    def Parameter = rule {wspChR0('(') ~ IdS ~ wspChR0(':') ~ Spaces {() => ParamType} ~ wspChR0(')')}
-    
-    rule (Term ~ wspStrR0("~~") ~ Parameter ~ wspStrR0("~~>") ~ WLR0 ~ Term ~> Ast.DataflowThen)
-  }
-
-  def DataflowEmpty: R[Ast.DataflowEmpty] = rule {Term ~> Ast.DataflowEmpty}
-
-  // === New dataflow ===
   def Dataflow: R[Ast.Dataflow] = {
     def Trans1: (Ast.Term, Option[Ast.DataflowClause], Seq[Ast.DataflowClause]) => Ast.Dataflow = (term, initClause, clauses) => {
       def maybe(thenClause: Boolean) = initClause.filter(_.thenClause == thenClause).map(Seq(_)).getOrElse(Nil)

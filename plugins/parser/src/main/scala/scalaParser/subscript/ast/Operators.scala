@@ -90,44 +90,6 @@ trait Operators {this: Ast =>
   case class Expr1(operands: Seq[Node]) extends ExprSeq
 
 
-  trait DataflowTerm extends ScriptOperator {
-    def matcher(id: String, tpe: String, rhs: String): String =
-      s"(_$id: Any) => _$id match {case $id: $tpe => $rhs}"    
-  }
-
-  case class DataflowThenElse(lhs: Node, id: String, tpe: String, rhs: Node, eId: String, eTpe: String, eRhs: Node) extends DataflowTerm {
-    val method = DATAFLOW_THEN_ELSE
-
-    def rewrite(implicit context: Context, output: Output): String = {
-      val lhsStr  = nodeToScript("~~>"      , lhs )
-      val rhsStr  = nodeToScript(Name.LAMBDA, rhs )
-      val eRhsStr = nodeToScript(Name.LAMBDA, eRhs)
-
-      s"""$method(
-         |  $lhsStr
-         |, ${matcher(id , tpe , rhsStr )}
-         |, ${matcher(eId, eTpe, eRhsStr)}
-         |)""".stripMargin
-    }
-  }
-
-  case class DataflowThen(lhs: Node, id: String, tpe: String, rhs: Node) extends DataflowTerm {
-    val method = DATAFLOW_THEN
-
-    def rewrite(implicit context: Context, output: Output): String = {
-      val lhsStr  = nodeToScript("~~>"      , lhs )
-      val rhsStr  = nodeToScript(Name.LAMBDA, rhs )
-
-      s"""$method(
-         |  $lhsStr
-         |, ${matcher(id , tpe , rhsStr )}
-         |)""".stripMargin
-    }
-  }
-
-  case class DataflowEmpty(node: Node) extends DataflowTerm with IdentityNode {val method = null}
-
-  // === New dataflow ===
   case class Dataflow(nDo: Node, nThen: Seq[DataflowClause], nElse: Seq[DataflowClause]) extends ScriptOperator {
     val method = DATAFLOW
 

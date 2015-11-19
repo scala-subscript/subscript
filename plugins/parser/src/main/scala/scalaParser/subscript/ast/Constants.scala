@@ -46,9 +46,6 @@ object Constants {
       val LAUNCH              = dsl("_launch"       )
       val LAUNCH_ANCHOR       = dsl("_launch_anchor")
 
-      val DATAFLOW_THEN_ELSE = dsl("_dataflow_then_else")
-      val DATAFLOW_THEN      = dsl("_dataflow_then"     )
-
       val DATAFLOW           = "subscript.ScriptDSL._dataflow"
     }
 
