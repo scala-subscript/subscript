@@ -4,7 +4,7 @@ import subscript.language
 //import org.scalatest.FunSuite
 
 import scala.util.{Try, Success, Failure}
-import subscript.Predef._
+import subscript.CorePredef._
 import subscript.DSL._
 import subscript.vm.{N_code_unsure, SimpleScriptDebuggerClass, ScriptNode, Script}
 import subscript.vm.executor._

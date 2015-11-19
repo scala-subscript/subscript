@@ -37,33 +37,20 @@ import subscript.vm.model.template.concrete._
 import subscript.vm.model.callgraph._
 import subscript.vm.model.callgraph.generic._
 
-import subscript.objectalgebra._
-
 // Predefined stuff - pass and some scripts: times, delta, epsilon, nu
 //
-object Predef extends CorePredefTrait {
+object CorePredef extends CorePredefTrait
+trait CorePredefTrait {
   
-  implicit script..
-    process2script(p: SSProcess) = p.lifecycle
+  def `$`         [R]               (implicit s: Script[R]): Try[R]    = s.$
+  def `$success`  [R]               (implicit s: Script[R]): R         = s.$ match {case Success(s) => s}
+  def `$failure`  [R]               (implicit s: Script[R]): Throwable = s.$ match {case Failure(f) => f case null => null}
+  def `$_=`       [R] (v: Try[R]   )(implicit s: Script[R])            = {s.$=v; v match {case Failure(_) => s.fail /*; println("$=Failure(_)")*/ case _ => }}
+  def `$success_=`[R] (v: R        )(implicit s: Script[R])            = {s.$=Success(v)}
+  def `$failure_=`[R] (v: Throwable)(implicit s: Script[R])            = {s.$=Failure(v); s.fail /*; println("$failure_=")*/}
 
-  script..
-    times(n:Int) = while(pass<n)
-      
-    delta        = [-]
-    epsilon      = [+]
-    nu           = [+-]
-
-    sleep(t: Long) = {* Thread sleep t *}
-
-    // FTTB, success and failure are here. Until there's a better way to set them.
-    success(x  : Any      ) = {!x!}
-
-    failure(msg: String   ): Any = {!throw new RuntimeException(msg)!}
-    failure(t  : Throwable): Any = {!throw t!}
-
-    
-//    break_up(n:Int) = {!here.break_up(n)!}
-//    break_up1 = break_up(1)
-//    break_up2 = break_up(2)
+  def pass    (implicit node: CallGraphTreeNode): Int = node.pass
+  def pass_up1(implicit node: CallGraphTreeNode): Int = node.n_ary_op_ancestor.pass
+  def pass_up2(implicit node: CallGraphTreeNode): Int = node.n_ary_op_ancestor.n_ary_op_ancestor.pass
 
 }

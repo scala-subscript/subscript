@@ -3,7 +3,7 @@ import subscript.language
 
 // import org.junit.runner.RunWith
 
-import subscript.Predef._
+import subscript.CorePredef._
 import subscript.DSL._
 import subscript.vm.{N_code_unsure, SimpleScriptDebugger, Script}
 import subscript.vm.model.callgraph._
