@@ -143,11 +143,14 @@ trait Operators {this: Ast =>
            |${if (content.isEmpty) defaultMatcher else ""}
            |}""".stripMargin
 
-      s"""$method(
-         |  $nDoStr
-         |, ${block(nThenClauses)}
-         |, ${block(nElseClauses)}
-         |)""".stripMargin
+      if (nThen.isEmpty && nElse.isEmpty) nDo.compile
+      else ScriptCall(Literal(
+        s"""$method(
+           |  $nDoStr
+           |, ${block(nThenClauses)}
+           |, ${block(nElseClauses)}
+           |)""".stripMargin
+      )).compile
     } 
   }
 

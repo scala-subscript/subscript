@@ -187,7 +187,7 @@ trait Operators extends Terms {this: SubScript with Exprs =>
     }
   }
 
-  def Expr1: R[Ast.Expr1] = rule {DataflowTerm.+(WSR0) ~> Ast.Expr1}
+  def Expr1: R[Ast.Expr1] = rule {Dataflow.+(WSR0) ~> Ast.Expr1}
 
 
   def DataflowTerm: R[Ast.DataflowTerm] = rule (
