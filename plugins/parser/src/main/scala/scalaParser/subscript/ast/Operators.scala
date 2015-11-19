@@ -151,7 +151,7 @@ trait Operators {this: Ast =>
     } 
   }
 
-  case class DataflowClause(pattern: String, expr: Node) extends Node {
+  case class DataflowClause(pattern: String, expr: Node, thenClause: Boolean = true) extends Node {
     def rewrite(implicit context: Context, output: Output): String = {
       val exprStr = nodeToScript(Name.LAMBDA, expr)
       s"case $pattern => $exprStr"

@@ -210,6 +210,29 @@ trait Operators extends Terms {this: SubScript with Exprs =>
 
   def DataflowEmpty: R[Ast.DataflowEmpty] = rule {Term ~> Ast.DataflowEmpty}
 
+  // === New dataflow ===
+  def Dataflow: R[Ast.Dataflow] = {
+    def Trans1: (Ast.Term, Option[Ast.DataflowClause], Seq[Ast.DataflowClause]) => Ast.Dataflow = (term, initClause, clauses) => {
+      def maybe(thenClause: Boolean) = initClause.filter(_.thenClause == thenClause).map(Seq(_)).getOrElse(Nil)
+      val thenClauses = maybe(true ) ++ clauses.filter( _.thenClause)
+      val elseClauses = maybe(false) ++ clauses.filter(!_.thenClause) 
+      Ast.Dataflow(term, thenClauses, elseClauses)
+    }
+
+    rule {Term ~ DataflowClause.? ~ DataflowExtraClause.* ~> Trans1}
+  }
+
+  def DataflowClause: R[Ast.DataflowClause] = rule {DataflowThenClause | DataflowElseClause}
+
+  def DataflowClauseGen(head: String, isThenClause: Boolean): R[Ast.DataflowClause] = {
+    def Trans1: (String, Ast.Term) => Ast.DataflowClause = (pat, t) => Ast.DataflowClause(pat, t, isThenClause)
+    rule {wspStrR0(head) ~ wspChR0('(') ~ CaseClauseHeader ~ wspChR0(')') ~ wspStrR0("~~>") ~ WLR0 ~ Term ~> Trans1}
+  }
+
+  def DataflowThenClause: R[Ast.DataflowClause] = DataflowClauseGen("~~" , true )
+  def DataflowElseClause: R[Ast.DataflowClause] = DataflowClauseGen("~/~", false)
+
+  def DataflowExtraClause: R[Ast.DataflowClause] = rule {wspStrR0("+") ~ DataflowClause}
 
   def Term: R[Ast.Term] = rule {!SSOperator ~ (
     Special
