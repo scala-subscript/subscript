@@ -55,6 +55,11 @@ class SubScriptSuite extends FlatSpec with Matchers
     ].e shouldBe Success(1)
   }
 
+
+  "Carets" should "work" in {
+    
+  }
+
 }
 
 trait SubScriptSuiteHelpers {
