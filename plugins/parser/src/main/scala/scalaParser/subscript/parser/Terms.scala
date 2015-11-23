@@ -13,6 +13,10 @@ import scalaParser.subscript.ast.Ast
 
 trait Terms {this: Operators with SubScript with Exprs =>
 
+  def Careted(r: () => R[Ast.Node]): R[Ast.Annotation] =
+    rule {r() ~ wspChR0('^') ~> {raw: Ast.Node => Ast.Annotation(Ast.Literal(ast.Constants.DSL.Op.CARET), raw)}}
+
+
   def ScriptTerm: R[Ast.Literal] =
     rule {IdS ~> Ast.Literal}
 
@@ -20,7 +24,9 @@ trait Terms {this: Operators with SubScript with Exprs =>
 
   def SimpleValueExpr: R[Ast.Literal] = rule { WithNormalInScript {() => StatCtx.Expr} ~> Ast.Literal}
   
-  def ScriptCall: R[Ast.ScriptCall] = rule {!SSOperatorOrKeyword ~ (
+  def ScriptCall: R[Ast.Term] = rule {Careted {() => ScriptCallRaw} | ScriptCallRaw}
+
+  def ScriptCallRaw: R[Ast.ScriptCall] = rule {!SSOperatorOrKeyword ~ (
     ScriptCallNice
   | ScriptCallOrdinary
   )}
@@ -38,7 +44,7 @@ trait Terms {this: Operators with SubScript with Exprs =>
 
 
   // Code fragments
-  def CodeFragment: R[Ast.Term] = rule {CodeFragmentCaret | CodeFragmentRaw}
+  def CodeFragment: R[Ast.Term] = rule {Careted {() => CodeFragmentRaw} | CodeFragmentRaw}
 
   def CodeFragmentRaw: R[Ast.CodeFragment] = {
     def Body = rule (
@@ -52,9 +58,6 @@ trait Terms {this: Operators with SubScript with Exprs =>
 
     WithNormalInScript {() => Body}
   }
-
-  def CodeFragmentCaret: R[Ast.Annotation] =
-    rule {CodeFragmentRaw ~ wspChR0('^') ~> {raw: Ast.CodeFragment => Ast.Annotation(Ast.Literal(ast.Constants.DSL.Op.CARET), raw)}}
 
   def CodeFragmentMeta(symbolStart: String, symbolEnd: String): R1 = {
     rule {wspStrR0(symbolStart) ~ Block ~ wspStrR0(symbolEnd)}
