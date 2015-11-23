@@ -384,5 +384,9 @@ object DSL {
       ${expr.tree}
     }"""}
   }
-  
+
+  /** Propagates the result value of the `n` to the `s` on the success of `n`. */
+  def _caret(implicit n: CallGraphNode, s: Script[Any]) =
+    n.onSuccess {s.$ = n.asInstanceOf[ScriptResultHolder[Any]].$}
+
  }
