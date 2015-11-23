@@ -1,4 +1,5 @@
-package scalaParser.subscript.parser
+package scalaParser.subscript
+package parser
 
 import language.implicitConversions
 import org.parboiled2._
@@ -37,7 +38,9 @@ trait Terms {this: Operators with SubScript with Exprs =>
 
 
   // Code fragments
-  def CodeFragment: R[Ast.CodeFragment] = {
+  def CodeFragment: R[Ast.Term] = rule {CodeFragmentCaret | CodeFragmentRaw}
+
+  def CodeFragmentRaw: R[Ast.CodeFragment] = {
     def Body = rule (
         EventhandlingLoop
       | Threaded
@@ -49,6 +52,9 @@ trait Terms {this: Operators with SubScript with Exprs =>
 
     WithNormalInScript {() => Body}
   }
+
+  def CodeFragmentCaret: R[Ast.Annotation] =
+    rule {CodeFragmentRaw ~ wspChR0('^') ~> {raw: Ast.CodeFragment => Ast.Annotation(Ast.Literal(ast.Constants.DSL.Op.CARET), raw)}}
 
   def CodeFragmentMeta(symbolStart: String, symbolEnd: String): R1 = {
     rule {wspStrR0(symbolStart) ~ Block ~ wspStrR0(symbolEnd)}
