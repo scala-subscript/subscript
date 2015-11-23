@@ -77,16 +77,29 @@ trait DefaultHandlers extends ContinuationHandler {this: ScriptExecutor[_] with 
   
   def propagateResult(child: CallGraphNode, node:CallGraphNode, forSuccess: Boolean) = {
     //println(s"propagateResult child: $child node: $node hasSuccess: ${node.hasSuccess} forSuccess: $forSuccess")
+    
+    def propagate(): Unit = node.asInstanceOf[ScriptResultHolder[Any]].resultPropagationDestination[Any] match {
+      case sn: ScriptNode[Any] =>
+        def allChildren(n: TreeNode): Seq[TreeNode] = n.children.flatMap {c => allChildren(c) :+ c}
+        val children = allChildren(sn.template)
+        // println(s"Child count for $sn: ${children.size}. Children: $children")
+        
+        // If the script has only one child, propagate result. Otherwise, let the carrets decide the result.
+        if (children.size <= 1) node.asInstanceOf[ScriptResultHolder[Any]].propagateResult
+
+      case _ => node.asInstanceOf[ScriptResultHolder[Any]].propagateResult
+    }
+
     (child,node) match {
            case (_,    ncf:N_code_tiny    [_]) => if (ncf.mustPropagateResultValue && forSuccess != ncf.failed    ) ncf.propagateResult
-           case (_,    ncf:N_code_fragment[_]) => if (ncf.mustPropagateResultValue && forSuccess == ncf.hasSuccess) ncf.propagateResult
+           case (_,    ncf:N_code_fragment[_]) => if (ncf.mustPropagateResultValue && forSuccess == ncf.hasSuccess) propagate()
            case (scr:Script[_], cal:N_call[_]) => cal.setResult(scr.$)
                                                   if (cal.mustPropagateResultValue && forSuccess == scr.hasSuccess) {
 																			               //println(s"src: $scr")
 																			               //println(s"node: ${node}")
 																			               //println(s"node.scriptNode: ${node.scriptNode}")
 																			               
-																			               cal.propagateResult
+																			               propagate()
 																			             }
            case _ =>
     } 
