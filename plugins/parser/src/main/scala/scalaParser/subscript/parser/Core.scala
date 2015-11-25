@@ -65,7 +65,7 @@ trait Core {this: SubScript with Exprs =>
   def StableIdS = Spaces(() => StableId)
 
   def Careted(r: () => R[Ast.Node]): R[Ast.Annotation] =
-    rule {r() ~ wspChR0('^') ~> {raw: Ast.Node => Ast.Annotation(Ast.Literal(ast.Constants.DSL.Op.CARET), raw)}}
+    rule {r() ~ ch('^') ~> {raw: Ast.Node => Ast.Annotation(Ast.Literal(ast.Constants.DSL.Op.CARET), raw)}}
 
 }
 

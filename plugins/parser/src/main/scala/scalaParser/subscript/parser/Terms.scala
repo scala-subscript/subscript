@@ -20,7 +20,14 @@ trait Terms {this: Operators with SubScript with Exprs =>
 
   def SimpleValueExpr: R[Ast.Literal] = rule { WithNormalInScript {() => StatCtx.Expr} ~> Ast.Literal}
   
-  def ScriptCall: R[Ast.Term] = rule {Careted {() => ScriptCallRaw} | ScriptCallRaw}
+  def ScriptCall: R[Ast.Term] = rule {CaretPrefixedLiteral | Careted {() => ScriptCallRaw} | ScriptCallRaw}
+
+  def CaretPrefixedLiteral: R[Ast.Annotation] = {
+    def Trans1: Ast.Normal => Ast.Annotation =
+      Ast.Annotation(Ast.Literal(ast.Constants.DSL.Op.CARET), _)
+
+    rule {wspChR0('^') ~ !WLOneOrMoreR0 ~ Literal ~> Ast.Normal ~> Trans1}
+  }
 
   def ScriptCallRaw: R[Ast.ScriptCall] = rule {!SSOperatorOrKeyword ~ (
     ScriptCallNice

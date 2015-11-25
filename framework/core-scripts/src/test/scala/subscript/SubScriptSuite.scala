@@ -74,6 +74,12 @@ class SubScriptSuite extends FlatSpec with Matchers
     ].e shouldBe Success(1)
   }
 
+  it should "work in prefix position before the literals" in {
+    [^1 y      ].e shouldBe Success(1    )
+    [x ^"foo" y].e shouldBe Success("foo")
+    [x y ^true ].e shouldBe Success(true )
+  }
+
 }
 
 trait SubScriptSuiteHelpers {
