@@ -13,10 +13,6 @@ import scalaParser.subscript.ast.Ast
 
 trait Terms {this: Operators with SubScript with Exprs =>
 
-  def Careted(r: () => R[Ast.Node]): R[Ast.Annotation] =
-    rule {r() ~ wspChR0('^') ~> {raw: Ast.Node => Ast.Annotation(Ast.Literal(ast.Constants.DSL.Op.CARET), raw)}}
-
-
   def ScriptTerm: R[Ast.Literal] =
     rule {IdS ~> Ast.Literal}
 

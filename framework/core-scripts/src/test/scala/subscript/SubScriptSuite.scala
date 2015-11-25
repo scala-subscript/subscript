@@ -55,8 +55,29 @@ class SubScriptSuite extends FlatSpec with Matchers
     ].e shouldBe Success(1)
   }
 
+
+  "Caret" should "work with code blocks" in {
+    [
+      {!1!}^ {!2!}
+    ].e shouldBe Success(1)
+  }
+
+  it should "work with script calls" in {
+    [
+      x y^
+    ].e shouldBe Success(2)
+  }
+
+  it should "work with parenthesised code" in {
+    [
+      {!10!} [x^ y]^
+    ].e shouldBe Success(1)
+  }
+
 }
 
 trait SubScriptSuiteHelpers {
-
+  script..
+    x = {!1!}
+    y = {!2!}
 }

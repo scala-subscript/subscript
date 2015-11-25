@@ -1,4 +1,5 @@
-package scalaParser.subscript.parser
+package scalaParser.subscript
+package parser
 
 import language.implicitConversions
 import org.parboiled2._
@@ -62,6 +63,10 @@ trait Core {this: SubScript with Exprs =>
 
   def IdS       = Spaces(() => Id)
   def StableIdS = Spaces(() => StableId)
+
+  def Careted(r: () => R[Ast.Node]): R[Ast.Annotation] =
+    rule {r() ~ wspChR0('^') ~> {raw: Ast.Node => Ast.Annotation(Ast.Literal(ast.Constants.DSL.Op.CARET), raw)}}
+
 }
 
 trait HighPriorityRulesConversions extends RuleDSLBasics {this: SubScript with Exprs =>

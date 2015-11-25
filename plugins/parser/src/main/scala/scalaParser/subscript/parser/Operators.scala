@@ -1,4 +1,5 @@
-package scalaParser.subscript.parser
+package scalaParser.subscript
+package parser
 
 import language.implicitConversions
 import org.parboiled2._
@@ -232,7 +233,20 @@ trait Operators extends Terms {this: SubScript with Exprs =>
 
   def LaunchAnchor : R[Ast.LaunchAnchor ] = WrappedExpr9("[**", "**]", Ast.LaunchAnchor )
   def Launch       : R[Ast.Launch       ] = WrappedExpr9("[*" ,  "*]", Ast.Launch       )
-  def Parenthesised: R[Ast.Parenthesised] = WrappedExpr9("["  ,   "]", Ast.Parenthesised)
+  
+  def Parenthesised       : R[Ast.Term         ] = rule {ParenthesisedCareted | ParenthesisedRaw}
+  def ParenthesisedRaw    : R[Ast.Parenthesised] = WrappedExpr9("["  ,   "]", Ast.Parenthesised)
+  def ParenthesisedCareted: R[Ast.Annotation   ] = {
+    def Trans1: Ast.Parenthesised => Ast.ScriptCall = {n =>
+      val scripted = Ast.nodeToScript(ast.Constants.Name.LAMBDA, n)
+      Ast.ScriptCall(Ast.Literal(scripted))
+    }
+
+    def ParenthesisedLambda: R[Ast.ScriptCall] =
+      rule {ParenthesisedRaw ~> Trans1}
+
+    rule {Careted {() => ParenthesisedLambda}}
+  }
 
   def Annotation: R[Ast.Annotation] = {
     def Trans1: Ast.ScriptCall => Ast.Literal = _.content.asInstanceOf[Ast.Literal]
