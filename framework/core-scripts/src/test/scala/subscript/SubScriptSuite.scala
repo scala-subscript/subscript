@@ -14,7 +14,7 @@ class SubScriptSuite extends FlatSpec with Matchers
 
   "Dataflow" should "work" in {
     [
-      success: 2 ~~(x: Int)~~> success: x
+      success: 2 ~~(x: Int)~~> {!x!}^
     ].e shouldBe Success(2)
   }
 
@@ -53,11 +53,6 @@ class SubScriptSuite extends FlatSpec with Matchers
       success: (1, 2) ~~(p @ (x: Int, y: Int) if x == 2)~~> success: 1
                      +~~(p @ (x: Int, y: Int) if x < 2 )~~> success: p._1
     ].e shouldBe Success(1)
-  }
-
-
-  "Carets" should "work" in {
-    
   }
 
 }
