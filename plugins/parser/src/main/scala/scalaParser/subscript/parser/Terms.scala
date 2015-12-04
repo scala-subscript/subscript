@@ -21,8 +21,9 @@ trait Terms {this: Operators with SubScript with Exprs =>
   def SimpleValueExpr: R[Ast.Literal] = rule { WithNormalInScript {() => StatCtx.Expr} ~> Ast.Literal}
   
   def ScriptCall: R[Ast.Term] = rule (
-    DoubleCareted {() => ScriptCallRaw}
-  | Careted       {() => ScriptCallRaw}
+    DoubleCaretedNumber {() => ScriptCallRaw}
+  | DoubleCareted       {() => ScriptCallRaw}
+  | Careted             {() => ScriptCallRaw}
   | ScriptCallRaw
   )
 
@@ -45,8 +46,9 @@ trait Terms {this: Operators with SubScript with Exprs =>
 
   // Code fragments
   def CodeFragment: R[Ast.Term] = rule (
-    DoubleCareted {() => CodeFragmentRaw}
-  | Careted       {() => CodeFragmentRaw}
+    DoubleCaretedNumber {() => CodeFragmentRaw}
+  | DoubleCareted       {() => CodeFragmentRaw}
+  | Careted             {() => CodeFragmentRaw}
   | CodeFragmentRaw
   )
 
@@ -153,7 +155,8 @@ trait Terms {this: Operators with SubScript with Exprs =>
       Ast.Annotation(Ast.Literal(ast.Constants.DSL.Op.CARET), _)
 
     rule (
-      DoubleCareted {() => CaretPrefixedScalaTerm}
+      DoubleCaretedNumber {() => CaretPrefixedScalaTerm}
+    | DoubleCareted       {() => CaretPrefixedScalaTerm}
     | CaretPrefixedScalaTerm ~> Trans1
     | ScalaTermRaw ~> Ast.Literal ~> Ast.ScriptCall
     )

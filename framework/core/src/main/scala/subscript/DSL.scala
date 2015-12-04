@@ -400,7 +400,7 @@ object DSL {
   }
 
   def _double_caret_number(id: Int)(implicit n: CallGraphNode, s: Script[Any]) = n.onSuccess {
-    def tupleToSeq(t : Product ): Seq[Any] = (1 to t.productArity).map(t.productElement)
+    def tupleToSeq(t : Product ): Seq[Any] = (1 to t.productArity).map(n => t.productElement(n - 1))
     def seqToTuple(as:Seq[Any]):Product = {  // Credit: http://stackoverflow.com/a/11312245/3895471
       val tupleClass = Class.forName("scala.Tuple" + as.size)
       tupleClass.getConstructors.apply(0).newInstance(as.map(_.asInstanceOf[Object]):_*).asInstanceOf[Product]

@@ -108,6 +108,10 @@ class SubScriptSuite extends FlatSpec with Matchers
     [times: 5 ^(1, 2)^^].e shouldBe Success((0 to 4).map(x => (1, 2)).toSeq)
   }
 
+  "Double caret with numbers" should "work with code blocks" in {
+    [{!1!}^^1 {!2!}^^2].e shouldBe Success((1, 2))
+  }
+
 }
 
 trait SubScriptSuiteHelpers {
