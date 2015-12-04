@@ -71,6 +71,9 @@ trait Core {this: SubScript with Exprs =>
 
   def DoubleCareted(r: () => R[Ast.Node]): R[Ast.Annotation] =
     rule {r() ~ str("^^") ~> {raw: Ast.Node => Ast.Annotation(Ast.Literal(ast.Constants.DSL.Op.DOUBLE_CARET), raw)}}
+
+  def DoubleCaretedNumber(r: () => R[Ast.Node]): R[Ast.Annotation] =
+    rule {r() ~ str("^^") ~ Literals.Int ~> {(raw: Ast.Node, num: String) => Ast.Annotation(Ast.Literal(s"${ast.Constants.DSL.Op.DOUBLE_CARET_NUMBER}(${num.toInt})"), raw)}}
 }
 
 trait HighPriorityRulesConversions extends RuleDSLBasics {this: SubScript with Exprs =>

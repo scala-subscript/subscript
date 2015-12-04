@@ -48,6 +48,7 @@ object Constants {
 
       val CARET               = dsl("_caret")
       val DOUBLE_CARET        = dsl("_double_caret")
+      val DOUBLE_CARET_NUMBER = dsl("_double_caret_number")
 
       val DATAFLOW           = "subscript.ScriptDSL._dataflow"
     }
