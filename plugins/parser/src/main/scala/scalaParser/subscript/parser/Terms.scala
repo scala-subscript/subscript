@@ -40,7 +40,11 @@ trait Terms {this: Operators with SubScript with Exprs =>
 
 
   // Code fragments
-  def CodeFragment: R[Ast.Term] = rule {Careted {() => CodeFragmentRaw} | CodeFragmentRaw}
+  def CodeFragment: R[Ast.Term] = rule (
+    DoubleCareted {() => CodeFragmentRaw}
+  | Careted       {() => CodeFragmentRaw}
+  | CodeFragmentRaw
+  )
 
   def CodeFragmentRaw: R[Ast.CodeFragment] = {
     def Body = rule (

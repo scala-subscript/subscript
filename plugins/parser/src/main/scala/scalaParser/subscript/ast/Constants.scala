@@ -47,6 +47,7 @@ object Constants {
       val LAUNCH_ANCHOR       = dsl("_launch_anchor")
 
       val CARET               = dsl("_caret")
+      val DOUBLE_CARET        = dsl("_double_caret")
 
       val DATAFLOW           = "subscript.ScriptDSL._dataflow"
     }

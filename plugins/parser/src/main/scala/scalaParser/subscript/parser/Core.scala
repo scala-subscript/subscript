@@ -67,8 +67,10 @@ trait Core {this: SubScript with Exprs =>
   def StableIdS = Spaces(() => StableId)
 
   def Careted(r: () => R[Ast.Node]): R[Ast.Annotation] =
-    rule {r() ~ ch('^') ~> {raw: Ast.Node => Ast.Annotation(Ast.Literal(ast.Constants.DSL.Op.CARET), raw)}}
+    rule {r() ~ ch('^')   ~> {raw: Ast.Node => Ast.Annotation(Ast.Literal(ast.Constants.DSL.Op.CARET       ), raw)}}
 
+  def DoubleCareted(r: () => R[Ast.Node]): R[Ast.Annotation] =
+    rule {r() ~ str("^^") ~> {raw: Ast.Node => Ast.Annotation(Ast.Literal(ast.Constants.DSL.Op.DOUBLE_CARET), raw)}}
 }
 
 trait HighPriorityRulesConversions extends RuleDSLBasics {this: SubScript with Exprs =>

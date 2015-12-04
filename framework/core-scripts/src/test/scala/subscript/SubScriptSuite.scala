@@ -88,6 +88,10 @@ class SubScriptSuite extends FlatSpec with Matchers
     [x ^(2 + 3) y].e shouldBe Success(5)
   }
 
+  "Double caret" should "work with code blocks" in {
+    [times: 5 {!here.pass!}^^].e shouldBe Success(Seq(0, 1, 2, 3, 4))
+  }
+
 }
 
 trait SubScriptSuiteHelpers {
