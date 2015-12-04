@@ -39,10 +39,12 @@ trait Core {this: SubScript with Exprs =>
   def `>>`   = KeyWordOperators.O(">>")
   def `==>`  = KeyWordOperators.O("==>")
 
+  def `^`    = KeyWordOperators.O("^")
+
   def SSKeyword  = rule (`then` | `script` | `let`)
   def SSOperator = rule (
-    `|`  | `||`   | `&`  | `&&` | `==`  | plus | `/` | `%` | `%/%/` | `%/` | `%%` | capture(Basic.Newline)
-  | `~~` | `+~/~` | `>>` | `==>`
+    `|`  | `||`   | `&`  | `&&`  | `==`  | plus | `/` | `%` | `%/%/` | `%/` | `%%` | capture(Basic.Newline)
+  | `~~` | `+~/~` | `>>` | `==>` 
   )
 
   def SSOperatorOrKeyword = rule (SSKeyword | SSOperator)

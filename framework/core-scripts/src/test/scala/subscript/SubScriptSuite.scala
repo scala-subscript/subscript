@@ -80,6 +80,14 @@ class SubScriptSuite extends FlatSpec with Matchers
     [x y ^true ].e shouldBe Success(true )
   }
 
+  it should "work in prefix position before tuples" in {
+    [x ^(1, 2) y].e shouldBe Success((1, 2))
+  }
+
+  it should "work in prefix position before expressions" in {
+    [x ^(2 + 3) y].e shouldBe Success(5)
+  }
+
 }
 
 trait SubScriptSuiteHelpers {

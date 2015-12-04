@@ -22,7 +22,7 @@ trait Terms {this: Operators with SubScript with Exprs =>
   
   def ScriptCall: R[Ast.Term] = rule {Careted {() => ScriptCallRaw} | ScriptCallRaw}
 
-  def ScriptCallRaw: R[Ast.ScriptCall] = rule {!SSOperatorOrKeyword ~ (
+  def ScriptCallRaw: R[Ast.ScriptCall] = rule {!(SSOperatorOrKeyword | `^`) ~ (
     ScriptCallNice
   | ScriptCallOrdinary
   )}
@@ -140,12 +140,20 @@ trait Terms {this: Operators with SubScript with Exprs =>
 
 
   // Scala terms
-  def ScalaTerm: R[Ast.ScriptCall] = rule {(
+  def ScalaTerm: R[Ast.Term] = rule (CaretPrefixedScalaTerm | ScalaTermRaw ~> Ast.Literal ~> Ast.ScriptCall)
+
+  def ScalaTermRaw: R1 = rule (
     BlockExpr
   | Literal
   | ScalaExprTerm   
   | ScalaTupleTerm
-  ) ~> Ast.Literal ~> Ast.ScriptCall
+  )
+  
+  def CaretPrefixedScalaTerm: R[Ast.Annotation] = {
+    def Trans1: Ast.Normal => Ast.Annotation =
+      Ast.Annotation(Ast.Literal(ast.Constants.DSL.Op.CARET), _)
+
+    rule {wspChR0('^') ~ !WLOneOrMoreR0 ~ ScalaTermRaw ~> Ast.Normal ~> Trans1}
   }
 
   def ScalaExprTerm : R[String] = rule {wspChR0('(') ~ StatCtx.Expr ~ wspChR0(')')}
