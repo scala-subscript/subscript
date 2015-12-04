@@ -20,14 +20,7 @@ trait Terms {this: Operators with SubScript with Exprs =>
 
   def SimpleValueExpr: R[Ast.Literal] = rule { WithNormalInScript {() => StatCtx.Expr} ~> Ast.Literal}
   
-  def ScriptCall: R[Ast.Term] = rule {CaretPrefixedLiteral | Careted {() => ScriptCallRaw} | ScriptCallRaw}
-
-  def CaretPrefixedLiteral: R[Ast.Annotation] = {
-    def Trans1: Ast.Normal => Ast.Annotation =
-      Ast.Annotation(Ast.Literal(ast.Constants.DSL.Op.CARET), _)
-
-    rule {wspChR0('^') ~ !WLOneOrMoreR0 ~ Literal ~> Ast.Normal ~> Trans1}
-  }
+  def ScriptCall: R[Ast.Term] = rule {Careted {() => ScriptCallRaw} | ScriptCallRaw}
 
   def ScriptCallRaw: R[Ast.ScriptCall] = rule {!SSOperatorOrKeyword ~ (
     ScriptCallNice
@@ -35,7 +28,7 @@ trait Terms {this: Operators with SubScript with Exprs =>
   )}
 
   def ScriptCallOrdinary: R[Ast.ScriptCall] =
-    rule {(StableIdS ~ ((!WLOneOrMoreR0 ~ TypeArgs).? ~> ExtractOpt) ~ ((!WLOneOrMoreR0 ~ ArgList).? ~> ExtractOpt) ~> Concat3 | Literal) ~> Ast.Literal ~> Ast.ScriptCall}
+    rule {(StableIdS ~ ((!WLOneOrMoreR0 ~ TypeArgs).? ~> ExtractOpt) ~ ((!WLOneOrMoreR0 ~ ArgList).? ~> ExtractOpt) ~> Concat3) ~> Ast.Literal ~> Ast.ScriptCall}
 
   def ScriptCallNice: R[Ast.ScriptCall] = {
     def Trans1: Seq[String] => String = exprs => s"(${exprs.mkString(", ")})"
@@ -147,8 +140,14 @@ trait Terms {this: Operators with SubScript with Exprs =>
 
 
   // Scala terms
-  def ScalaTerm: R[Ast.ScriptCall] = rule {BlockExpr ~> Ast.Literal ~> Ast.ScriptCall | ScalaExprTerm | ScalaTupleTerm}
+  def ScalaTerm: R[Ast.ScriptCall] = rule {(
+    BlockExpr
+  | Literal
+  | ScalaExprTerm   
+  | ScalaTupleTerm
+  ) ~> Ast.Literal ~> Ast.ScriptCall
+  }
 
-  def ScalaExprTerm : R[Ast.ScriptCall] = rule {wspChR0('(') ~ StatCtx.Expr ~ wspChR0(')') ~> Ast.Literal ~> Ast.ScriptCall}
-  def ScalaTupleTerm: R[Ast.ScriptCall] = rule {'(' ~ OneOrMore(() => StatCtx.Expr, () => ',') ~ ')' ~> Concat3 ~> Ast.Literal ~> Ast.ScriptCall}
+  def ScalaExprTerm : R[String] = rule {wspChR0('(') ~ StatCtx.Expr ~ wspChR0(')')}
+  def ScalaTupleTerm: R[String] = rule {'(' ~ OneOrMore(() => StatCtx.Expr, () => ',') ~ ')' ~> Concat3}
 }
