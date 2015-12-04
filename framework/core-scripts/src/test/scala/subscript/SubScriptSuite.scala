@@ -112,6 +112,18 @@ class SubScriptSuite extends FlatSpec with Matchers
     [{!1!}^^1 {!2!}^^2].e shouldBe Success((1, 2))
   }
 
+  it should "work with script calls" in {
+    [x^^2 y^^1].e shouldBe Success((2, 1))
+  }
+
+  it should "work with literals" in {
+    [^1^^3 ^2^^1].e shouldBe Success((2, null, 1))
+  }
+
+  it should "work for tuples" in {
+    [^(1, 2)^^1 ^(2, 3)^^2].e shouldBe Success( ((1, 2), (2, 3)) )
+  }
+
 }
 
 trait SubScriptSuiteHelpers {
