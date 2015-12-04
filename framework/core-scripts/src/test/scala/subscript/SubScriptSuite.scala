@@ -89,7 +89,15 @@ class SubScriptSuite extends FlatSpec with Matchers
   }
 
   "Double caret" should "work with code blocks" in {
-    [times: 5 {!here.pass!}^^].e shouldBe Success(Seq(0, 1, 2, 3, 4))
+    [times: 5 {!here.pass!}^^].e shouldBe Success((0 to 4).toSeq)
+  }
+
+  it should "work with script calls" in {
+    [times: 5 x^^].e shouldBe Success((0 to 4).map(x => 1).toSeq)
+  }
+
+  it should "work in combinations" in {
+    [times: 5 x^^ {!here.pass!}^^ y^^].e shouldBe Success(Seq(1, 0, 2, 1, 1, 2, 1, 2, 2, 1, 3, 2, 1, 4, 2))
   }
 
 }
