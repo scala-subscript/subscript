@@ -100,6 +100,14 @@ class SubScriptSuite extends FlatSpec with Matchers
     [times: 5 x^^ {!here.pass!}^^ y^^].e shouldBe Success(Seq(1, 0, 2, 1, 1, 2, 1, 2, 2, 1, 3, 2, 1, 4, 2))
   }
 
+  it should "work with literals" in {
+    [times: 5 ^1^^].e shouldBe Success((0 to 4).map(x => 1).toSeq)
+  }
+
+  it should "work with tuples" in {
+    [times: 5 ^(1, 2)^^].e shouldBe Success((0 to 4).map(x => (1, 2)).toSeq)
+  }
+
 }
 
 trait SubScriptSuiteHelpers {

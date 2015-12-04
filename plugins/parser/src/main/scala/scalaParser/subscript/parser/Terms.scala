@@ -148,7 +148,16 @@ trait Terms {this: Operators with SubScript with Exprs =>
 
 
   // Scala terms
-  def ScalaTerm: R[Ast.Term] = rule (CaretPrefixedScalaTerm | ScalaTermRaw ~> Ast.Literal ~> Ast.ScriptCall)
+  def ScalaTerm: R[Ast.Term] = {
+    def Trans1: Ast.Normal => Ast.Annotation =
+      Ast.Annotation(Ast.Literal(ast.Constants.DSL.Op.CARET), _)
+
+    rule (
+      DoubleCareted {() => CaretPrefixedScalaTerm}
+    | CaretPrefixedScalaTerm ~> Trans1
+    | ScalaTermRaw ~> Ast.Literal ~> Ast.ScriptCall
+    )
+  }
 
   def ScalaTermRaw: R1 = rule (
     BlockExpr
@@ -157,12 +166,8 @@ trait Terms {this: Operators with SubScript with Exprs =>
   | ScalaTupleTerm
   )
   
-  def CaretPrefixedScalaTerm: R[Ast.Annotation] = {
-    def Trans1: Ast.Normal => Ast.Annotation =
-      Ast.Annotation(Ast.Literal(ast.Constants.DSL.Op.CARET), _)
-
-    rule {wspChR0('^') ~ !WLOneOrMoreR0 ~ ScalaTermRaw ~> Ast.Normal ~> Trans1}
-  }
+  def CaretPrefixedScalaTerm: R[Ast.Normal] =
+    rule {wspChR0('^') ~ !WLOneOrMoreR0 ~ ScalaTermRaw ~> Ast.Normal}
 
   def ScalaExprTerm : R[String] = rule {wspChR0('(') ~ StatCtx.Expr ~ wspChR0(')')}
   def ScalaTupleTerm: R[String] = rule {'(' ~ OneOrMore(() => StatCtx.Expr, () => ',') ~ ')' ~> Concat3}
