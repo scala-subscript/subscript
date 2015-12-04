@@ -30,6 +30,8 @@ package subscript
 import scala.language.implicitConversions
 import scala.collection.mutable.LinkedList
 
+import scala.util.{Try, Success, Failure}
+
 // Scala macros
 import scala.language.experimental.macros
 import scala.reflect.macros.whitebox.Context
@@ -388,5 +390,13 @@ object DSL {
   /** Propagates the result value of the `n` to the `s` on the success of `n`. */
   def _caret(implicit n: CallGraphNode, s: Script[Any]) =
     n.onSuccess {s.$ = n.asInstanceOf[ScriptResultHolder[Any]].$}
+
+  def _double_caret(implicit n: CallGraphNode, s: Script[Any]) = n.onSuccess {
+    val nResult = n.asInstanceOf[ScriptResultHolder[Any]].$success
+    s.$ match {
+      case Success(seq: Seq[Any]) => s.$success = seq :+ nResult
+      case _                      => s.$success = Seq(nResult)
+    }
+  }
 
  }
