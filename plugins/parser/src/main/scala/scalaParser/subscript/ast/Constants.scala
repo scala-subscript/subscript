@@ -5,6 +5,7 @@ object Constants {
   def pkg(name: String, pkgName: String) = s"$pkgName.$name"
 
   def dsl             (name: String) = pkg(name, "subscript.DSL"                       )
+  def scriptDsl       (name: String) = pkg(name, "subscript.ScriptDSL"                 )
   def vm              (name: String) = pkg(name, "subscript.vm"                        )
   def templateConcrete(name: String) = pkg(name, "subscript.vm.model.template.concrete")
 
@@ -50,7 +51,8 @@ object Constants {
       val DOUBLE_CARET        = dsl("_double_caret")
       val DOUBLE_CARET_NUMBER = dsl("_double_caret_number")
 
-      val DATAFLOW           = "subscript.ScriptDSL._dataflow"
+      val DATAFLOW           = scriptDsl("_dataflow"    )
+      val DATAFLOW_MAP       = scriptDsl("_dataflow_map")
     }
 
     object Term {

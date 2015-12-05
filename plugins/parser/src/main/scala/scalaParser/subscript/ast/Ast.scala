@@ -7,7 +7,8 @@ trait Ast extends Core
              with Header
              with Operators
              with Terms
-             with UtilNodes {
+             with UtilNodes
+             with CodePrimitives {
   import Constants._
 
   case class Literal(content: String) extends LiteralNode

@@ -109,18 +109,60 @@ trait Operators {this: Ast =>
       else ScriptCall(Literal(
         s"""$method(
            |  $nDoStr
-           |, ${block(nThenClauses)}
-           |, ${block(nElseClauses)}
+           |, ${partialFunction(nThenClauses)}
+           |, ${partialFunction(nElseClauses)}
            |)""".stripMargin
       )).compile
     } 
   }
 
-  case class DataflowClause(pattern: String, expr: Node, thenClause: Boolean = true) extends Node {
+  trait AbstractPatmatchClause extends Node {
+    def lhs(implicit context: Context, output: Output): String
+    def rhs(implicit context: Context, output: Output): String
+
+    def rewrite(implicit context: Context, output: Output): String =
+      s"case $lhs => $rhs"
+  }
+
+  case class DataflowClause(pattern: String, expr: Node, thenClause: Boolean = true) extends AbstractPatmatchClause {
+    def lhs(implicit context: Context, output: Output): String = pattern    
+    def rhs(implicit context: Context, output: Output): String = nodeToScript(Name.LAMBDA, expr)
+  }
+
+
+  case class DataflowMap(nDo: Node, nThen: Seq[DataflowMapClause]) extends ScriptOperator {
+    override val method = DATAFLOW_MAP
+
     def rewrite(implicit context: Context, output: Output): String = {
-      val exprStr = nodeToScript(Name.LAMBDA, expr)
-      s"case $pattern => $exprStr"
+      val nDoStr       = nodeToScript("~~^", nDo)
+      val nThenClauses = nThen.map(_.compile).mkString("\n")
+
+      ScriptCall(Literal(
+        s"""$method(
+           |  $nDoStr
+           |, ${partialFunction(nThenClauses)}
+           |)""".stripMargin
+      )).compile
     }
+
+  }
+
+  case class DataflowMapShort(nDo: Node, nThen: Node) extends ScriptOperator {
+    override val method = DATAFLOW_MAP
+
+    def rewrite(implicit context: Context, output: Output): String = {
+      val nDoStr   = nodeToScript("~~^", nDo)
+      val nThenStr = nThen.compile
+
+      ScriptCall(Literal(
+        s"""$method($nDoStr, $nThenStr)"""
+      )).compile
+    }
+  }
+
+  case class DataflowMapClause(pattern: String, expr: String) extends AbstractPatmatchClause {
+    def lhs(implicit context: Context, output: Output): String = pattern    
+    def rhs(implicit context: Context, output: Output): String = expr
   }
 
   trait Term extends Node
