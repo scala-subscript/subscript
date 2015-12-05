@@ -149,13 +149,12 @@ trait Operators {this: Ast =>
 
   }
 
-  case class DataflowMapShort(nDo: Node, nThen: Node) extends AbstractDataflowMap {
+  case class DataflowMapShort(nDo: Node, nThen: String) extends AbstractDataflowMap {
     def rewrite(implicit context: Context, output: Output): String = {
       val nDoStr   = nodeToScript("~~^", nDo)
-      val nThenStr = nThen.compile
 
       ScriptCall(Literal(
-        s"""$method($nDoStr, $nThenStr)"""
+        s"""$method($nDoStr, $nThen)"""
       )).compile
     }
   }

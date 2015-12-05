@@ -135,6 +135,11 @@ class SubScriptSuite extends FlatSpec with Matchers
     ].e shouldBe(Success(4))
   }
 
+  it should "work in a shortened version" in {
+    def triple(x: Int) = x * 3
+    ([y ~~^ triple]).e shouldBe Success(6)
+  }
+
 }
 
 trait SubScriptSuiteHelpers {

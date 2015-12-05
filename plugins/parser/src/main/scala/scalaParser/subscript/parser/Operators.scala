@@ -214,7 +214,7 @@ trait Operators extends Terms {this: SubScript with Exprs =>
   def DataflowExtraClause: R[Ast.DataflowClause] = rule {wspStrR0("+") ~ DataflowClause}
 
 
-  def Term: R[Ast.Term] = rule (DataflowMap | TermRaw)
+  def Term: R[Ast.Term] = rule (DataflowMap | DataflowMapShort | TermRaw)
 
   def DataflowMap: R[Ast.DataflowMap] = {
     def Trans1: (Ast.Term, Ast.DataflowMapClause, Seq[Ast.DataflowMapClause]) => Ast.DataflowMap =
@@ -222,6 +222,9 @@ trait Operators extends Terms {this: SubScript with Exprs =>
 
     rule {TermRaw ~ DataflowMapClause ~ DataflowMapClauseExtra.* ~> Trans1}
   }
+
+  def DataflowMapShort: R[Ast.DataflowMapShort] =
+    rule {TermRaw ~ wspStrR0("~~^") ~ StatCtx.Expr ~> Ast.DataflowMapShort}
 
   def DataflowMapClauseGen(head: String): R[Ast.DataflowMapClause] =
     rule {wspStrR0(head) ~ wspChR0('(') ~ CaseClauseHeader ~ wspChR0(')') ~ wspStrR0("~~^") ~ WLR0 ~ StatCtx.Expr ~> Ast.DataflowMapClause}
