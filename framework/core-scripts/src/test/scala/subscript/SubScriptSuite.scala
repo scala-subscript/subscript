@@ -128,6 +128,13 @@ class SubScriptSuite extends FlatSpec with Matchers
     [x ~~(r: Int)~~^ r * 2].e shouldBe(Success(2))
   }
 
+  it should "work with multiple patterns" in {
+    [
+      y ~~(r: Int if r <  0)~~^ -r * 2
+       +~~(r: Int if r >= 0)~~^  r * 2
+    ].e shouldBe(Success(4))
+  }
+
 }
 
 trait SubScriptSuiteHelpers {
