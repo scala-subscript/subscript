@@ -213,7 +213,17 @@ trait Operators extends Terms {this: SubScript with Exprs =>
 
   def DataflowExtraClause: R[Ast.DataflowClause] = rule {wspStrR0("+") ~ DataflowClause}
 
-  def Term: R[Ast.Term] = rule {!SSOperator ~ (
+
+  def Term: R[Ast.Term] = rule (DataflowMap | TermRaw)
+
+  def DataflowMap: R[Ast.DataflowMap] =
+    rule {TermRaw ~ DataflowMapClause.+ ~> Ast.DataflowMap}
+
+  def DataflowMapClause: R[Ast.DataflowMapClause] =
+    rule {wspStrR0("~~") ~ wspChR0('(') ~ CaseClauseHeader ~ wspChR0(')') ~ wspStrR0("~~^") ~ WLR0 ~ StatCtx.Expr ~> Ast.DataflowMapClause}
+
+
+  def TermRaw: R[Ast.Term] = rule {!SSOperator ~ (
     Special
   | WithLaunchAnchor {() => LaunchAnchor }
   | WithLaunch       {() => Launch       }

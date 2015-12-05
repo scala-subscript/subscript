@@ -130,9 +130,11 @@ trait Operators {this: Ast =>
   }
 
 
-  case class DataflowMap(nDo: Node, nThen: Seq[DataflowMapClause]) extends ScriptOperator {
-    override val method = DATAFLOW_MAP
+  trait AbstractDataflowMap extends Term {
+    val method = DATAFLOW_MAP    
+  }
 
+  case class DataflowMap(nDo: Node, nThen: Seq[DataflowMapClause]) extends AbstractDataflowMap {
     def rewrite(implicit context: Context, output: Output): String = {
       val nDoStr       = nodeToScript("~~^", nDo)
       val nThenClauses = nThen.map(_.compile).mkString("\n")
@@ -140,16 +142,14 @@ trait Operators {this: Ast =>
       ScriptCall(Literal(
         s"""$method(
            |  $nDoStr
-           |, ${partialFunction(nThenClauses)}
+           |, (${partialFunction(nThenClauses)}: Any => Any)
            |)""".stripMargin
       )).compile
     }
 
   }
 
-  case class DataflowMapShort(nDo: Node, nThen: Node) extends ScriptOperator {
-    override val method = DATAFLOW_MAP
-
+  case class DataflowMapShort(nDo: Node, nThen: Node) extends AbstractDataflowMap {
     def rewrite(implicit context: Context, output: Output): String = {
       val nDoStr   = nodeToScript("~~^", nDo)
       val nThenStr = nThen.compile

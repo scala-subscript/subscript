@@ -124,6 +124,10 @@ class SubScriptSuite extends FlatSpec with Matchers
     [^(1, 2)^^1 ^(2, 3)^^2].e shouldBe Success( ((1, 2), (2, 3)) )
   }
 
+  "Dataflow map" should "work with pattern matches" in {
+    [x ~~(r: Int)~~^ r * 2].e shouldBe(Success(2))
+  }
+
 }
 
 trait SubScriptSuiteHelpers {
