@@ -150,17 +150,12 @@ trait Terms {this: Operators with SubScript with Exprs =>
 
 
   // Scala terms
-  def ScalaTerm: R[Ast.Term] = {
-    def Trans1: Ast.Normal => Ast.Annotation =
-      Ast.Annotation(Ast.Literal(ast.Constants.DSL.Op.CARET), _)
-
-    rule (
-      DoubleCaretedNumber {() => CaretPrefixedScalaTerm}
-    | DoubleCareted       {() => CaretPrefixedScalaTerm}
-    | CaretPrefixedScalaTerm ~> Trans1
-    | ScalaTermRaw ~> Ast.Literal ~> Ast.ScriptCall
-    )
-  }
+  def ScalaTerm: R[Ast.Term] = rule (
+    DoubleCaretedNumber {() => CaretPrefixedScalaTerm}
+  | DoubleCareted       {() => CaretPrefixedScalaTerm}
+  | Careted            ({() => CaretPrefixedScalaTerm}, false)
+  | ScalaTermRaw ~> Ast.Literal ~> Ast.ScriptCall
+  )
 
   def ScalaTermRaw: R1 = rule (
     BlockExpr
