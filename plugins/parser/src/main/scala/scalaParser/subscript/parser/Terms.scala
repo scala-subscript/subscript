@@ -11,7 +11,7 @@ import shapeless._
 import scalaParser.subscript.ast.Ast
 
 
-trait Terms {this: Operators with SubScript with Exprs =>
+trait Terms {this: Operators with SubScript with Exprs with Switches =>
 
   def ScriptTerm: R[Ast.Literal] =
     rule {IdS ~> Ast.Literal}
@@ -21,11 +21,21 @@ trait Terms {this: Operators with SubScript with Exprs =>
   def SimpleValueExpr: R[Ast.Literal] = rule { WithNormalInScript {() => StatCtx.Expr} ~> Ast.Literal}
   
   def ScriptCall: R[Ast.Term] = rule (
-    DoubleCaretedNumber {() => ScriptCallRaw}
+    DoubleCaretedNumber {() => VarCallCaretPrefix}
+  | DoubleCareted       {() => VarCallCaretPrefix}
+  | Careted            ({() => VarCallCaretPrefix}, false)
+
+  | DoubleCaretedNumber {() => ScriptCallRaw}
   | DoubleCareted       {() => ScriptCallRaw}
   | Careted             {() => ScriptCallRaw}
+  
   | ScriptCallRaw
   )
+
+  def VarCallCaretPrefix: R[Ast.Normal] = {
+    def Trans1: String => String = varId => s"""subscript.DSL._maybeVarCall("$varId")"""
+    rule {wspChR0('^') ~ !WLOneOrMoreR0 ~ StableIdS ~> Trans1 ~> Ast.Normal}
+  }
 
   def ScriptCallRaw: R[Ast.ScriptCall] = rule {!(SSOperatorOrKeyword | `^`) ~ (
     ScriptCallNice
