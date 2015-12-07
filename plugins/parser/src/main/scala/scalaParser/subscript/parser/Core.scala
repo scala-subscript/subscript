@@ -67,15 +67,15 @@ trait Core {this: SubScript with Exprs =>
   def StableIdS = Spaces(() => StableId)
 
   def Careted(r: () => R[Ast.Node], parseCaret: Boolean = true): R[Ast.Annotation] = {
-    def MaybeCaret: R0 = if (parseCaret) rule {ch('^')} else rule {MATCH}
+    def MaybeCaret: R0 = if (parseCaret) rule {!WLOneOrMoreR0 ~ ch('^')} else rule {MATCH}
     rule {r() ~ MaybeCaret ~> {raw: Ast.Node => Ast.Annotation(Ast.Literal(ast.Constants.DSL.Op.CARET), raw)}}
   }
 
   def DoubleCareted(r: () => R[Ast.Node]): R[Ast.Annotation] =
-    rule {r() ~ str("^^") ~> {raw: Ast.Node => Ast.Annotation(Ast.Literal(ast.Constants.DSL.Op.DOUBLE_CARET), raw)}}
+    rule {r() ~ !WLOneOrMoreR0 ~ str("^^") ~> {raw: Ast.Node => Ast.Annotation(Ast.Literal(ast.Constants.DSL.Op.DOUBLE_CARET), raw)}}
 
   def DoubleCaretedNumber(r: () => R[Ast.Node]): R[Ast.Annotation] =
-    rule {r() ~ str("^^") ~ Literals.Int ~> {(raw: Ast.Node, num: String) => Ast.Annotation(Ast.Literal(s"${ast.Constants.DSL.Op.DOUBLE_CARET_NUMBER}(${num.toInt})"), raw)}}
+    rule {r() ~ !WLOneOrMoreR0 ~ str("^^") ~ !WLOneOrMoreR0 ~ Literals.Int ~> {(raw: Ast.Node, num: String) => Ast.Annotation(Ast.Literal(s"${ast.Constants.DSL.Op.DOUBLE_CARET_NUMBER}(${num.toInt})"), raw)}}
 }
 
 trait HighPriorityRulesConversions extends RuleDSLBasics {this: SubScript with Exprs =>
