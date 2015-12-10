@@ -64,28 +64,28 @@ class SubScriptSuite extends FlatSpec with Matchers
 
   it should "work with script calls" in {
     [
-      x y^
+      n1 n2^
     ].e shouldBe Success(2)
   }
 
   it should "work with parenthesised code" in {
     [
-      {!10!} [x^ y]^
+      {!10!} [n1^ n2]^
     ].e shouldBe Success(1)
   }
 
   it should "work in prefix position before the literals" in {
-    [^1 y      ].e shouldBe Success(1    )
-    [x ^"foo" y].e shouldBe Success("foo")
-    [x y ^true ].e shouldBe Success(true )
+    [^1 n2      ].e shouldBe Success(1    )
+    [n1 ^"foo" n2].e shouldBe Success("foo")
+    [n1 n2 ^true ].e shouldBe Success(true )
   }
 
   it should "work in prefix position before tuples" in {
-    [x ^(1, 2) y].e shouldBe Success((1, 2))
+    [n1 ^(1, 2) n2].e shouldBe Success((1, 2))
   }
 
   it should "work in prefix position before expressions" in {
-    [x ^(2 + 3) y].e shouldBe Success(5)
+    [n1 ^(2 + 3) n2].e shouldBe Success(5)
   }
 
   it should "work in prefix position before vars" in {
@@ -100,11 +100,11 @@ class SubScriptSuite extends FlatSpec with Matchers
   }
 
   it should "work with script calls" in {
-    [times: 5 x^^].e shouldBe Success((0 to 4).map(x => 1).toSeq)
+    [times: 5 n1^^].e shouldBe Success((0 to 4).map(x => 1).toSeq)
   }
 
   it should "work in combinations" in {
-    [times: 5 x^^ {!here.pass!}^^ y^^].e shouldBe Success(Seq(1, 0, 2, 1, 1, 2, 1, 2, 2, 1, 3, 2, 1, 4, 2))
+    [times: 5 n1^^ {!here.pass!}^^ n2^^].e shouldBe Success(Seq(1, 0, 2, 1, 1, 2, 1, 2, 2, 1, 3, 2, 1, 4, 2))
   }
 
   it should "work with literals" in {
@@ -127,7 +127,7 @@ class SubScriptSuite extends FlatSpec with Matchers
   }
 
   it should "work with script calls" in {
-    [x^^2 y^^1].e shouldBe Success((2, 1))
+    [n1^^2 n2^^1].e shouldBe Success((2, 1))
   }
 
   it should "work with literals" in {
@@ -146,30 +146,30 @@ class SubScriptSuite extends FlatSpec with Matchers
   }
 
   "Dataflow map" should "work with pattern matches" in {
-    [x ~~(r: Int)~~^ r * 2].e shouldBe(Success(2))
+    [n1 ~~(r: Int)~~^ r * 2].e shouldBe(Success(2))
   }
 
   it should "work with multiple patterns" in {
     [
-      y ~~(r: Int if r <  0)~~^ -r * 2
+      n2 ~~(r: Int if r <  0)~~^ -r * 2
        +~~(r: Int if r >= 0)~~^  r * 2
     ].e shouldBe(Success(4))
   }
 
   it should "work in a shortened version" in {
     def triple(x: Int) = x * 3
-    ([y ~~^ triple]).e shouldBe Success(6)
+    ([n2 ~~^ triple]).e shouldBe Success(6)
   }
 
   "Implicit caret" should "work in case of a script containing one argument of type T_code_fragment or T_call" in {
     def foo: Unit = ()
-    ([@foo: x]).e shouldBe Success(1)
+    ([@foo: n1]).e shouldBe Success(1)
   }
 
 }
 
 trait SubScriptSuiteHelpers {
   script..
-    x = {!1!}
-    y = {!2!}
+    n1 = {!1!}
+    n2 = {!2!}
 }
