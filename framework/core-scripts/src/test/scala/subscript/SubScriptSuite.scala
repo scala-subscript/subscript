@@ -161,6 +161,11 @@ class SubScriptSuite extends FlatSpec with Matchers
     ([y ~~^ triple]).e shouldBe Success(6)
   }
 
+  "Implicit caret" should "work in case of a script containing one argument of type T_code_fragment or T_call" in {
+    def foo: Unit = ()
+    ([@foo: x]).e shouldBe Success(1)
+  }
+
 }
 
 trait SubScriptSuiteHelpers {

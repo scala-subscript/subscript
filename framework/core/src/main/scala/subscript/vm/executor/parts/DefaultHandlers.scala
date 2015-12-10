@@ -81,11 +81,11 @@ trait DefaultHandlers extends ContinuationHandler {this: ScriptExecutor[_] with 
     def propagate(): Unit = node.asInstanceOf[ScriptResultHolder[Any]].resultPropagationDestination[Any] match {
       case sn: ScriptNode[Any] =>
         def allChildren(n: TreeNode): Seq[TreeNode] = n.children.flatMap {c => allChildren(c) :+ c}
-        val children = allChildren(sn.template)
+        val children = allChildren(sn.template).filter {c => c.isInstanceOf[T_code_fragment[_, _]] || c.isInstanceOf[T_call[_]]}
         // println(s"Child count for $sn: ${children.size}. Children: $children")
         
         // If the script has only one child, propagate result. Otherwise, let the carrets decide the result.
-        if (children.size <= 1) node.asInstanceOf[ScriptResultHolder[Any]].propagateResult
+        if (children.size == 1 && children.contains(node.template)) node.asInstanceOf[ScriptResultHolder[Any]].propagateResult
 
       case _ => node.asInstanceOf[ScriptResultHolder[Any]].propagateResult
     }
