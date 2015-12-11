@@ -103,10 +103,6 @@ class SubScriptSuite extends FlatSpec with Matchers
     [times: 5 n1^^].e shouldBe Success((0 to 4).map(x => 1).toSeq)
   }
 
-  it should "work in combinations" in {
-    [times: 5 n1^^ {!here.pass!}^^ n2^^].e shouldBe Success(Seq(1, 0, 2, 1, 1, 2, 1, 2, 2, 1, 3, 2, 1, 4, 2))
-  }
-
   it should "work with literals" in {
     [times: 5 ^1^^].e shouldBe Success((0 to 4).map(x => 1).toSeq)
   }
@@ -120,6 +116,11 @@ class SubScriptSuite extends FlatSpec with Matchers
       var x: Int = 3
       ^x^^
     ].e shouldBe Success(Seq(3))
+  }
+
+  it should "populate unsuccessful passes with nulls" in {
+    ([@{there.pass = 2}: ^1^^]).e                         shouldBe Success(Seq(null, null, 1      ))
+    ([@{there.pass = 1}: ^1^^ @{there.pass = 3}: ^2^^]).e shouldBe Success(Seq(null, 1   , null, 2))
   }
 
   "Double caret with numbers" should "work with code blocks" in {

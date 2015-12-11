@@ -393,9 +393,14 @@ object DSL {
 
   def _double_caret(implicit n: CallGraphNode, s: Script[Any]) = n.onSuccess {
     val nResult = n.asInstanceOf[ScriptResultHolder[Any]].$success
+    
+    def grow(seq: Seq[Any], size: Int): Seq[Any] =
+      if (seq.size < size) seq ++ (1 to (size - seq.size)).map(_ => null)
+      else seq
+
     s.$ match {
-      case Success(seq: Seq[Any]) => s.$success = seq :+ nResult
-      case _                      => s.$success = Seq(nResult)
+      case Success(seq: Seq[Any]) => s.$success = grow(seq, n.pass + 1).updated(n.pass, nResult)
+      case _                      => s.$success = grow(Nil, n.pass + 1).updated(n.pass, nResult)
     }
   }
 
