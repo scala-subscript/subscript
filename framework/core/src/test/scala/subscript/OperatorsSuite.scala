@@ -78,7 +78,7 @@ import subscript.vm.model.callgraph._
  *
  *  - each behaviour case may be prefixed with "FAIL:", to mark an expected failure. E.g., 
  *  
- *    [ (a b+[+])  & .  & [-] ] -> "->1a FAIL:a->b FAIL:ab->0"
+ *    [ (a b+[+])  & break?  & [-] ] -> "->1a FAIL:a->b FAIL:ab->0"
  *  
  *  
  * *************************** 
@@ -474,60 +474,60 @@ class OperatorsSuite extends OperatorsSuiteBase {
    , [while(pass<2)/a]  -> "->aa a"
                                
    // 2 operand sequences with iterator or break or optional break, 
-   , [. a]     -> "->1a a"
-   , [.. a]    -> "->1a a->1a aa->1a"
-   , [... a]   -> "->a  a->a  aa->a"
+   , [break? a]     -> "->1a a"
+   , [..?    a]    -> "->1a a->1a aa->1a"
+   , [...    a]   -> "->a  a->a  aa->a"
                   
-   , [a break] -> "->a  a"
-   , [a;.]     -> "->a  a"
-   , [a ..]    -> "->a  a->1a aa->1a"
-   , [a ...]   -> "->a  a->a  aa->a"
+   , [a break ] -> "->a  a"
+   , [a;break?]     -> "->a  a"
+   , [a ..?   ]    -> "->a  a->1a aa->1a"
+   , [a ...   ]   -> "->a  a->a  aa->a"
    
    // 3 operand sequences with iterator or break or optional break, 
    , [a b break]   -> "->a a->b ab"
-   , [a b;.]       -> "->a a->b ab"
-   , [a b ..]      -> "->a  a->b ab->1a aba->b abab->1a"
+   , [a b;break?]       -> "->a a->b ab"
+   , [a b ..?]      -> "->a  a->b ab->1a aba->b abab->1a"
    , [a b ...]     -> "->a  a->b ab->a  aba->b abab->a"
                       
    , [a break b]   -> "->a  a"
-   , [a;. b]       -> "->a  a->1b ab"
-   , [a .. b]      -> "->a  a->1b ab->a aba->1b"
+   , [a;break? b]       -> "->a  a->1b ab"
+   , [a ..? b]      -> "->a  a->1b ab->a aba->1b"
    , [a ... b]     -> "->a  a->b  ab->a aba->b"
                       
    , [break a b]   -> "->1"
-   , [. a b]       -> "->1a a->b ab"
-   , [.. a b]      -> "->1a a->b ab->1a aba->b"
+   , [break? a b]       -> "->1a a->b ab"
+   , [..? a b]      -> "->1a a->b ab->1a aba->b"
    , [... a b]     -> "->a  a->b  ab->a aba->b"
    
    // 2 level nested 2 operand sequences with iterator or break or optional break, 
    , [a; b break]  -> "->a  a->b ab"
-   , [a;[b;.   ]]  -> "->a  a->b ab"
-   , [a; b ..   ]  -> "->a  a->b ab->1b abb->1b"
+   , [a;[b;break?   ]]  -> "->a  a->b ab"
+   , [a; b ..?   ]  -> "->a  a->b ab->1b abb->1b"
    , [a; b ...  ]  -> "->a  a->b  ab->b"
                       
    , [a b; break]  -> "->a a->b ab"
-   , [a b; .    ]  -> "->a a->b ab"
-   , [a b; ..   ]  -> "->a  a->b ab->1a aba->b abab->1a"
+   , [a b; break?    ]  -> "->a a->b ab"
+   , [a b; ..?   ]  -> "->a  a->b ab->1a aba->b abab->1a"
    , [a b; ...  ]  -> "->a  a->b ab->a  aba->b abab->a"
                       
    , [a; break b]  -> "->a  a"
-   , [a; .     b]  -> "->a  a->1b ab"
-   , [a; ..    b]  -> "->a  a->1b ab->1b"
+   , [a; break?     b]  -> "->a  a->1b ab"
+   , [a; ..?    b]  -> "->a  a->1b ab->1b"
    , [a; ...   b]  -> "->a  a->b  ab->b"
                       
    , [a break;b]   -> "->a  a->b ab"
-   , [[a;. ] ;b]   -> "->a  a->b ab"
-   , [a ..   ;b]   -> "->a  a->ab aa->ab ab aab"
+   , [[a;break? ] ;b]   -> "->a  a->b ab"
+   , [a ..?  ;b]   -> "->a  a->ab aa->ab ab aab"
    , [a ...  ;b]   -> "->a  a->a  aa->a"
                       
    , [break; a b]  -> "->1"
-   , [.    ; a b]  -> "->1a a->b ab"
-   , [..   ; a b]  -> "->1a a->b ab->1a aba->b"
+   , [break?    ; a b]  -> "->1a a->b ab"
+   , [..?  ; a b]  -> "->1a a->b ab->1a aba->b"
    , [...  ; a b]  -> "->a  a->b  ab->a aba->b"
                       
    , [break a; b]  -> "->b b"
-   , [.     a; b]  -> "->ab  a->b ab b"
-   , [..    a; b]  -> "->ab  a->ab aa->ab b ab aab"
+   , [break?     a; b]  -> "->ab  a->b ab b"
+   , [..?    a; b]  -> "->ab  a->ab aa->ab b ab aab"
    , [...   a; b]  -> "->a  a->a  aa->a"
 
    // parallel composition
@@ -548,24 +548,24 @@ class OperatorsSuite extends OperatorsSuiteBase {
    , [[a;b]/[+]]   -> "->1a a->1b ab"
    
    // optional break
-   , [ a / .     ]             -> "->a a"
-   , [ a / ..    ]             -> "->a a"
-   , [ a b / . / c ]           -> "->a a->bc ab ac"
-   , [ a b / ..  ]             -> "->a  a->ab ab aa->ab"
-   , [ a / . / b ]             -> "->a a"
-   , [ a b / . / c d ]         -> "->a a->bc  ab     ac->d  acd"
-   , [ a b & . & c d ]         -> "->a a->bc  FAIL:ab->1c ac->bd abc->d  abcd acb->d  acd->b  acbd acdb"
-   , [ a b | . | c d ]         -> "->a a->bc  ab->1c ac->bd abc->1d abcd acb->1d acd->1b acbd acdb"
-   , [ . / a b ]               -> "FAIL:->1a a->b  ab"
-   , [ . & a b ]               -> "->1a FAIL:a->b  ab"
-   , [ . | a b ]               -> "FAIL:->1a a->b  ab"
-   , [ . / a b / . / c d ]     -> "FAIL:->1a a->bc ab ac->d acd"
-   , [ a b  | .  | [+] ]       -> "->a a->1b ab"
-   , [ a b || . || [+] ]       -> "->a a"
-   , [ a b  & .  & [-] ]       -> "->a a->b ab->0"
-   , [ a b && . && [-] ]       -> "->a a->0"
-   , [ [a b+[+]]  & .  & [-] ] -> "->1a a->b ab->0"
-   , [ [a b+[+]] && . && [-] ] -> "->1a a->0"
+   , [ a / break?     ]             -> "->a a"
+   , [ a / ..?    ]             -> "->a a"
+   , [ a b / break? / c ]           -> "->a a->bc ab ac"
+   , [ a b / ..?  ]             -> "->a  a->ab ab aa->ab"
+   , [ a / break? / b ]             -> "->a a"
+   , [ a b / break? / c d ]         -> "->a a->bc  ab     ac->d  acd"
+   , [ a b & break? & c d ]         -> "->a a->bc  FAIL:ab->1c ac->bd abc->d  abcd acb->d  acd->b  acbd acdb"
+   , [ a b | break? | c d ]         -> "->a a->bc  ab->1c ac->bd abc->1d abcd acb->1d acd->1b acbd acdb"
+   , [ break? / a b ]               -> "FAIL:->1a a->b  ab"
+   , [ break? & a b ]               -> "->1a FAIL:a->b  ab"
+   , [ break? | a b ]               -> "FAIL:->1a a->b  ab"
+   , [ break? / a b / break? / c d ]     -> "FAIL:->1a a->bc ab ac->d acd"
+   , [ a b  | break?  | [+] ]       -> "->a a->1b ab"
+   , [ a b || break? || [+] ]       -> "->a a"
+   , [ a b  & break?  & [-] ]       -> "->a a->b ab->0"
+   , [ a b && break? && [-] ]       -> "->a a->0"
+   , [ [a b+[+]]  & break?  & [-] ] -> "->1a a->b ab->0"
+   , [ [a b+[+]] && break? && [-] ] -> "->1a a->0"
 
   
    // if
@@ -608,7 +608,7 @@ class OperatorsSuite extends OperatorsSuiteBase {
    , [ do a [-] then b c else d e ]   -> "->a a->d ad->e ade"
    
    // Threaded code fragments. TBD: check whether the test mechanism can handle this; maybe not
-   , [ a {**} .. ; b ]         -> "->a a->ab aa->ab aaa->ab ab aab"
+   , [ a {**} ..? ; b ]         -> "->a a->ab aa->ab aaa->ab ab aab"
 
    // launching
    , [ [** a **] ]             -> "a"
@@ -642,7 +642,7 @@ class OperatorsSuite extends OperatorsSuiteBase {
    // Various
    , [[a {**} b] ... || c...]  -> "->ac FAIL:a->bc FAIL:ab->ac c->ac cc->ac FAIL:ca->bc FAIL:ac->bc FAIL:acc->bc FAIL:acb->ac"
    
-   // problem in LookupFrame2: after 2 iterations an optional success of the guard  (a . b . c)
+   // problem in LookupFrame2: after 2 iterations an optional success of the guard  (a break? b break? c)
    // caused a "bypass" of the searchcommand (d) so that the search (e) was activated
    //, [(a;.;b;.;c) d; e ] -> "->a a->bd ab->cd abc->d ad->e abd->e abcd->e ade abde abcde"
    //, [(a..) b; c ] -> "->a a->ab aa->ab aaa->ab ab->c aab->c aaab->c abc aabc aaabc"
