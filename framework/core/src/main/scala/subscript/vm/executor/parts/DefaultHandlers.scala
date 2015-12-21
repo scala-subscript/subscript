@@ -34,12 +34,12 @@ trait DefaultHandlers extends ContinuationHandler {this: ScriptExecutor[_] with 
            case n@N_localvar                   (t) => if (t.isLoop) setIteration_n_ary_op_ancestor(n);
             n.n_ary_op_ancestor.initLocalVariable(t.localVariable.name, n.pass, executeCode(n));doNeutral(n);insertDeactivation(n,null)
            case n@N_privatevar                 (t) => n.n_ary_op_ancestor.initLocalVariable(t.name, n.pass, n.getLocalVariableHolder(t.name).value)
-           case n@N_code_normal                (_) => insert(AAActivated(n,null)); insert(AAToBeExecuted(n))
-           case n@N_code_unsure                (_) => insert(AAActivated(n,null)); insert(AAToBeExecuted(n))
-           case n@N_code_threaded              (_) => insert(AAActivated(n,null)); insert(AAToBeExecuted(n))
+           case n@N_code_normal                (_) => insert(CFActivated(n,null)); insert(CFToBeExecuted(n))
+           case n@N_code_unsure                (_) => insert(CFActivated(n,null)); insert(CFToBeExecuted(n))
+           case n@N_code_threaded              (_) => insert(CFActivated(n,null)); insert(CFToBeExecuted(n))
 
            case n@( N_code_eventhandling      (_) 
-                  | N_code_eventhandling_loop (_)) => insert(AAActivated(n,null)) 
+                  | N_code_eventhandling_loop (_)) => insert(CFActivated(n,null)) 
                                                        // ehNodesAwaitingExecution.append(n) not used; could be handy for debugging
               
            case n@N_break                      (t) =>                                    doNeutral(n); insert(Break(n, null, ActivationMode.Inactive)); insertDeactivation(n,null)
@@ -199,13 +199,13 @@ trait DefaultHandlers extends ContinuationHandler {this: ScriptExecutor[_] with 
   }
 
   /*
-   * Handle an AAActivated message: activated atomic actions 
+   * Handle an CFActivated message: activated atomic actions 
    * for n_ary and 1_ary nodes if the message comes from a child node:
    *   postpone further processing by inserting a continuation message 
    *   
-   * insert AAActivated messages for each parent node
+   * insert CFActivated messages for each parent node
    */
-  def handleAAActivated(message: AAActivated): Unit = {
+  def handleCFActivated(message: CFActivated): Unit = {
           message.node match {
                case n@  N_1_ary_op      (t: T_1_ary        )  => if(message.child!=null) {
                                                                    insertContinuation1(message)
@@ -218,7 +218,7 @@ trait DefaultHandlers extends ContinuationHandler {this: ScriptExecutor[_] with 
                                                                  }
                case _ => 
           }
-          message.node.forEachParent(p => insert(AAActivated(p, message.node)))
+          message.node.forEachParent(p => insert(CFActivated(p, message.node)))
   }
 /*
   /*
@@ -389,7 +389,7 @@ trait DefaultHandlers extends ContinuationHandler {this: ScriptExecutor[_] with 
    * Interrupt asynchronously running code for the node, if any
    * 
    * If the node is a communication partner: make it stop pending (TBD)
-   * If the node is an atomic action: remove AAToBeExecuted message, if any 
+   * If the node is an atomic action: remove CFToBeExecuted message, if any 
    *         (TBD: also remove AAToBeReExecuted message, if any?)
    *         inset a deactivation message
    * insert exclude messages for each child node
@@ -406,9 +406,9 @@ trait DefaultHandlers extends ContinuationHandler {this: ScriptExecutor[_] with 
       case cc: N_call[_] => cc.stopPending
       case aa: N_code_fragment[_] =>
         aa.codeExecutor.cancelAA
-        if (aa.msgAAToBeExecuted != null) {
-          traceRemoval(aa.msgAAToBeExecuted) // does not really remove from the queue; will have to check the canceled flag of the codeExecutor...
-          aa.msgAAToBeExecuted = null
+        if (aa.msgCFToBeExecuted != null) {
+          traceRemoval(aa.msgCFToBeExecuted) // does not really remove from the queue; will have to check the canceled flag of the codeExecutor...
+          aa.msgCFToBeExecuted = null
         }
         // TBD: also for caNodes!!
         insert(Deactivation(aa, null, excluded=true))
@@ -429,14 +429,14 @@ trait DefaultHandlers extends ContinuationHandler {this: ScriptExecutor[_] with 
   }
   
   /*
-   * Handle an AAToBeExecuted message
+   * Handle an CFToBeExecuted message
    * 
    * perform the codeExecutor's executeAA method
    * 
    * Note: the message may have been canceled instead of removed from the queue (was easier to implement),
    * so for the time being check the canceled flag
    */
-  def handleAAToBeExecuted[T<:TemplateCodeHolder[R,_],R](message: AAToBeExecuted[R]) {
+  def handleCFToBeExecuted[T<:TemplateCodeHolder[R,_],R](message: CFToBeExecuted[R]) {
     val e = message.node.codeExecutor
     if (!e.canceled)  // temporary fix, since the message queue does not yet allow for removals
          e.executeAA
@@ -444,7 +444,7 @@ trait DefaultHandlers extends ContinuationHandler {this: ScriptExecutor[_] with 
   /*
    * Handle an AAToBeReexecuted message
    * 
-   * insert an AAToBeExecuted message
+   * insert an CFToBeExecuted message
    * 
    * Note: the message may have been canceled instead of removed from the queue (was easier to implement),
    * so for the time being check the canceled flag
@@ -452,20 +452,20 @@ trait DefaultHandlers extends ContinuationHandler {this: ScriptExecutor[_] with 
   def handleAAToBeReexecuted[T<:TemplateCodeHolder[R,_],R](message: AAToBeReexecuted[R]) {
     val e = message.node.codeExecutor
     if (!e.canceled) // temporary fix, since the message queue does not yet allow for removals
-       insert(AAToBeExecuted(message.node)) // this way, failed {??} code ends up at the back of the queue
+       insert(CFToBeExecuted(message.node)) // this way, failed {??} code ends up at the back of the queue
   }
   /*
-   * Handle an AAExecutionFinished message
+   * Handle an CFExecutionFinished message
    * 
    * perform the codeExecutor's afterExecuteAA method,
    * which may insert success and deactivation messages in turn
    * 
    * Note:
    * A node's code executor has just finished execution. This may have been done asynchronously.
-   * It has inserted an AAExecutionFinished, so that this will be handled synchronously in the main script executor loop.
+   * It has inserted an CFExecutionFinished, so that this will be handled synchronously in the main script executor loop.
    *
    */
-  def handleAAExecutionFinished[T<:TemplateCodeHolder[R,_],R](message: AAExecutionFinished) {
+  def handleCFExecutionFinished[T<:TemplateCodeHolder[R,_],R](message: CFExecutionFinished) {
      message.node.codeExecutor.afterExecuteAA
   }
   
@@ -478,13 +478,13 @@ trait DefaultHandlers extends ContinuationHandler {this: ScriptExecutor[_] with 
       case a@Exclude          (_,_) => handleExclude    (a)
       case a@SuccessMsg       (_,_) => handleSuccess    (a)
       case a@Break        (_, _, _) => handleBreak      (a)
-      case a@AAActivated      (_,_) => handleAAActivated(a)
+      case a@CFActivated      (_,_) => handleCFActivated(a)
    // case a@CAActivated      (_,_) => handleCAActivated(a)
    // case a@CAActivatedTBD     (_) => handleCAActivatedTBD(a)
       case a@AAHappened     (_,_,_) => handleAAHappened (a)
-      case a@AAExecutionFinished(_) => handleAAExecutionFinished(a)
+      case a@CFExecutionFinished(_) => handleCFExecutionFinished(a)
       case a@AAToBeReexecuted   (_) => handleAAToBeReexecuted   (a)
-      case a@AAToBeExecuted     (_) => handleAAToBeExecuted     (a)
+      case a@CFToBeExecuted     (_) => handleCFToBeExecuted     (a)
    // case CommunicationMatchingMessage => handleCommunicationMatchingMessage
     }
   

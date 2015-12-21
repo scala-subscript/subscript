@@ -61,9 +61,9 @@ class MessageQueue(val lock: AnyRef) extends MsgPublisher with MessagePriorities
     
     if (minimalPriorityForAA > Int.MinValue) {
       val h = collection.head
-      if (h.priority <= PRIORITY_AAToBeExecuted) {
+      if (h.priority <= PRIORITY_CFToBeExecuted) {
         h match {
-          case aatbe@AAToBeExecuted(n: N_code_fragment[_]) if (n.priority >= minimalPriorityForAA) =>
+          case aatbe@CFToBeExecuted(n: N_code_fragment[_]) if (n.priority >= minimalPriorityForAA) =>
           case _ => return null
         }
       }
@@ -99,7 +99,7 @@ trait MQExtras {this: MessageQueue =>
     
     // Continuations are merged with already existing ones
     // TBD: make separate priorities of continuations...
-    // e.g. a continuation for AAActivated should not be merged (probably) with one for AAHappened
+    // e.g. a continuation for CFActivated should not be merged (probably) with one for AAHappened
     if (c==null) {
       c = new Continuation(n)
     }
@@ -122,7 +122,7 @@ trait MQExtras {this: MessageQueue =>
       case a@Break        (node: CallGraphNode, 
                           child: CallGraphNode, 
                  activationMode: ActivationMode.ActivationModeType)  => c.break = a
-      case a@AAActivated  (node: CallGraphNode, 
+      case a@CFActivated  (node: CallGraphNode, 
                           child: CallGraphNode) =>  c.aaActivated = a
       case a@CAActivated  (node: CallGraphNode, 
                           child: CallGraphNode) =>  c.caActivated = a
@@ -172,8 +172,8 @@ trait TrackToBeExecuted extends MessageQueue {
     // then that message may be garbage collected and the link to the node will be gone, so that the node may also 
     // be garbage collected
     m match {
-      case maa@AAToBeExecuted  (n: N_code_fragment[_]) => n.msgAAToBeExecuted = if (track) maa else null
-      case maa@AAToBeReexecuted(n: N_code_fragment[_]) => n.msgAAToBeExecuted = if (track) maa else null
+      case maa@CFToBeExecuted  (n: N_code_fragment[_]) => n.msgCFToBeExecuted = if (track) maa else null
+      case maa@AAToBeReexecuted(n: N_code_fragment[_]) => n.msgCFToBeExecuted = if (track) maa else null
       case _ =>
     }
   }

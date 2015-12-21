@@ -112,14 +112,14 @@ class SimpleScriptDebuggerClass extends MsgListener {
   override def messageHandled(m: CallGraphMessage): Unit = {
         trace(1,">> ",m)
         m match {
-          case AAToBeExecuted(_) =>
+          case CFToBeExecuted(_) =>
             if (traceLevel < treeTraceLevel) traceTree     // else already done in trace(1,...). messy but it works
             if (traceLevel < highTraceLevel) traceMessages
           case _ =>
         }
   }
   def messageQueueMsgs: String = if (traceLevel >= 999) {"\n"+callGraphMessages.toList.map(_.toString).mkString("\n") } else ""
-  def messageQueueMsgs(m: CallGraphMessage): String = if (m.isInstanceOf[AAToBeExecuted[_]]) messageQueueMsgs else ""
+  def messageQueueMsgs(m: CallGraphMessage): String = if (m.isInstanceOf[CFToBeExecuted[_]]) messageQueueMsgs else ""
   
   override def messageQueued      (m: CallGraphMessage                 ) = trace(2, "++ ", m, messageQueueMsgs)
   override def messageDequeued    (m: CallGraphMessage                 ) = trace(2, "-- ", m, messageQueueMsgs)

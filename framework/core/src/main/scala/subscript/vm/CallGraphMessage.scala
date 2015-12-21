@@ -38,19 +38,19 @@ import subscript.vm.model.callgraph._
   trait MessagePriorities {
     val PRIORITY_InvokeFromET                 = Int.MinValue + 1000 // TBD; beware overflow; must be lower than vast majority of priorities 
     val PRIORITY_AAToBeReexecuted             =  0
-    val PRIORITY_AAToBeExecuted               =  1
+    val PRIORITY_CFToBeExecuted               =  1
     val PRIORITY_CAActivatedTBD               =  2
     val PRIORITY_CommunicationMatchingMessage =  3
     val PRIORITY_Continuation                 =  4
     val PRIORITY_Continuation1                =  5
-    val PRIORITY_AAExecutionFinished          =  6
+    val PRIORITY_CFExecutionFinished          =  6
     val PRIORITY_Deactivation                 =  7
     val PRIORITY_Activation                   =  8
     val PRIORITY_Suspend                      =  9
     val PRIORITY_Resume                       = 10
     val PRIORITY_Success                      = 11
     val PRIORITY_Break                        = 12
-    val PRIORITY_AAActivated                  = 13
+    val PRIORITY_CFActivated                  = 13
     val PRIORITY_CAActivated                  = 14
     val PRIORITY_AAHappened                   = 15
     val PRIORITY_Exclude                      = 16 // should at least be higher than of Success 
@@ -85,7 +85,7 @@ import subscript.vm.model.callgraph._
 	  var deactivations: List[Deactivation] = Nil
 	  var success: SuccessMsg = null
 	  var break: Break = null
-	  var aaActivated: AAActivated = null
+	  var aaActivated: CFActivated = null
 	  var caActivated: CAActivated = null
 	  var aaHappeneds : List[AAHappened] = Nil
 	  var childNode  : CallGraphNode = null
@@ -130,15 +130,15 @@ import scala.language.existentials
 	                              child: CallGraphNode = null) extends CallGraphMessageN {type N = CallGraphNode; def priority = PRIORITY_Success}
 	case class Break              (node: CallGraphNode, 
 	                              child: CallGraphNode, activationMode: ActivationMode.ActivationModeType) extends CallGraphMessageN {type N = CallGraphNode; def priority = PRIORITY_Break}
-	case class AAActivated        (node: CallGraphNode, 
-	                              child: CallGraphNode) extends CallGraphMessageN {type N = CallGraphNode; def priority = PRIORITY_AAActivated}
+	case class CFActivated        (node: CallGraphNode, 
+	                              child: CallGraphNode) extends CallGraphMessageN {type N = CallGraphNode; def priority = PRIORITY_CFActivated}
 	case class CAActivated        (node: CallGraphNode, 
 	                              child: CallGraphNode) extends CallGraphMessageN {type N = CallGraphNode; def priority = PRIORITY_CAActivated} // for immediate handling
 	case class CAActivatedTBD[R]  (node: N_call[R]    ) extends CallGraphMessageN {type N = N_call[R]; def priority = PRIORITY_CAActivatedTBD} // for late handling
 	case class AAHappened         (node: CallGraphNode, 
 	                              child: CallGraphNode, mode: AAHappenedMode) extends CallGraphMessageN {type N = CallGraphNode; def priority = PRIORITY_AAHappened}
-	case class AAExecutionFinished(node: CallGraphNode) extends CallGraphMessageN {type N = CallGraphNode; def priority = PRIORITY_AAExecutionFinished}
-	case class AAToBeExecuted[R]  (node: N_code_fragment[R]   ) extends CallGraphMessageN {type N = N_code_fragment[R]; def priority = PRIORITY_AAToBeExecuted
+	case class CFExecutionFinished(node: CallGraphNode) extends CallGraphMessageN {type N = CallGraphNode; def priority = PRIORITY_CFExecutionFinished}
+	case class CFToBeExecuted[R]  (node: N_code_fragment[R]   ) extends CallGraphMessageN {type N = N_code_fragment[R]; def priority = PRIORITY_CFToBeExecuted
 	  override def secondaryPriority =  node.priority 
 	  override def tertiaryPriority  = -node.index // oldest nodes first 
     }
@@ -151,7 +151,7 @@ import scala.language.existentials
 	  def node:CallGraphNode = null
 	  def activatedCommunicatorCalls = scala.collection.mutable.ArrayBuffer.empty[N_call[_]]
 	}
-	// TBD: AAActivated etc to inherit from 1 trait; params: 1 node, many children
+	// TBD: CFActivated etc to inherit from 1 trait; params: 1 node, many children
 	// adjust insert method
 	// CommunicationMatching should have Set[CommunicationRelation] (?), and have List[Communicators]
 	// timestamp of Communicators should be determined by timestamp of newest N_call node

@@ -111,7 +111,7 @@ trait GraphicalDebugger extends MsgListener {
   
   val checkBox_step_Activation     = new CheckBox {text = "Act" ; selected = true}
   val checkBox_step_Deactivation   = new CheckBox {text = "Dea" ; selected = true}
-  val checkBox_step_AAToBeExecuted = new CheckBox {text = "AAT" ; selected = true}
+  val checkBox_step_CFToBeExecuted = new CheckBox {text = "AAT" ; selected = true}
   val checkBox_step_Continuation   = new CheckBox {text = "Cnt" ; selected = true}
   val checkBox_step_AAHappened     = new CheckBox {text = "AAH" ; selected = true}
   val checkBox_step_Success        = new CheckBox {text = "Scs" ; selected = true}
@@ -121,7 +121,7 @@ trait GraphicalDebugger extends MsgListener {
 
   val checkBox_log_Activation      = new CheckBox {text = "Act" ; selected = true}
   val checkBox_log_Deactivation    = new CheckBox {text = "Dea" ; selected = true}
-  val checkBox_log_AAToBeExecuted  = new CheckBox {text = "AAT" ; selected = true}
+  val checkBox_log_CFToBeExecuted  = new CheckBox {text = "AAT" ; selected = true}
   val checkBox_log_Continuation    = new CheckBox {text = "Cnt" ; selected = true}
   val checkBox_log_AAHappened      = new CheckBox {text = "AAH" ; selected = true}
   val checkBox_log_Success         = new CheckBox {text = "Scs" ; selected = true}
@@ -133,7 +133,7 @@ trait GraphicalDebugger extends MsgListener {
     contents += new Label("Step:")
     contents += checkBox_step_Activation  
     contents += checkBox_step_Deactivation
-    contents += checkBox_step_AAToBeExecuted  
+    contents += checkBox_step_CFToBeExecuted  
     contents += checkBox_step_Continuation
     contents += checkBox_step_AAHappened   
     contents += checkBox_step_Success     
@@ -144,7 +144,7 @@ trait GraphicalDebugger extends MsgListener {
     contents += new Label("Log:")
     contents += checkBox_log_Activation  
     contents += checkBox_log_Deactivation
-    contents += checkBox_log_AAToBeExecuted  
+    contents += checkBox_log_CFToBeExecuted  
     contents += checkBox_log_Continuation
     contents += checkBox_log_AAHappened     
     contents += checkBox_log_Success     
@@ -576,7 +576,7 @@ trait GraphicalDebugger extends MsgListener {
     currentMessage match {
       case Activation(_)       => checkBox_step_Activation    .selected
       case Deactivation(_,_,_) => checkBox_step_Deactivation  .selected
-      case AAToBeExecuted(_)   => checkBox_step_AAToBeExecuted.selected
+      case CFToBeExecuted(_)   => checkBox_step_CFToBeExecuted.selected
       case AAHappened(_,_,_)   => checkBox_step_AAHappened    .selected
       case SuccessMsg(_,_)     => checkBox_step_Success       .selected
       case Break(_,_,_)        => checkBox_step_Break         .selected
@@ -606,7 +606,7 @@ trait GraphicalDebugger extends MsgListener {
       if (msg match {
         case Activation(_)       => checkBox_log_Activation    .selected
         case Deactivation(_,_,_) => checkBox_log_Deactivation  .selected
-        case AAToBeExecuted(_)   => checkBox_log_AAToBeExecuted.selected
+        case CFToBeExecuted(_)   => checkBox_log_CFToBeExecuted.selected
         case AAHappened(_,_,_)   => checkBox_log_AAHappened    .selected
         case SuccessMsg(_,_)     => checkBox_log_Success       .selected
         case Break(_,_,_)        => checkBox_log_Break         .selected

@@ -59,10 +59,10 @@ AACodeFragmentExecutor.executeAA
              n.template.code ////////////
           if (n.result = ExecutionResult.Success) {n.hasSuccess = true; n.$ = scala.util.Success(r)}
           executionFinished
-            insert(AAExecutionFinished)
+            insert(CFExecutionFinished)
      *}build.gradle
 
-Then the AAExecutionFinished message is handled by the ScriptExecutor in its main message loop.
+Then the CFExecutionFinished message is handled by the ScriptExecutor in its main message loop.
 There ScriptExecutor calls: 
 
 CodeExecutorTrait.afterExecuteAA
@@ -147,7 +147,7 @@ abstract class AACodeFragmentExecutor[R](_n: N_code_fragment[R], _scriptExecutor
   //
   // Since scala code execution from Subscript may be asynchronous (e.g., in the Swing thread or in a new thread),
   // there is some loosely communication with the ScriptExecutor
-  // E.g., after calling the Scala code, the method executionFinished is called, which inserts an AAExecutionFinished
+  // E.g., after calling the Scala code, the method executionFinished is called, which inserts an CFExecutionFinished
   def n = _n
   def scriptExecutor = _scriptExecutor
   val asynchronousAllowed = true
@@ -190,7 +190,7 @@ abstract class AACodeFragmentExecutor[R](_n: N_code_fragment[R], _scriptExecutor
   def executionFinished = { // make scriptExecutor call afterRun here, in its own message handling loop
     trace_nonl("executionFinished")
     scriptExecutor.doCodeThatInsertsMsgs_synchronized {
-      scriptExecutor.insert(AAExecutionFinished(naa))
+      scriptExecutor.insert(CFExecutionFinished(naa))
     }
   }
   def toBeReexecuted    = scriptExecutor.insert(AAToBeReexecuted   (naa)) // so that executor reschedules n for execution
@@ -254,7 +254,7 @@ class ThreadedCodeFragmentExecutor[R](n: N_code_threaded[R], scriptExecutor: Scr
   override def doCodeExecutionIn(lowLevelCodeExecutor: CodeExecutorTrait): Unit = {
       val runnable = new Runnable {
         def run() {
-          ThreadedCodeFragmentExecutor.super.doCodeExecutionIn(lowLevelCodeExecutor) // does scriptExecutor.insert(AAExecutionFinished)
+          ThreadedCodeFragmentExecutor.super.doCodeExecutionIn(lowLevelCodeExecutor) // does scriptExecutor.insert(CFExecutionFinished)
         }
       }
       myThread = new Thread(runnable)

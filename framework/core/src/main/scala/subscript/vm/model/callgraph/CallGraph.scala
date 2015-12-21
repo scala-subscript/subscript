@@ -67,7 +67,7 @@ trait CallGraphLeafNode extends CallGraphTreeNode with GraphLeafNode
 trait N_code_fragment[R] extends CallGraphLeafNode with ScriptResultHolder[R] with ExecutionResult {
   type T <: T_code_fragment[R,_]
   override def asynchronousAllowed: Boolean = true
-  var msgAAToBeExecuted: CallGraphMessage = null
+  var msgCFToBeExecuted: CallGraphMessage = null
   var priority = 0 // < 0 is low, > 0 is high
   
   private[this] var _isExecuting = false
