@@ -119,13 +119,13 @@ trait Terms {this: Operators with SubScript with Exprs with Switches =>
   def SpecialConstant(symbol: String, counterpart: Ast.SpecialConstant): R[Ast.SpecialConstant] =
     rule (wspStrR1(symbol) ~> {_: String => counterpart})
 
-  def Delta             = SpecialConstant("[-]"  , Ast.Delta            )
-  def Epsilon           = SpecialConstant("[+]"  , Ast.Epsilon          )
-  def Neutral           = SpecialConstant("[+-]" , Ast.Neutral          )
-  def Loop              = SpecialConstant("..."  , Ast.Loop             )
-  def OptionalBreakLoop = SpecialConstant(".."   , Ast.OptionalBreakLoop)
-  def OptionalBreak     = SpecialConstant("."    , Ast.OptionalBreak    )
-  def Break             = SpecialConstant("break", Ast.Break            )
+  def Delta             = SpecialConstant("[-]"   , Ast.Delta            )
+  def Epsilon           = SpecialConstant("[+]"   , Ast.Epsilon          )
+  def Neutral           = SpecialConstant("[+-]"  , Ast.Neutral          )
+  def Loop              = SpecialConstant("..."   , Ast.Loop             )
+  def OptionalBreakLoop = SpecialConstant("..?"   , Ast.OptionalBreakLoop)
+  def OptionalBreak     = SpecialConstant("break?", Ast.OptionalBreak    )
+  def Break             = SpecialConstant("break" , Ast.Break            )
 
 
   def WhileLeaf: R[Ast.While] = {
