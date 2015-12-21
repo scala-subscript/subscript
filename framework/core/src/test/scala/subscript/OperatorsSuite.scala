@@ -394,8 +394,8 @@ class OperatorsSuite extends OperatorsSuiteBase {
    , [[+]]     -> "->1"
    , [[+-]]    -> "->1"
    , [break]   -> "->1"
-   , [.]       -> "->1"
-   , [..]      -> "->1"
+   , [break?]  -> "->1"
+   , [..?]     -> "->1"
    , [...]     -> "->1"
                   
    , [a]       -> "->a a"
