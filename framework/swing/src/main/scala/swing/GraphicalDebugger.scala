@@ -76,7 +76,7 @@ trait GraphicalDebugger extends MsgListener {
     }
     catch {
       case e: ClassNotFoundException => println("Could not find class "+className)
-      case other: Throwable => println(other)
+      case other: Throwable => other.printStackTrace
     }
   }
 
