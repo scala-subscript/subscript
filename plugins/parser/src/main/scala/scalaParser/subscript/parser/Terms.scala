@@ -173,8 +173,9 @@ trait Terms {this: Operators with SubScript with Exprs with Switches =>
   def ScalaTermRaw: R1 = rule (
     BlockExpr
   | Literal
-  | ScalaExprTerm   
+  | ScalaExprTerm  
   | ScalaTupleTerm
+  | StatCtx.New
   )
   
   def CaretPrefixedScalaTerm: R[Ast.Normal] =

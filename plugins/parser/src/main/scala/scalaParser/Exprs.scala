@@ -115,10 +115,11 @@ trait Exprs extends Core with Types with Xml with SubScript {
 
       PostfixExprBank().apply()
     }
+    
+    def New: R1 = rule( `new` ~ NewBody ~> Concat )
 
     def SimpleExpr: R1 = {
       def Path: R1 = rule( (Id ~ '.' ~> Concat).* ~> ConcatSeqNoDelim ~ `this` ~ (('.' ~ Id ~> Concat).* ~> ConcatSeqNoDelim) ~> Concat3 | StableId )
-      def New: R1 = rule( `new` ~ NewBody ~> Concat )
       def Parened: R1 = rule ( '(' ~ (Exprs.? ~> ExtractOpt) ~ ")" ~> Concat3  )
 
       def Trans1: Ast.ScriptBody => String           = _.compile(t2b = Map(Constants.Key.HEADER_NAME -> "lambda"))

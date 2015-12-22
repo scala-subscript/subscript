@@ -167,6 +167,14 @@ class SubScriptSuite extends FlatSpec with Matchers
     ([@foo: n1]).e shouldBe Success(1)
   }
 
+  "Constructor calls" should "be possible without parenthesis" in {
+    class Foo extends subscript.objectalgebra.SSProcess {
+      override script live = [+]
+    }
+
+    ([new Foo ^new Foo new Foo]).e shouldBe a [Success[_]]
+  }
+
 }
 
 trait SubScriptSuiteHelpers {
