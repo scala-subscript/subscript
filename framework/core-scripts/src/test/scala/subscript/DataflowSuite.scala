@@ -53,6 +53,27 @@ class DataflowSuite extends FlatSpec with Matchers
     ].e shouldBe Success(1)
   }
 
+  it should "be right associative" in {
+    script..
+      a = ^1
+      b = ^2
+
+    ([
+      a ~~(x: Int)~~> b ~~(y: Int)~~> ^(x + y)
+    ]).e shouldBe Success(3)
+  }
+
+  it should "be right associative with extra clauses correctly" in {
+    script..
+      a = ^1
+      b = ^"2"
+
+    ([
+      a ~~(x: Int)~~> b ~~(y: Int   )~~> ^(x + y)
+                       +~~(z: String)~~> ^(x + z.toInt)
+    ]).e shouldBe Success(3)
+  }
+
   "Dataflow map" should "work with pattern matches" in {
     [n1 ~~(r: Int)~~^ r * 2].e shouldBe(Success(2))
   }
