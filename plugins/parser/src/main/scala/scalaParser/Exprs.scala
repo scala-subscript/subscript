@@ -195,7 +195,7 @@ trait Exprs extends Core with Types with Xml with SubScript {
 
   def BlockStats: R1 = {
     def Prelude: R1 = rule( Annot.* ~> ConcatSeqNoDelim ~ (`implicit`.? ~> ExtractOpt) ~ (`lazy`.? ~> ExtractOpt) ~ (LocalMod.* ~> ConcatSeqNoDelim) ~> Concat4 )
-    def Tmpl: R1 = rule( Prelude ~ BlockDef ~> Concat )
+    def Tmpl: R1 = rule( SubScriptCode | Prelude ~ BlockDef ~> Concat )
     def BlockStat: R1 = rule( Import | Tmpl | StatCtx.Expr )
     rule( OneOrMore(() => BlockStat, () => Semis) )
   }
