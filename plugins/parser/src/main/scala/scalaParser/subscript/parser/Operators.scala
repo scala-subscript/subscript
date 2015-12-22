@@ -191,21 +191,27 @@ trait Operators extends Terms {this: SubScript with Exprs =>
   def Expr1: R[Ast.Expr1] = rule {Dataflow.+(WSR0) ~> Ast.Expr1}
 
   def Dataflow: R[Ast.Dataflow] = {
-    def Trans1: (Ast.Term, Option[Ast.DataflowClause], Seq[Ast.DataflowClause]) => Ast.Dataflow = (term, initClause, clauses) => {
+    def Trans1: (Ast.Term, Option[(Ast.DataflowClause, Seq[Ast.DataflowClause])]) => Ast.Dataflow = (term, maybeClauses) => {
+      val initClause = maybeClauses.map(_._1)
+      val clauses    = maybeClauses.map(_._2).getOrElse(Nil)
+
       def maybe(thenClause: Boolean) = initClause.filter(_.thenClause == thenClause).map(Seq(_)).getOrElse(Nil)
       val thenClauses = maybe(true ) ++ clauses.filter( _.thenClause)
       val elseClauses = maybe(false) ++ clauses.filter(!_.thenClause) 
       Ast.Dataflow(term, thenClauses, elseClauses)
     }
 
-    rule {Term ~ DataflowClause.? ~ DataflowExtraClause.* ~> Trans1}
+    def Trans2: (Ast.DataflowClause, Seq[Ast.DataflowClause]) => (Ast.DataflowClause, Seq[Ast.DataflowClause]) =
+      (rhs, lhs) => (rhs, lhs)   // Input is two arguments, output is a tuple. Weird syntax.
+
+    rule {Term ~ (DataflowClause ~ DataflowExtraClause.* ~> Trans2).? ~> Trans1}
   }
 
   def DataflowClause: R[Ast.DataflowClause] = rule {DataflowThenClause | DataflowElseClause}
 
   def DataflowClauseGen(head: String, isThenClause: Boolean): R[Ast.DataflowClause] = {
-    def Trans1: (String, Ast.Term) => Ast.DataflowClause = (pat, t) => Ast.DataflowClause(pat, t, isThenClause)
-    rule {wspStrR0(head) ~ wspChR0('(') ~ CaseClauseHeader ~ wspChR0(')') ~ wspStrR0("~~>") ~ WLR0 ~ Term ~> Trans1}
+    def Trans1: (String, Ast.Expr1) => Ast.DataflowClause = (pat, t) => Ast.DataflowClause(pat, t, isThenClause)
+    rule {wspStrR0(head) ~ wspChR0('(') ~ CaseClauseHeader ~ wspChR0(')') ~ wspStrR0("~~>") ~ WLR0 ~ Expr1 ~> Trans1}
   }
 
   def DataflowThenClause: R[Ast.DataflowClause] = DataflowClauseGen("~~" , true )
