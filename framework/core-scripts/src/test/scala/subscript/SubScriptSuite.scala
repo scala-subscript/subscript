@@ -26,6 +26,16 @@ class SubScriptSuite extends FlatSpec with Matchers
     ].e shouldBe Success(2)
   }
 
+  it should "be defineable via blocks containing other variables (issue #5)" in {
+    [
+      val a = {
+                val x = 3
+                x
+              }
+      ^a
+    ].e shouldBe Success(3)
+  }
+
   "Script calls" should "be extracted from local vars" in {
     var flag = false
     case class Foo(x: Int) {
