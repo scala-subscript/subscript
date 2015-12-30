@@ -26,4 +26,18 @@ class SubScriptSuite extends FlatSpec with Matchers
     ].e shouldBe Success(2)
   }
 
+  "Script calls" should "be extracted from local vars" in {
+    var flag = false
+    case class Foo(x: Int) {
+      def bar: Unit = flag = true
+    }
+
+    ([
+      var foo = Foo(3)
+      foo.bar
+    ]).e
+
+    flag shouldBe true
+  }
+
 }

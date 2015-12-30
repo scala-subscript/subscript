@@ -11,8 +11,10 @@ trait Terms {this: Ast =>
   case class ScriptCall(content: Node) extends Term {
     val method = "subscript.DSL._maybeCall"
 
-    def rewrite(implicit context: Context, output: Output): String =
-      s"""$method("", (${Name.HERE}: ${Type.CALL_GRAPH_TREE_NODE}) => ${content.compile})"""  
+    def rewrite(implicit context: Context, output: Output): String = {
+      val str = s"${Term.VAR_CALL}(${Ast.metaString(content.compile)})"
+      s"""$method("", (${Name.HERE}: ${Type.CALL_GRAPH_TREE_NODE}) => $str)"""  
+    }
   }
 
 
