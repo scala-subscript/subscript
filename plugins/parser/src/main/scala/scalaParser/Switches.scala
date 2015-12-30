@@ -62,13 +62,6 @@ trait Switches {this: Metarules =>
     )
   }
 
-  trait CommonHelpers {
-    def metaString(str: String) = '"' + str
-      .replace("\\", "\\\\")
-      .replace("\"", "\\\"")
-      .replace("\n", "\\n" ) + '"'
-  }
-
   import ScopeSwitch._
   def WithNormal        [T](rle: () => Rule1[T]): Rule1[T] = WithScope(rle, NORMAL          )
   def WithScript        [T](rle: () => Rule1[T]): Rule1[T] = WithScope(rle, SCRIPT          )

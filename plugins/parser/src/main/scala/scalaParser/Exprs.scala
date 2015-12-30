@@ -76,14 +76,14 @@ trait Exprs extends Core with Types with Xml with SubScript {
       // ! negation !!!
       def Prefixed: R1 = rule( (WL ~ capture(anyOf("-+~!")) ~ WS ~ !Basic.OpChar ~> Concat3) ~  SimpleExpr ~> Concat )
       
-      object AssignBank extends ScopeBank[String] with CommonHelpers {
+      object AssignBank extends ScopeBank[String] {
         import ScopeSwitch._
 
         def StandardWithTransform(transform: (String, String, String) => String): () => R1 =
           {() => rule ( WithNormal {() => SimpleExpr} ~ `=` ~ Expr ~> transform | SimpleExpr)}
 
         def AssignMethod: (String, String, String) => String = (lhs, _, expr) =>
-          s"${scalaParser.subscript.ast.Constants.DSL.Term.VAR_ASSIGNMENT}(${metaString(lhs)},$expr)"
+          s"${scalaParser.subscript.ast.Constants.DSL.Term.VAR_ASSIGNMENT}(${Ast.metaString(lhs)},$expr)"
 
         override val default = NORMAL_IN_SCRIPT
         def ruleMap = Map(
@@ -98,13 +98,13 @@ trait Exprs extends Core with Types with Xml with SubScript {
       def InfixExpr: R1 = rule( PrefixExpr ~ ((NoSemis ~ Id ~ (TypeArgs.? ~> ExtractOpt) ~ OneSemiMax ~ PrefixExpr ~> Concat5).* ~> ConcatSeqNoDelim) ~> Concat )
 
       
-      object PostfixExprBank extends ScopeBank[String] with CommonHelpers {
+      object PostfixExprBank extends ScopeBank[String] {
         import ScopeSwitch._
 
         def Normal: R1 = rule( InfixExpr ~ ((NotNewline ~ Id ~ (Newline.? ~> ExtractOpt) ~> Concat3).? ~> ExtractOpt) ~> Concat )
 
         def Wrap: (String, String) => String = (ws, str) =>
-          s"${ws}subscript.DSL._maybeVarCall(${metaString(str)})"
+          s"${ws}subscript.DSL._maybeVarCall(${Ast.metaString(str)})"
         
         override def default = NORMAL_IN_SCRIPT
         def ruleMap = Map(
@@ -132,7 +132,7 @@ trait Exprs extends Core with Types with Xml with SubScript {
       def NormalSimpleExpr    : R1 = rule( SimpleExpr1 ~ NormalSimpleExprTail ~> Concat )
       def NormalSimpleExprTail: R1 = rule { (('.' ~ Id ~> Concat | TypeArgs | NoSemis ~ ArgList ~> Concat).* ~> ConcatSeqNoDelim) ~ ((NoSemis  ~ `_` ~> Concat).? ~> ExtractOpt) ~> Concat }
 
-      object SimpleExprBank extends ScopeBank[String] with CommonHelpers {
+      object SimpleExprBank extends ScopeBank[String] {
         import ScopeSwitch._
         import scalaParser.subscript.ast.Constants.DSL.Term.{VAR_CALL, VAR_ASSIGNMENT}
         import scalaParser.subscript.ast.Constants.DSL.Type.{ACTUAL_OUTPUT_PARAMETER, ACTUAL_ADAPTING_PARAMETER}
@@ -156,7 +156,7 @@ trait Exprs extends Core with Types with Xml with SubScript {
         def SSId: R1 = rule {!SSKeyword ~ capture(Identifiers.Id)}
 
         def ActualOutputParameterTrans: (String, String, String) => String = (wl, _, x) =>
-          if (isAlpha(x.head)) s"${wl}subscript.DSL._actualOutputParameter(${metaString(x)})" //s"$wl$ACTUAL_OUTPUT_PARAMETER($VAR_CALL(${metaString(x)}), x1 => $VAR_ASSIGNMENT(${metaString(x)}, x1))"
+          if (isAlpha(x.head)) s"${wl}subscript.DSL._actualOutputParameter(${Ast.metaString(x)})" //s"$wl$ACTUAL_OUTPUT_PARAMETER($VAR_CALL(${metaString(x)}), x1 => $VAR_ASSIGNMENT(${metaString(x)}, x1))"
           else x
 
         def ActualAdaptingParameterTrans: (String, String, String) => String = (wl, _, x) =>
@@ -176,7 +176,7 @@ trait Exprs extends Core with Types with Xml with SubScript {
         // , ASSIGNMENT       -> {() => rule (WithNormalInScript {() => AssignSimpleExpr} | WithNormalInScript {() => NormalSimpleExpr})}
         , ASSIGNMENT -> {() => rule (WithNormalInScript {() => NormalSimpleExpr})}
 
-        , NICE_SCRIPT_CALL -> {() => rule(WL ~ WithNormalInScript {() => NORMAL_IN_SCRIPT()} ~> {(wl: String, s: String) => s"${wl}subscript.DSL._maybeVarCall(${metaString(s)})"})}
+        , NICE_SCRIPT_CALL -> {() => rule(WL ~ WithNormalInScript {() => NORMAL_IN_SCRIPT()} ~> {(wl: String, s: String) => s"${wl}subscript.DSL._maybeVarCall(${Ast.metaString(s)})"})}
         )
       }
       SimpleExprBank().apply()

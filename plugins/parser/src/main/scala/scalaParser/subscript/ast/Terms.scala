@@ -66,12 +66,13 @@ trait Terms {this: Ast =>
       // Type of the variable
       val tpeStr     = tpe
 
-      val exprString = expression.compile
+      val exprString  = expression.compile
+      val metaExprStr = metaString(exprString)
 
       val result = {
         val valueCode = tpe match {
           case Some(tpeStr) => s"(${Name.NODE}: $nodeTpe[$tpeStr]) => {implicit val ${Name.HERE} = ${Name.NODE}; val tr: $tpeStr = $exprString; tr}"   // tr = typedReturn
-          case None         => s"${Term.UNTYPED_VALUE_CODE}($exprString)"
+          case None         => s"${Term.UNTYPED_VALUE_CODE}($metaExprStr)"
         }
         s"$method($id, $valueCode)"
       }
@@ -80,7 +81,7 @@ trait Terms {this: Ast =>
         val header = s"val $id = "
         val body   = tpe match {
           case Some(tpeStr) => s"""${Term.DECLARE}[$tpeStr](scala.Symbol("$id"))"""
-          case None         => s"""${Term.UNTYPED_DECLARE}($exprString, scala.Symbol("$id"))"""
+          case None         => s"""${Term.UNTYPED_DECLARE}($metaExprStr, scala.Symbol("$id"))"""
         }
         header + body
       }

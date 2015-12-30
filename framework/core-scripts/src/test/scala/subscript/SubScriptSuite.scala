@@ -18,4 +18,12 @@ class SubScriptSuite extends FlatSpec with Matchers
     ([new Foo ^new Foo new Foo]).e shouldBe a [Success[_]]
   }
 
+  "Variables" should "be defineable in terms of other variables" in {
+    [
+      var x = 1
+      var y = x + 1
+      ^y
+    ].e shouldBe Success(2)
+  }
+
 }

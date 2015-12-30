@@ -281,6 +281,17 @@ object DSL {
     }
   
     def relink(x: Tree): Tree = ctx.parse(showCode(x))
+
+    def contextTypeOf[T: ctx.WeakTypeTag](x: Tree): Type = {
+      val tpe = weakTypeOf[T]
+      val funTree = q"""(_node: $tpe) => {
+        implicit val here = _node
+        $x
+      }
+      """
+
+      ctx.typecheck(funTree).tpe.typeArgs.last
+    }
   }
 
   def _maybeCall                (calleeName:        String , expr:        Any ):        Child  = macro _maybeCallImpl
@@ -370,20 +381,30 @@ object DSL {
     """}
   }
 
-  def _declareNoType    [T               ]            (expr:        T , name:        Symbol ):        LocalVariable[T]  = macro _declareNoTypeImpl[T]
-  def _declareNoTypeImpl[T: c.WeakTypeTag](c: Context)(expr: c.Expr[T], name: c.Expr[Symbol]): c.Expr[LocalVariable[T]] = {
+  def _declareNoType                (expr:        String , name:        Symbol ):        Any  = macro _declareNoTypeImpl
+  def _declareNoTypeImpl(c: Context)(expr: c.Expr[String], name: c.Expr[Symbol]): c.Expr[Any] = {
+    val helper = new MacroHelpers[c.type](c)
     import c.universe._
+    import helper._
 
-    c.Expr[LocalVariable[T]] {q"subscript.DSL._declare[${weakTypeOf[T]}]($name)"}
+    val tree = stringToTree(expr)
+    val tpe  = contextTypeOf[CallGraphLeafNode](tree)
+
+    c.Expr {q"subscript.DSL._declare[$tpe]($name)"}
   }
 
-  def _valueCodeNoType    [T               ]            (expr:        T ):        N_localvar[T] => T  = macro _valueCodeNoTypeImpl[T]
-  def _valueCodeNoTypeImpl[T: c.WeakTypeTag](c: Context)(expr: c.Expr[T]): c.Expr[N_localvar[T] => T] = {
+  def _valueCodeNoType                (expr:        String ):        Any  = macro _valueCodeNoTypeImpl
+  def _valueCodeNoTypeImpl(c: Context)(expr: c.Expr[String]): c.Expr[Any] = {
+    val helper = new MacroHelpers[c.type](c)
     import c.universe._
+    import helper._
 
-    c.Expr[N_localvar[T] => T] {q"""(_node: subscript.vm.N_localvar[${weakTypeOf[T]}]) => {
+    val tree = stringToTree(expr)
+    val tpe  = contextTypeOf[CallGraphLeafNode](tree)
+
+    c.Expr {q"""(_node: subscript.vm.N_localvar[$tpe]) => {
       implicit val here = _node
-      ${expr.tree}
+      $tree
     }"""}
   }
 

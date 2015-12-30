@@ -60,4 +60,9 @@ trait Ast extends Core
     }
   }
 
+  def metaString(str: String) = '"' + str
+    .replace("\\", "\\\\")
+    .replace("\"", "\\\"")
+    .replace("\n", "\\n" ) + '"'
+
 }
