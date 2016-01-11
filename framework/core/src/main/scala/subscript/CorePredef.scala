@@ -53,4 +53,13 @@ trait CorePredefTrait {
   def pass_up1(implicit node: CallGraphTreeNode): Int = node.n_ary_op_ancestor.pass
   def pass_up2(implicit node: CallGraphTreeNode): Int = node.n_ary_op_ancestor.n_ary_op_ancestor.pass
 
+
+  def execute[S     ](_script: ScriptNode[S]                             ): ScriptExecutor[S] = DSL._execute(_script               )
+  def execute[S<:X,X](_script: ScriptNode[S], executor: ScriptExecutor[X]): ScriptExecutor[X] = DSL._execute(_script, executor     )
+  def execute[S     ](_script: ScriptNode[S], debugger: MsgListener      ): ScriptExecutor[S] = DSL._execute(_script, debugger     )
+  def execute[S     ](_script: ScriptNode[S], allowDebugger: Boolean     ): ScriptExecutor[S] = DSL._execute(_script, allowDebugger)
+  
+  def execute[S     ](_script: ScriptNode[S], debugger: MsgListener, allowDebugger: Boolean     ): ScriptExecutor[S] = DSL._execute(_script, debugger, allowDebugger)
+  def execute[S<:X,X](_script: ScriptNode[S], debugger: MsgListener, executor: ScriptExecutor[X]): ScriptExecutor[X] = DSL._execute(_script, debugger, executor)
+
 }

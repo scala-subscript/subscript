@@ -5,7 +5,7 @@ import scalaParser.subscript.ast.Constants.DSL._
 
 trait Symbols {
   def dsl(method: String) = s"subscript.DSL.$method"
-  def call(sym: String  ) = s"""subscript.DSL._maybeCall("", (here: subscript.vm.model.callgraph.CallGraphTreeNode) => $sym)"""
+  def call(sym: String  ) = s"""subscript.DSL._maybeCall("", (here: subscript.vm.model.callgraph.CallGraphTreeNode) => ${varc('"' + sym + '"')})"""
   def varc(sym: String)    = s"""subscript.DSL._maybeVarCall($sym)"""
   def script(name: String) = s"""subscript.DSL._script[Any](None, Symbol("$name")){(_node: subscript.vm.Script[Any]) =>
                                 |  implicit val script = _node""".stripMargin
@@ -76,7 +76,7 @@ trait Symbols {
   val launchAnchor = dsl("_launch_anchor")
   val launch       = dsl("_launch"       )
 
-  val scriptCall   = """subscript.DSL._maybeCall("", (here: subscript.vm.model.callgraph.CallGraphTreeNode) =>"""
+  val scriptCall   = s"""subscript.DSL._maybeCall("", (here: subscript.vm.model.callgraph.CallGraphTreeNode) =>"""
   val varCall = "subscript.DSL._maybeVarCall"
   val varAss  = "subscript.DSL._maybeVarAssignment"
   val actorCall = s"$scriptCall r$$"
