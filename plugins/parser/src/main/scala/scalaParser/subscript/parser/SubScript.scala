@@ -28,8 +28,9 @@ trait SubScript extends Core with HighPriorityRulesConversions
     def Trans4: (String, Seq[String]) => Seq[String] = (head, tail) => head :: tail.toList
     def Trans5: Option[Seq[String]] => Seq[String] = _.getOrElse(Nil)
 
+    lazy val minIndent = col + 2
     rule {
-      (Mod ~ (WLR0 ~ Mod).* ~> Trans4).? ~> Trans5 ~ `script` ~ (ScriptDef ~> Trans2 | `..` ~ ScriptDef.+(WLR0) ~> Trans3) ~> Trans1
+      Code {minIndent} ~ (Mod ~ (WLR0 ~ Mod).* ~> Trans4).? ~> Trans5 ~ `script` ~ (ScriptDef ~> Trans2 | `..` ~ IndentedNLSequence (() => ScriptDef, minIndent) ~> Trans3) ~> Trans1
     }
   }
 

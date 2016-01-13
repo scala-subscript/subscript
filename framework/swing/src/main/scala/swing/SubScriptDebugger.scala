@@ -20,7 +20,7 @@ class SubScriptDebuggerApp extends SimpleSubscriptApplication with GraphicalDebu
   override def main(args: Array[String]) = super.main(args)
 
   script..
-     liveScript = [
+    liveScript = [
                     {*awaitMessageBeingHandled(true)*}
 
                     if shouldStep then [
@@ -33,8 +33,8 @@ class SubScriptDebuggerApp extends SimpleSubscriptApplication with GraphicalDebu
                   ]
                   || exitDebugger
 
-   stepCommand  = stepButton
-   exitCommand  = exitButton
-   exitDebugger = exitCommand @gui:{!exitConfirmed=confirmExit!} while(!exitConfirmed)
+    stepCommand  = stepButton
+    exitCommand  = exitButton
+    exitDebugger = exitCommand @gui:{!exitConfirmed=confirmExit!} while(!exitConfirmed)
 
 }
