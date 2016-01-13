@@ -30,7 +30,7 @@ trait SubScript extends Core with HighPriorityRulesConversions
 
     lazy val minIndent = col + 2
     rule {
-      Code {minIndent} ~ (Mod ~ (WLR0 ~ Mod).* ~> Trans4).? ~> Trans5 ~ `script` ~ (ScriptDef ~> Trans2 | `..` ~ IndentedNLSequence (() => ScriptDef, minIndent) ~> Trans3) ~> Trans1
+      WLR0 ~ Code {minIndent} ~ (Mod ~ (WLR0 ~ Mod).* ~> Trans4).? ~> Trans5 ~ `script` ~ (ScriptDef ~> Trans2 | `..` ~ IndentedNLSequence (() => ScriptDef, minIndent) ~> Trans3) ~> Trans1
     }
   }
 
