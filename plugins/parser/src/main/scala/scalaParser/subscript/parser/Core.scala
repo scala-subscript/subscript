@@ -58,6 +58,13 @@ trait Core {this: SubScript with Exprs =>
     rule { WSR0 ~ Basic.Newline ~ WLR0 ~ ValidCol }
   }
 
+  def col = Position(cursor, input).column - 1 // computes the current column of the parser
+  
+  def IndentedNLSequence[T](r: () => R[T], minIndent: Int = Int.MaxValue): R[Seq[T]] = {
+    lazy val col2 = math.min(col, minIndent)
+    rule {WLR0 ~ Code {col2} ~ r().+(IdentedNewLine(col2))}
+  }
+
   /**
    * Consumes all the white spaces (ws) before the rule r silently.
    */

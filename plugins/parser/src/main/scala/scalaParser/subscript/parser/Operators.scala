@@ -19,10 +19,8 @@ trait Operators extends Terms {this: SubScript with Exprs =>
   )
 
   def Expr9Normal: R[Ast.Expr9] = {
-    def col = Position(cursor, input).column - 1
-    val col1 = col                       // The position of the "="
-    lazy val col2 = math.min(col, col1)  // "col" is the position after the spaces after "="
-    rule {WLR0 ~ Code {col2} ~ Expr8.+(IdentedNewLine(col2)) ~> Ast.Expr9Seq}
+    val col1 = col  // The position of the "="
+    rule {IndentedNLSequence({() => Expr8}, col1) ~> Ast.Expr9Seq}
   }
 
   def Expr9Shorthand: R[Ast.Expr9] = {
