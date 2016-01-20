@@ -1,7 +1,5 @@
 # SubScript
-This is the main SubScript repository. SubScript is an extension to Scala that enables the syntax of the [Algebra of Communicating Processes](https://en.wikipedia.org/wiki/Algebra_of_Communicating_Processes).
-- [Project website](http://subscript-lang.org/)
-- [Syntax specification](https://github.com/scala-subscript/subscript/wiki)
+This is the main SubScript repository. SubScript is an extension to Scala that enables the syntax of the [Algebra of Communicating Processes](https://en.wikipedia.org/wiki/Algebra_of_Communicating_Processes). This is a place to get started using SubScript, for more theoretical foundation see [project website](http://subscript-lang.org/).
 
 ## Prerequisites
 In order to get started using SubScript, one should have an [SBT](http://www.scala-sbt.org/) build tool installed (use the official [installation guide](http://www.scala-sbt.org/download.html)) and know the basics of working with the command line.
@@ -17,7 +15,6 @@ sudo chown root /usr/bin/brew
 
 ## Getting Started
 This section will describe how to create a simple "Hello World" application in SubScript from scratch.
-To get started using SubScript:
 
 1. Create a new SBT project, run the following commands:
 
@@ -41,14 +38,14 @@ To get started using SubScript:
 2. In `project/build.sbt`, write the following code:
   
   ```scala
-  addSbtPlugin("org.subscript-lang" %% "subscript-sbt-plugin" % "1.0.0")
+  addSbtPlugin("org.subscript-lang" %% "subscript-sbt-plugin" % "3.0.0")
   ```
   It adds the SubScript plugin to the SBT build tool, so that it can understand SubScript sources.
 3. In `build.sbt`, write the following code:
   
   ```scala
   scalaVersion := "2.11.7"
-  libraryDependencies += "org.subscript-lang" %% "subscript-swing" % "2.0.0"
+  libraryDependencies += "org.subscript-lang" %% "subscript-swing" % "3.0.0"
   SubscriptSbt.projectSettings
   ```
   First line sets the Scala version to be used, second sets a dependency on `subscript-swing` and third applies the SubScript SBT plugin.
@@ -69,7 +66,11 @@ To get started using SubScript:
   Finally, `script live = {!println("Hello")!} {!println("World")!}` is a simple script that prints "Hello World" from two Scala code blocks.
 5. Execute the project by running `sbt run`
 6. Debug the project with SubScript Graphical Debugger by running `sbt ssDebug`
-7. To check out the official examples, go to the [examples repository](https://github.com/scala-subscript/examples) and follow its "Getting Started" guide
+
+
+## Further learning
+- [Koans](https://github.com/scala-subscript/koans) is an easy way to learn the fundamentals of SubScript by doing.
+- To check out the official examples, go to the [examples repository](https://github.com/scala-subscript/examples) and follow its "Getting Started" guide
 
 ## Getting Started for the contributors
 ### Structure
