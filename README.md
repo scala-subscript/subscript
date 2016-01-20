@@ -49,20 +49,22 @@ This section will describe how to create a simple "Hello World" application in S
   SubscriptSbt.projectSettings
   ```
   First line sets the Scala version to be used, second sets a dependency on `subscript-swing` and third applies the SubScript SBT plugin.
-  Note: you can declare a dependency on `"org.subscript-lang" %% "subscript-core" % "2.0.0"` instead of `subscript-swing`, but you need `subscript-swing` to be able to use the debugger.
+  Note: you can declare a dependency on `"org.subscript-lang" %% "subscript-core" % "3.0.0"` instead of `subscript-swing`, but you need `subscript-swing` to be able to use the debugger.
 4. In `src/main/scala/Main.scala`, write the following code:
 
   ```scala
   import subscript.language
+  import subscript.Predef._
 
   object Main {
-    def main(args: Array[String]): Unit = subscript.DSL._execute(live)
+    def main(args: Array[String]): Unit = runScript(live)
 
     script live = {!println("Hello")!} {!println("World")!}
   }
   ```
   Here, `import subscript.language` enables SubScript syntax in this file. Each file that needs to use SubScript syntax must have this top-level import.
-  `subscript.DSL._execute(live)` calls a core SubScript method that executes the script provided as an argument.
+  `import subscript.Predef._` imports predefined functions to simplify work with scripts, such as `runScript`.
+  `runScript(live)` calls a core SubScript method that executes the script provided as an argument.
   Finally, `script live = {!println("Hello")!} {!println("World")!}` is a simple script that prints "Hello World" from two Scala code blocks.
 5. Execute the project by running `sbt run`
 6. Debug the project with SubScript Graphical Debugger by running `sbt ssDebug`
