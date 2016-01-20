@@ -1,8 +1,13 @@
 lazy val commonSettings = Seq(
   organization       := "org.subscript-lang"
-, version            := "2.0.0"
+, version            := "2.0.0-SNAPSHOT"
   
-, publishTo := Some("releases" at "https://oss.sonatype.org/service/local/staging/deploy/maven2")
+, publishTo := {
+    if (isSnapshot.value)
+      Some("snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/") 
+    else
+      Some("releases" at "https://oss.sonatype.org/service/local/staging/deploy/maven2")
+  }
 
 , scalaVersion := "2.11.7"
 
