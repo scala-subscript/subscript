@@ -74,9 +74,9 @@ class DataflowSuite extends FlatSpec with Matchers
     ]).e shouldBe Success(3)
   }
 
-  it should "not throw an exception if lhs's `$` is `null`: $success and $failure should be `null` then" in {
+  it should "not throw an exception if lhs's `$` is `null`: $success should be `null` then" in {
     script a = {!!} {!!}
-    
+
     ([
       a ~~(x: Int)~~> ^1
        +~~(null  )~~> ^2
@@ -90,7 +90,7 @@ class DataflowSuite extends FlatSpec with Matchers
   it should "work with multiple patterns" in {
     [
       n2 ~~(r: Int if r <  0)~~^ -r * 2
-       +~~(r: Int if r >= 0)~~^  r * 2
+        +~~(r: Int if r >= 0)~~^  r * 2
     ].e shouldBe(Success(4))
   }
 
