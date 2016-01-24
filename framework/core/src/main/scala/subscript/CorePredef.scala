@@ -43,7 +43,7 @@ object CorePredef extends CorePredefTrait
 trait CorePredefTrait {
   
   def `$`         [R]               (implicit s: Script[R]): Try[R]    = s.$
-  def `$success`  [R]               (implicit s: Script[R]): R         = s.$ match {case Success(s) => s}
+  def `$success`  [R]               (implicit s: Script[R]): R         = s.$ match {case Success(s) => s case null => null.asInstanceOf[R]}
   def `$failure`  [R]               (implicit s: Script[R]): Throwable = s.$ match {case Failure(f) => f case null => null}
   def `$_=`       [R] (v: Try[R]   )(implicit s: Script[R])            = {s.$=v; v match {case Failure(_) => s.fail /*; println("$=Failure(_)")*/ case _ => }}
   def `$success_=`[R] (v: R        )(implicit s: Script[R])            = {s.$=Success(v)}

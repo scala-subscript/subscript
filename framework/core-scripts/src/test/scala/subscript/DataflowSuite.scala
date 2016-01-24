@@ -74,6 +74,15 @@ class DataflowSuite extends FlatSpec with Matchers
     ]).e shouldBe Success(3)
   }
 
+  it should "not throw an exception if lhs's `$` is `null`: $success and $failure should be `null` then" in {
+    script a = {!!} {!!}
+    
+    ([
+      a ~~(x: Int)~~> ^1
+       +~~(null  )~~> ^2
+    ]).e shouldBe Success(2)
+  }
+
   "Dataflow map" should "work with pattern matches" in {
     [n1 ~~(r: Int)~~^ r * 2].e shouldBe(Success(2))
   }

@@ -33,7 +33,7 @@ trait CallGraphNode extends GraphNode
 }
 trait ScriptResultHolder[R] {
   var $:Try[R] = null; 
-  def $success:R = $.get; 
+  def $success:R = if ($ == null) null.asInstanceOf[R] else $.get; 
   def $success_=(v:R) = $ = Success(v); 
   def $failure:Throwable = if ($==null||$.isSuccess)null else $.asInstanceOf[Failure[R]].exception
   def $failure_=(f:Throwable) = {$ = Failure[R](f); fail} //; println(s"failure: $f")}
