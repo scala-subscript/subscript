@@ -91,7 +91,7 @@ trait DefaultHandlers extends ContinuationHandler {this: ScriptExecutor[_] with 
     }
 
     (child,node) match {
-           case (_,    ncf:N_code_tiny    [_]) => if (ncf.mustPropagateResultValue && forSuccess != ncf.failed    ) ncf.propagateResult
+           case (_,    ncf:N_code_tiny    [_]) => if (ncf.mustPropagateResultValue && forSuccess != ncf.failed    ) propagate()
            case (_,    ncf:N_code_fragment[_]) => if (ncf.mustPropagateResultValue && forSuccess == ncf.hasSuccess) propagate()
            case (scr:Script[_], cal:N_call[_]) => cal.setResult(scr.$)
                                                   if (cal.mustPropagateResultValue && forSuccess == scr.hasSuccess) {
