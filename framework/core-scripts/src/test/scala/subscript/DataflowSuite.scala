@@ -83,6 +83,17 @@ class DataflowSuite extends FlatSpec with Matchers
     ]).e shouldBe Success(2)
   }
 
+  it should "not activate its else part in case it is excluded" in {
+    var i = 0
+    script a = {..} ~~(x: Int)~~> let i = 1
+                  +~/~(null  )~~> let i = 2
+    ([
+      a / {!!}
+    ]).e
+
+    i shouldBe 0
+  }
+
   "Dataflow map" should "work with pattern matches" in {
     [n1 ~~(r: Int)~~^ r * 2].e shouldBe(Success(2))
   }
