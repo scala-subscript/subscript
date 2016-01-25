@@ -88,7 +88,7 @@ class DataflowSuite extends FlatSpec with Matchers
     script a = {..} ~~(x: Int)~~> let i = 1
                   +~/~(null  )~~> let i = 2
     ([
-      a / {!!}
+      a || {!!}
     ]).e
 
     i shouldBe 0
