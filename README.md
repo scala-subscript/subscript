@@ -38,18 +38,18 @@ This section will describe how to create a simple "Hello World" application in S
 2. In `project/build.sbt`, write the following code:
   
   ```scala
-  addSbtPlugin("org.subscript-lang" %% "subscript-sbt-plugin" % "3.0.0")
+  addSbtPlugin("org.subscript-lang" %% "subscript-sbt-plugin" % "3.0.1")
   ```
   It adds the SubScript plugin to the SBT build tool, so that it can understand SubScript sources.
 3. In `build.sbt`, write the following code:
   
   ```scala
   scalaVersion := "2.11.7"
-  libraryDependencies += "org.subscript-lang" %% "subscript-swing" % "3.0.0"
+  libraryDependencies += "org.subscript-lang" %% "subscript-swing" % "3.0.1"
   SubscriptSbt.projectSettings
   ```
   First line sets the Scala version to be used, second sets a dependency on `subscript-swing` and third applies the SubScript SBT plugin.
-  Note: you can declare a dependency on `"org.subscript-lang" %% "subscript-core" % "3.0.0"` instead of `subscript-swing`, but you need `subscript-swing` to be able to use the debugger.
+  Note: you can declare a dependency on `"org.subscript-lang" %% "subscript-core" % "3.0.1"` instead of `subscript-swing`, but you need `subscript-swing` to be able to use the debugger.
 4. In `src/main/scala/Main.scala`, write the following code:
 
   ```scala
