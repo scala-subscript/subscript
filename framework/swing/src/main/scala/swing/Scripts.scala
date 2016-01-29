@@ -315,21 +315,15 @@ object Scripts {
     }
     override def unsubscribe: Unit = {publisher1.reactions -= reaction}
   }
-
- /*
-  * The following subscript code has manually been compiled into Scala; see below
-    The redirections to the swing thread using "@gui:" are needed 
-    because enabling and disabling the button etc must there be done
-  */
   
  
- implicit script ..  // TBD: handle tabs in scanner so that line position becomes reasonable
+ implicit script ..
    stateChange(slider: Slider)                   = event(SliderStateChangedReactor[Any,N_code_eventhandling[Any]](slider))
    clicked(button:AbstractButton)                = event(           ClickedReactor[Any,N_code_eventhandling[Any]](button))
 
  script ..   // TBD: add @gui: annotations
-  event[E <: Event] (reactor:ScriptReactor[Any,N_code_eventhandling[Any]], ?e: E) =  @{reactor.subscribe(there); there.onDeactivate{reactor.unsubscribe}; there.onSuccess{reactor.acknowledgeEventHandled}}: {. e = reactor.currentEvent.asInstanceOf[E] .}
-  event (reactor:ScriptReactor[Any,N_code_eventhandling[Any]]) =  @{reactor.subscribe(there); there.onDeactivate{reactor.unsubscribe}; there.onSuccess{reactor.acknowledgeEventHandled}}: {.     .}
+  event[E <: Event] (reactor:ScriptReactor[Any,N_code_eventhandling[Any]], ?e: E): Any =  @{reactor.subscribe(there); there.onDeactivate{reactor.unsubscribe}; there.onSuccess{reactor.acknowledgeEventHandled}}: {. e = reactor.currentEvent.asInstanceOf[E] .}
+  event             (reactor:ScriptReactor[Any,N_code_eventhandling[Any]]       ): Any =  @{reactor.subscribe(there); there.onDeactivate{reactor.unsubscribe}; there.onSuccess{reactor.acknowledgeEventHandled}}: {..} ^reactor.currentEvent
   event_loop(reactor:ScriptReactor[Any,N_code_eventhandling_loop[Any]], task: MouseEvent=>Unit)   =  @{reactor.subscribe(there); there.onDeactivate{reactor.unsubscribe}; there.onSuccess{reactor.acknowledgeEventHandled}}: 
                                                                                             {... task.apply(reactor.currentEvent.asInstanceOf[MouseEvent]) ...}
   event_loop_KTE(reactor:ScriptReactor[Any,N_code_eventhandling_loop[Any]], task: KeyTyped=>Unit)   = @{reactor.subscribe(there); there.onDeactivate{reactor.unsubscribe}; there.onSuccess{reactor.acknowledgeEventHandled}}: 
@@ -337,42 +331,21 @@ object Scripts {
   // TBD: MouseEvent should become type parameter, as in the following (which does not compile)
   //event_loop[E<:Event](reactor:Reactor[Unit,N_code_eventhandling_loop[Unit]], task: E=>Unit)   = @{reactor.subscribe(there); there.onDeactivate{reactor.unsubscribe}; there.onSuccess{reactor.acknowledgeEventHandled}}: 
   //                                                                                                {... task.apply(reactor.currentEvent.asInstanceOf[E]) ...}
-       anyEvent(comp: Component)                           = event(          AnyEventReactor[Any,N_code_eventhandling[Any]](comp))                                                    
-    windowClosing(window: Window)                          = event(     WindowClosingReactor[Any,N_code_eventhandling[Any]](window))
+       anyEvent  (comp  : Component)                       = event(          AnyEventReactor[Any,N_code_eventhandling[Any]](comp))                                                    
+    windowClosing(window: Window   )                       = event(     WindowClosingReactor[Any,N_code_eventhandling[Any]](window))
 // mouseClicks   (comp: Component, task: MouseEvent=>Unit) = event_loop( MouseClickedReactor[Any,N_code_eventhandling_loop[Any]](comp), task)
    mousePresses  (comp: Component, task: MouseEvent=>Unit) = event_loop( MousePressedReactor[Any,N_code_eventhandling_loop[Any]](comp), task)
    mouseDraggings(comp: Component, task: MouseEvent=>Unit) = event_loop( MouseDraggedReactor[Any,N_code_eventhandling_loop[Any]](comp), task)
    mouseMoves    (comp: Component, task: MouseEvent=>Unit) = event_loop(   MouseMovedReactor[Any,N_code_eventhandling_loop[Any]](comp), task)
    mouseReleases (comp: Component, task: MouseEvent=>Unit) = event_loop(MouseReleasedReactor[Any,N_code_eventhandling_loop[Any]](comp), task)
 
-   mouseSingleClick (comp: Component, ?p : java.awt.Point) = mouseClicks(1, comp, ?p) // TBD: "p?"
-   mouseDoubleClick (comp: Component, ?p : java.awt.Point) = mouseClicks(2, comp, ?p)
-   mouseTripleClick (comp: Component, ?p : java.awt.Point) = mouseClicks(3, comp, ?p)
-   mouseClicks(n:Int,comp: Component, ?p : java.awt.Point) = var mce: MouseClicked=null 
-                                                             event(MouseClickedReactor[Any,N_code_eventhandling[Any]](comp, n), ?mce ) // TBD ...
-                                                             { p=mce.point }
-   mouseMove        (comp: Component, ?p : java.awt.Point) = var mme: MouseMoved=null 
-                                                             event(   MouseMovedReactor[Any,N_code_eventhandling[Any]](comp), ?mme ) // TBD: "mme?" instead of "ActualOutputParameter(...)"
-                                                             { p=mme.point }
-   mousePressed     (comp: Component, ?p : java.awt.Point) = var mpe: MousePressed=null
-                                                             event(   MousePressedReactor[Any,N_code_eventhandling[Any]](comp), ?mpe ) // TBD: ...
-                                                             { p=mpe.point }
-   mouseReleased    (comp: Component, ?p : java.awt.Point) = var mre: MouseReleased=null
-                                                             event(   MouseReleasedReactor[Any,N_code_eventhandling[Any]](comp), ?mre ) // TBD: ...
-                                                             { p=mre.point }
-
-/* these 4 scripts should become:
-   mouseClicks(n:Int,comp: Component, ?p : java.awt.Point) = var mce: MouseClicked =null; event( MouseClickedReactor[Any,N_code_eventhandling[Any]](comp, n), ?mce); {! p=mce.point !}
-   mouseMove        (comp: Component, ?p : java.awt.Point) = var mme: MouseMoved   =null; event(   MouseMovedReactor[Any,N_code_eventhandling[Any]](comp   ), ?mme); {! p=mme.point !}
-   mousePressed     (comp: Component, ?p : java.awt.Point) = var mpe: MousePressed =null; event( MousePressedReactor[Any,N_code_eventhandling[Any]](comp   ), ?mpe); {! p=mpe.point !}
-   mouseReleased    (comp: Component, ?p : java.awt.Point) = var mre: MouseReleased=null; event(MouseReleasedReactor[Any,N_code_eventhandling[Any]](comp   ), ?mre); {! p=mre.point !}
-
-for now:
-
-error: missing parameter type for expanded function ((x$4) => _mce.at(here).value = x$4)
-mouseClicks(n:Int,comp: Component, ?p : java.awt.Point) = var mce: MouseClicked =null; event( MouseClickedReactor[Any,N_code_eventhandling[Any]](comp, n), ?mce); {! p=mce.point !}
-                                                                                                                                                   ^
-*/
+   mouseSingleClick (comp: Component) = mouseClicks(1, comp) // TBD: "p?"
+   mouseDoubleClick (comp: Component) = mouseClicks(2, comp)
+   mouseTripleClick (comp: Component) = mouseClicks(3, comp)
+   mouseClicks(n:Int,comp: Component) = event( MouseClickedReactor[Any,N_code_eventhandling[Any]](comp, n))
+   mouseMove        (comp: Component) = event(   MouseMovedReactor[Any,N_code_eventhandling[Any]](comp)   )
+   mousePressed     (comp: Component) = event( MousePressedReactor[Any,N_code_eventhandling[Any]](comp)   )
+   mouseReleased    (comp: Component) = event(MouseReleasedReactor[Any,N_code_eventhandling[Any]](comp)   )
 
      guard(comp: Component, test: () => Boolean)           = if test() then ..? else ...
                                                              anyEvent(comp)
