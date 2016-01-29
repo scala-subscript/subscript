@@ -15,8 +15,8 @@ lazy val commonSettings = Seq(
     <url>https://github.com/scala-subscript/subscript</url>
     <licenses>
       <license>
-        <name>GNU GPL</name>
-        <url>http://www.gnu.org/copyleft/gpl.html</url>
+        <name>GNU LGPL</name>
+        <url>http://www.gnu.org/licenses/lgpl-3.0.en.html</url>
         <distribution>repo</distribution>
       </license>
     </licenses>
