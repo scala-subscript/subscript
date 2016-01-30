@@ -48,10 +48,11 @@ object Predef extends CorePredefTrait {
 
   script..
     times(n:Int) = while(pass<n)
-      
-    delta        = [-]
-    epsilon      = [+]
-    nu           = [+-]
+
+    // alternative names would be: never, nothing, neutral
+    // delta        = [-]
+    // epsilon      = [+]
+    // nu           = []
 
     sleep(t: Long) = {* Thread sleep t *}
 

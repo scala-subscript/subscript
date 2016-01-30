@@ -124,7 +124,7 @@ trait Terms {this: Operators with SubScript with Exprs with Switches =>
 
   def Delta             = SpecialConstant("[-]"   , Ast.Delta            )
   def Epsilon           = SpecialConstant("[+]"   , Ast.Epsilon          )
-  def Neutral           = SpecialConstant("[+-]"  , Ast.Neutral          )
+  def Neutral           = SpecialConstant("[]"    , Ast.Neutral          )
   def Loop              = SpecialConstant("..."   , Ast.Loop             )
   def OptionalBreakLoop = SpecialConstant("..?"   , Ast.OptionalBreakLoop)
   def OptionalBreak     = SpecialConstant("break?", Ast.OptionalBreak    )
