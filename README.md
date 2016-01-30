@@ -4,6 +4,8 @@ This is the main SubScript repository. SubScript is an extension to Scala that e
 ## Prerequisites
 In order to get started using SubScript, one should have an [SBT](http://www.scala-sbt.org/) build tool installed (use the official [installation guide](http://www.scala-sbt.org/download.html)) and know the basics of working with the command line.
 
+You should also have Java 8.
+
 **Note for Mac OS users:** if you try to install SBT with [homebrew](http://brew.sh/), you may encounter the following error:
 ```
 Cowardly refusing to `sudo brew install'
