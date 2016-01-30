@@ -392,7 +392,7 @@ class OperatorsSuite extends OperatorsSuiteBase {
    // simple terms
      [[-]]     -> "->0"
    , [[+]]     -> "->1"
-   , [[+-]]    -> "->1"
+   , [[] ]     -> "->1"
    , [break]   -> "->1"
    , [break?]  -> "->1"
    , [..?]     -> "->1"

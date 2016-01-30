@@ -208,8 +208,8 @@ trait Operators extends Terms {this: SubScript with Exprs =>
   def DataflowClause: R[Ast.DataflowClause] = rule {DataflowThenClause | DataflowElseClause}
 
   def DataflowClauseGen(head: String, isThenClause: Boolean): R[Ast.DataflowClause] = {
-    def Trans1: (String, Ast.Expr1) => Ast.DataflowClause = (pat, t) => Ast.DataflowClause(pat, t, isThenClause)
-    rule {wspStrR0(head) ~ wspChR0('(') ~ CaseClauseHeader ~ wspChR0(')') ~ wspStrR0("~~>") ~ WLR0 ~ Expr1 ~> Trans1}
+    def Trans1: (String, Ast.Dataflow) => Ast.DataflowClause = (pat, t) => Ast.DataflowClause(pat, t, isThenClause)
+    rule {wspStrR0(head) ~ wspChR0('(') ~ CaseClauseHeader ~ wspChR0(')') ~ wspStrR0("~~>") ~ WLR0 ~ Dataflow ~> Trans1}
   }
 
   def DataflowThenClause: R[Ast.DataflowClause] = DataflowClauseGen("~~" , true )
