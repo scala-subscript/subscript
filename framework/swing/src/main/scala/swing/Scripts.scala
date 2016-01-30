@@ -323,7 +323,7 @@ object Scripts {
 
  script ..   // TBD: add @gui: annotations
   event[E <: Event] (reactor:ScriptReactor[Any,N_code_eventhandling[Any]], ?e: E): Any =  @{reactor.subscribe(there); there.onDeactivate{reactor.unsubscribe}; there.onSuccess{reactor.acknowledgeEventHandled}}: {. e = reactor.currentEvent.asInstanceOf[E] .}
-  event             (reactor:ScriptReactor[Any,N_code_eventhandling[Any]]       ): Any =  @{reactor.subscribe(there); there.onDeactivate{reactor.unsubscribe}; there.onSuccess{reactor.acknowledgeEventHandled}}: {..} ^reactor.currentEvent
+  event             (reactor:ScriptReactor[Any,N_code_eventhandling[Any]]       ): Any =  @{reactor.subscribe(there); there.onDeactivate{reactor.unsubscribe}; there.onSuccess{reactor.acknowledgeEventHandled}}: {. reactor.currentEvent .}
   event_loop(reactor:ScriptReactor[Any,N_code_eventhandling_loop[Any]], task: MouseEvent=>Unit)   =  @{reactor.subscribe(there); there.onDeactivate{reactor.unsubscribe}; there.onSuccess{reactor.acknowledgeEventHandled}}: 
                                                                                             {... task.apply(reactor.currentEvent.asInstanceOf[MouseEvent]) ...}
   event_loop_KTE(reactor:ScriptReactor[Any,N_code_eventhandling_loop[Any]], task: KeyTyped=>Unit)   = @{reactor.subscribe(there); there.onDeactivate{reactor.unsubscribe}; there.onSuccess{reactor.acknowledgeEventHandled}}: 
