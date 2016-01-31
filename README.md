@@ -77,7 +77,7 @@ This section will describe how to create a simple "Hello World" application in S
 - To check out the official examples, go to the [examples repository](https://github.com/scala-subscript/examples) and follow its "Getting Started" guide.
 - [Cheat sheet](http://www.cheatography.com/anatoliykmetyuk/cheat-sheets/subscript/) will help you to remember the language.
 
-## Getting Started for the contributors
+## Getting Started for contributors
 ### Structure
 This repository consists of two SBT projects under correspondent directories:
 - **plugins** with following subprojects
@@ -138,3 +138,17 @@ subscript.DSL._maybeVarCall("println(subscript.DSL._maybeVarCall(\"\\\"World\\\"
 6. Test your changes using any SubScript project on your machine
 7. Commit your changes to your fork
 8. Send us the pull request with your changes
+
+## TL;DR Simply install everything
+ * Open a command line terminal
+ * Create a workspace directory, and make it the current directory
+ * Perform the following commands:
+```
+      git clone https://github.com/scala-subscript/subscript
+      git clone https://github.com/scala-subscript/eye-test
+      git clone https://github.com/scala-subscript/koans
+      git clone https://github.com/scala-subscript/examples
+```     
+ * In the IntelliJ IDE you may import the entire directory tree; handy for file viewing and editing
+ * Compile and run outside the IDE on the command line using the instructions for the projects
+
