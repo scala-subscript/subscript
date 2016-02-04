@@ -70,7 +70,8 @@ trait Operators extends Terms {this: SubScript with Exprs =>
 
 
   def Expr8: R[Ast.Expr8] = {
-    rule {Expr7.+(wspChR0(';')) ~> Ast.Expr8}
+    lazy val col1 = col
+    rule {Code(col1) ~ Expr7.+(wspChR0(';') ~ IdentedNewLine(col1).?) ~> Ast.Expr8}
   }
 
   def Expr7: R[Ast.Expr7] = {
