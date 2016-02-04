@@ -39,11 +39,8 @@ trait SubScript extends Core with HighPriorityRulesConversions
     def Trans1: (Ast.ScriptHeader, Option[Ast.Node]) => Ast.ScriptDef =
       (header, maybeExpr) => Ast.ScriptDef(header, maybeExpr)
 
-    def Trans2: (String, Ast.Node) => Ast.Node =
-      (_, expr) => expr
-
     rule {
-      WLR0 ~ ScriptHeader ~ (`=` ~ ScriptBody ~> Trans2).? ~> Trans1
+      WLR0 ~ ScriptHeader ~ (wspChR0('=') ~ ScriptBody).? ~> Trans1
     }
   }
 

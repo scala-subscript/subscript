@@ -15,6 +15,7 @@ trait Operators extends Terms {this: SubScript with Exprs =>
 
   def Expr9: R[Ast.Expr9] = rule(
     Expr9Normal
+  | Expr9ShorthandWL
   | Expr9Shorthand
   )
 
@@ -23,16 +24,21 @@ trait Operators extends Terms {this: SubScript with Exprs =>
     rule {IndentedNLSequence({() => Expr8}, col1) ~> Ast.Expr9Seq}
   }
 
-  def Expr9Shorthand: R[Ast.Expr9] = {
+
+  def Expr9Shorthand: R[Ast.Expr9] =
+    Expr9ShorthandGeneric(() => WLR0, () => Term, {c => rule (IdentedNewLine(c) | WSR0)})
+
+  def Expr9ShorthandWL: R[Ast.Expr9] =
+    Expr9ShorthandGeneric({() => rule {ch(';')}}, () => Expr8, c => IdentedNewLine(c))
+
+  def Expr9ShorthandGeneric(prefix: () => R0, term: () => R[Ast.Node], separator: Int => R0): R[Ast.Expr9] = {
 
     def Shorthand[T <: Ast.Node](op: () => R1, generator: Seq[Ast.Node] => T): R[Ast.Expr9] = {
-      var col = -1
+      lazy val col1 = col
 
-      def Separator: R0 = rule {IdentedNewLine(col) | WSR0}
+      def Trans1: (String, Seq[Ast.Node]) => Ast.Expr9 = (_, terms) => Ast.Expr9Identity(generator(terms))
 
-      def Trans1: (String, Seq[Ast.Term]) => Ast.Expr9 = (_, terms) => Ast.Expr9Identity(generator(terms))
-
-      rule {WLR0 ~ Code {col = Position(cursor, input).column - 1} ~ op() ~ Term.+(Separator) ~> Trans1}
+      rule {prefix() ~ Code {col1} ~ op() ~ term().+(separator(col1)) ~> Trans1}
     }
 
     def OrPar1           = Shorthand(() => `|`   , Ast.OrPar1          )
