@@ -7,8 +7,8 @@ FRAMEWORK_BUILD="framework/build.sbt"
 FRAMEWORK_PLUGIN="framework/project/subscript.sbt"
 PLUGIN_SOURCE="plugins/plugin-parser/src/main/scala/subscript/plugin/SubscriptSbt.scala"
 
-sed -E $PATTERN_BUILD_SBT $PLUGINS_BUILD > $PLUGINS_BUILD
-sed -E $PATTERN_BUILD_SBT $FRAMEWORK_BUILD > $FRAMEWORK_BUILD
+sed -E -i '' $PATTERN_BUILD_SBT $PLUGINS_BUILD
+sed -E -i '' $PATTERN_BUILD_SBT $FRAMEWORK_BUILD
 
-sed -E "s/(addSbtPlugin\(\"org.subscript-lang\" %% \"subscript-sbt-plugin\" % \").*(\"\))/\1$VERSION\2/g" $FRAMEWORK_PLUGIN > $FRAMEWORK_PLUGIN
-sed -E "s/(addCompilerPlugin\(\"org.subscript-lang\" %% \"enhancedmacros\" % \").*(\"\))/\1$VERSION\2/g" $PLUGIN_SOURCE > $PLUGIN_SOURCE
+sed -E -i '' "s/(addSbtPlugin\(\"org.subscript-lang\" %% \"subscript-sbt-plugin\" % \").*(\"\))/\1$VERSION\2/g" $FRAMEWORK_PLUGIN
+sed -E -i '' "s/(addCompilerPlugin\(\"org.subscript-lang\" %% \"enhancedmacros\" % \").*(\"\))/\1$VERSION\2/g" $PLUGIN_SOURCE
