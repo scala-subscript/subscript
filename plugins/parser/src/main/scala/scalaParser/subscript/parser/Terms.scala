@@ -32,9 +32,18 @@ trait Terms {this: Operators with SubScript with Exprs with Switches =>
   | ScriptCallRaw
   )
 
+  def ScriptCallBase: R1 = {
+    def Call = rule {StableIdS ~ ((!WLOneOrMoreR0 ~ TypeArgs).? ~> ExtractOpt) ~ ((!WLOneOrMoreR0 ~ ArgList).? ~> ExtractOpt) ~> Concat3}
+    rule {Call.+(ch('.')) ~> ConcatSeqDot}
+  }
+
   def VarCallCaretPrefix: R[Ast.Normal] = {
-    def Trans1: String => String = varId => s"""subscript.DSL._maybeVarCall("$varId")"""
-    rule {wspChR0('^') ~ !WLOneOrMoreR0 ~ StableIdS ~> Trans1 ~> Ast.Normal}
+    def Trans1: Ast.ScriptCall => String = n => {
+      val varId: String = Ast.metaString(n.content.asInstanceOf[Ast.Literal].content)
+      s"""subscript.DSL._maybeVarCall($varId)"""
+    }
+
+    rule {wspChR0('^') ~ !WLOneOrMoreR0 ~ ScriptCallRaw ~> Trans1 ~> Ast.Normal}
   }
 
   def ScriptCallRaw: R[Ast.ScriptCall] = rule {!(SSOperatorOrKeyword | `^`) ~ (
@@ -43,13 +52,13 @@ trait Terms {this: Operators with SubScript with Exprs with Switches =>
   )}
 
   def ScriptCallOrdinary: R[Ast.ScriptCall] =
-    rule {(StableIdS ~ ((!WLOneOrMoreR0 ~ TypeArgs).? ~> ExtractOpt) ~ ((!WLOneOrMoreR0 ~ ArgList).? ~> ExtractOpt) ~> Concat3) ~> Ast.Literal ~> Ast.ScriptCall}
+    rule {ScriptCallBase ~> Ast.Literal ~> Ast.ScriptCall}
 
   def ScriptCallNice: R[Ast.ScriptCall] = {
     def Trans1: Seq[String] => String = exprs => s"(${exprs.mkString(", ")})"
     def ExprsStat: R1 = rule { (WSR0 ~ StatCtx.SimpleExpr).+(ch(',')) ~> Trans1 }
 
-    rule {StableIdS ~ wspChR0(':') ~ WithNiceScriptCall {() => ExprsStat} ~> Concat ~> Ast.Literal ~> Ast.ScriptCall}
+    rule {ScriptCallBase ~ wspChR0(':') ~ WithNiceScriptCall {() => ExprsStat} ~> Concat ~> Ast.Literal ~> Ast.ScriptCall}
   }
 
 

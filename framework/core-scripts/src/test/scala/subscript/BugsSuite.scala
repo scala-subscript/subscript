@@ -10,7 +10,7 @@ import org.scalatest._
 class BugsSuite extends FlatSpec with Matchers
                                   with CommonHelpers {
 
-  "Bug test" should "#26" in {
+  "#26" should "work" in {
     var i = 0
     script foo = {!i += 1!};
                  {!i += 1!}

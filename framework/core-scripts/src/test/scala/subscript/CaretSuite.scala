@@ -49,6 +49,28 @@ class CaretSuite extends FlatSpec with Matchers
     ].e shouldBe Success(3)
   }
 
+  it should "work in prefix position before complex var/method calls" in {
+    object foo {
+      class Bar(x: Int) {
+        def getX = x
+        def get(y: Int) = y
+      }
+
+      def bar(x: Int) = new Bar(x)
+    }
+
+    var i = 0
+
+    script s =
+      ^foo.bar(1).getX   ~~(x: Int)~~> let i += x
+      ^foo.bar(1).get(2) ~~(x: Int)~~> let i += x
+      ^foo.bar(1).get: 2 ~~(x: Int)~~> let i += x
+
+    runScript(s)
+
+    i shouldBe 5
+  }
+
   "Double caret" should "work with code blocks" in {
     [times: 5 {!here.pass!}^^].e shouldBe Success((0 to 4).toSeq)
   }
