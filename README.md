@@ -77,7 +77,7 @@ This section will describe how to create a simple "Hello World" application in S
 - To check out the official examples, go to the [examples repository](https://github.com/scala-subscript/examples) and follow its "Getting Started" guide.
 - [Cheat sheet](http://www.cheatography.com/anatoliykmetyuk/cheat-sheets/subscript/) will help you to remember the language.
 
-## Getting Started for contributors
+## Getting Started for Contributors
 ### Structure
 This repository consists of two SBT projects under correspondent directories:
 - **plugins** with following subprojects
@@ -86,7 +86,7 @@ This repository consists of two SBT projects under correspondent directories:
   - **plugin-parser** - an SBT plugin that uses the *parser* to generate synthetic pure-Scala sources from SubScript-containing ones. Also, it applies *enhanced-macros* compiler plugin.
 - **framework** with following subprojects
   - **core** - core SubScript library, contains all the essential functionality
-  - **swing** - enhancements to Scala Swing library. Contains SubScript Graphical Debugger
+  - **swing** - enhancements to the Scala Swing library. Contains SubScript Graphical Debugger
   - **akka** - integration layer with Akka
 
 **IMPORTANT:** `framework` projects depend on `plugins` projects. Before building `framework`, make sure you've pushed `framework` to your local Ivy2 repository (see below).
@@ -140,11 +140,13 @@ subscript.DSL._maybeVarCall("println(subscript.DSL._maybeVarCall(\"\\\"World\\\"
 8. Send us the pull request with your changes
 
 ### Versioning
-SubScript is versioned using [semantic versioning](http://semver.org/) model. Public release versions are composed of three digits (`1.2.3`). For the development purposes, you should use `-SNAPSHOT` version (`1.2.3-SNAPSHOT`).
+The SubScript plugins (the preprocessor and Scalac macros) and the framework (VM, debugger, the bridges to Swing and Akka) are versioned using the [semantic versioning](http://semver.org/) model. Public release versions are composed of three digits (`1.2.3`). The `build.sbt` files mention these versions.
 
-The projects used for testing should have the correct version of SubScript as a dependency in their `build.sbt` and `project/build.sbt` files.
+When you are making local changes to the plugins or framework, you should use version names ending in `-SNAPSHOT`, e.g., `1.2.3-SNAPSHOT`.
+Then you can test these changes against the other projects such as Examples. Those projects should refer to the correct version of the SubScript plugins and framework, as a dependency in their `build.sbt` and `project/build.sbt` files.
 
-In order to change SubScript version, run `./set_version.sh new_version` from the root of the project, for example `./set_version.sh 3.0.0-SNAPSHOT`.
+In order to change the SubScript version, run the command line script `./set_version.sh new_version` from the root of the project.
+For example: `./set_version.sh 3.0.0-SNAPSHOT`.
 
 ## TL;DR Simply install everything
  * Open a command line terminal
