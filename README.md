@@ -139,6 +139,13 @@ subscript.DSL._maybeVarCall("println(subscript.DSL._maybeVarCall(\"\\\"World\\\"
 7. Commit your changes to your fork
 8. Send us the pull request with your changes
 
+### Versioning
+SubScript is versioned using [semantic versioning](http://semver.org/) model. Public release versions are composed of three digits (`1.2.3`). For the development purposes, you should use `-SNAPSHOT` version (`1.2.3-SNAPSHOT`).
+
+The projects used for testing should have the correct version of SubScript as a dependency in their `build.sbt` and `project/build.sbt` files.
+
+In order to change SubScript version, run `./set_version.sh new_version` from the root of the project, for example `./set_version.sh 3.0.0-SNAPSHOT`.
+
 ## TL;DR Simply install everything
  * Open a command line terminal
  * Create a workspace directory, and make it the current directory
