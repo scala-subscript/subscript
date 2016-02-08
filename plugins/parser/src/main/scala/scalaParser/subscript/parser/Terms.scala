@@ -20,6 +20,9 @@ trait Terms {this: Operators with SubScript with Exprs with Switches =>
 
   def SimpleValueExpr: R[Ast.Literal] = rule { WithNormalInScript {() => StatCtx.Expr} ~> Ast.Literal}
   
+  def ScalaSimplePrefixExpression: R1 = rule {capture(WLR0 ~ anyOf("-+~!")).? ~> ExtractOpt ~ StatCtx.SimpleExpr ~> Concat}
+
+
   def ScriptCall: R[Ast.Term] = rule (
     DoubleCaretedNumber {() => VarCallCaretPrefix}
   | DoubleCareted       {() => VarCallCaretPrefix}
@@ -145,7 +148,7 @@ trait Terms {this: Operators with SubScript with Exprs with Switches =>
     def Trans2: (String, String)                 => Ast.While = (_,    condition   ) => Ast.While(condition)
   
     def Standard: R[Ast.While] = rule( `while` ~ '(' ~ StatCtx.Expr ~ ')' ~> Trans1 )
-    def Nice    : R[Ast.While] = rule( `while` ~ ch(':') ~ WSR0 ~ WithNiceScriptCall {() => StatCtx.SimpleExpr} ~> Trans2)
+    def Nice    : R[Ast.While] = rule( `while` ~ ch(':') ~ WSR0 ~ WithNiceScriptCall {() => ScalaSimplePrefixExpression} ~> Trans2)
 
     rule (Standard | Nice)
   }
