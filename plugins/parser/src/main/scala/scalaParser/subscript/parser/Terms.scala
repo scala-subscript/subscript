@@ -147,8 +147,8 @@ trait Terms {this: Operators with SubScript with Exprs with Switches =>
     def Trans1: (String, String, String, String) => Ast.While = (_, _, condition, _) => Ast.While(condition)
     def Trans2: (String, String)                 => Ast.While = (_,    condition   ) => Ast.While(condition)
   
-    def Standard: R[Ast.While] = rule( `while` ~ '(' ~ StatCtx.Expr ~ ')' ~> Trans1 )
-    def Nice    : R[Ast.While] = rule( `while` ~ ch(':') ~ WSR0 ~ WithNiceScriptCall {() => ScalaSimplePrefixExpression} ~> Trans2)
+    def Standard: R[Ast.While] = rule( `while` ~ WSR0 ~ '(' ~ StatCtx.Expr ~ ')' ~> Trans1 )
+    def Nice    : R[Ast.While] = rule( `while` ~ WSR0 ~ WithNiceScriptCall {() => ScalaSimplePrefixExpression} ~> Trans2)
 
     rule (Standard | Nice)
   }

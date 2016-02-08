@@ -19,14 +19,14 @@ object MigrationSuite extends TestSuite with Checkers with Symbols {def tests = 
   * - checkExpr9("a: b c d", s"""$seq($scriptCall a($varCall("b"))), $c, $d)""" )
 
   * - checkExpr9(
-    "while: x"
+    "while x"
   , s"""subscript.DSL._while (_node => {
       |  implicit val here = _node
       |$varCall("x")
       |})""".stripMargin
   )
   * - checkExpr9(
-    "while: (!x)"
+    "while (!x)"
   , s"""subscript.DSL._while (_node => {
       |  implicit val here = _node
       |$varCall("($varCall(\\"!x\\"))")

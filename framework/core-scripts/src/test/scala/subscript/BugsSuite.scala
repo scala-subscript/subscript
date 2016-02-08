@@ -28,7 +28,7 @@ class BugsSuite extends FlatSpec with Matchers
   "#29" should "be possible to call nice while with prefixed simple expression" in {
     var i = 0
     script s = var flag = false
-               [while: !flag {!i += 1!} {!if (i >= 3) flag = true!}]
+               [while !flag {!i += 1!} {!if (i >= 3) flag = true!}]
   
     runScript(s)
     i shouldBe 3
