@@ -59,7 +59,7 @@ trait Terms {this: Operators with SubScript with Exprs with Switches =>
 
   def ScriptCallNice: R[Ast.ScriptCall] = {
     def Trans1: Seq[String] => String = exprs => s"(${exprs.mkString(", ")})"
-    def ExprsStat: R1 = rule { (WSR0 ~ StatCtx.SimpleExpr).+(ch(',')) ~> Trans1 }
+    def ExprsStat: R1 = rule { (WSR0 ~ ScalaSimplePrefixExpression).+(ch(',')) ~> Trans1 }
 
     rule {ScriptCallBase ~ wspChR0(':') ~ WithNiceScriptCall {() => ExprsStat} ~> Concat ~> Ast.Literal ~> Ast.ScriptCall}
   }

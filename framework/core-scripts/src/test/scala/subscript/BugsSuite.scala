@@ -34,13 +34,13 @@ class BugsSuite extends FlatSpec with Matchers
     i shouldBe 3
   }
 
-  // it should "be possible to use prefixed expressions in nice script calls" in {
-  //   script..
-  //     a(x: Boolean) = if x then ^1 else ^2
-  //     b = a: !true
+  it should "be possible to use prefixed expressions in nice script calls" in {
+    script..
+      a(x: Boolean) = if x then ^1 else ^2
+      b = a: !true
 
-  //   runScript(b).$ shouldBe Success(2)
-  // }
+    runScript(b).$ shouldBe Success(2)
+  }
 
 
 }
