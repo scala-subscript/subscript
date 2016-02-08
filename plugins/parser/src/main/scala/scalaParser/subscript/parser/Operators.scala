@@ -272,7 +272,11 @@ trait Operators extends Terms {this: SubScript with Exprs =>
     def ParenthesisedLambda: R[Ast.ScriptCall] =
       rule {ParenthesisedRaw ~> Trans1}
 
-    rule {Careted {() => ParenthesisedLambda}}
+    rule (
+      DoubleCaretedNumber {() => ParenthesisedLambda}
+    | DoubleCareted       {() => ParenthesisedLambda}
+    | Careted             {() => ParenthesisedLambda}
+    )
   }
 
   def Annotation: R[Ast.Annotation] = {
