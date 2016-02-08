@@ -20,4 +20,8 @@ class BugsSuite extends FlatSpec with Matchers
     i shouldBe 2
   }
 
+  "#28" should "work" in {
+    script s = [^1^^1 ^2^^2]^^
+  }
+
 }
