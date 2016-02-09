@@ -1,6 +1,6 @@
 lazy val commonSettings = Seq(
   organization       := "org.subscript-lang"
-, version            := "3.0.1-SNAPSHOT"
+, version            := "3.0.2"
   
 , publishTo := {
     if (isSnapshot.value)
