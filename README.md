@@ -148,16 +148,3 @@ Then you can test these changes against the other projects such as Examples. Tho
 In order to change the SubScript version, run the command line script `./set_version.sh new_version` from the root of the project.
 For example: `./set_version.sh 3.0.0-SNAPSHOT`.
 
-## TL;DR Simply install everything
- * Open a command line terminal
- * Create a workspace directory, and make it the current directory
- * Perform the following commands:
-```
-      git clone https://github.com/scala-subscript/subscript
-      git clone https://github.com/scala-subscript/eye-test
-      git clone https://github.com/scala-subscript/koans
-      git clone https://github.com/scala-subscript/examples
-```     
- * In the IntelliJ IDE you may import the entire directory tree; handy for file viewing and editing
- * Compile and run outside the IDE on the command line using the instructions for the projects
-
