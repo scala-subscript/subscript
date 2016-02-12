@@ -42,5 +42,16 @@ class BugsSuite extends FlatSpec with Matchers
     runScript(b).$ shouldBe Success(2)
   }
 
+  it should "be possible to write if guards for actual constrained parameters" in {
+    script..
+      f(??x: Int) = let x = 3
+      live = 
+        var x = 0
+        f: ?x ?if (x > (0))
+        ^x
+
+    runScript(live).$ shouldBe Success(3)
+  }
+
 
 }

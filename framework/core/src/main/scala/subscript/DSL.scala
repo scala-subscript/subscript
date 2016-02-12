@@ -381,6 +381,27 @@ object DSL {
     """}
   }
 
+  def _actualConstrainedParameter                (expr:        String , cond:        String ):        Any = macro _actualConstrainedParameterImpl
+  def _actualConstrainedParameterImpl(c: Context)(expr: c.Expr[String], cond: c.Expr[String]): c.Expr[Any] = {
+    val helper = new MacroHelpers[c.type](c)
+    import c.universe._
+    import helper._
+
+    val target = processInfix(stringToTree(expr))
+    val tpe    = c.typecheck(target).tpe
+
+    val conditionBody = stringToTree(cond)
+
+    val name = stringToTree(expr)
+    val assignment = q"(x1: $tpe) => $target = x1"
+    val condition  = q"($name: $tpe) => $conditionBody"
+
+    val res = q"""
+      subscript.vm.ActualConstrainedParameter[$tpe]($target, $assignment, $condition)
+    """
+    c.Expr(res)
+  }
+
   def _declareNoType                (expr:        String , name:        Symbol ):        Any  = macro _declareNoTypeImpl
   def _declareNoTypeImpl(c: Context)(expr: c.Expr[String], name: c.Expr[Symbol]): c.Expr[Any] = {
     val helper = new MacroHelpers[c.type](c)

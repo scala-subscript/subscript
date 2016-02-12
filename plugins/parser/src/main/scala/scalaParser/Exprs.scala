@@ -163,12 +163,17 @@ trait Exprs extends Core with Types with Xml with SubScript {
           if (isAlpha(x.head)) s"$wl$ACTUAL_ADAPTING_PARAMETER($x)"
           else x
 
+        def ActualConstrainedParameterTrans: (String, String, String, String, String) => String = (wl, _, x, _, cond) =>
+          if (isAlpha(x.head)) s"${wl}subscript.DSL._actualConstrainedParameter(${Ast.metaString(x)}, ${Ast.metaString(cond)})"
+          else x
+
         override val default = NORMAL_IN_SCRIPT
         def ruleMap = Map(
           NORMAL           -> {() => NormalSimpleExpr}
         , NORMAL_IN_SCRIPT -> {() => rule (
-              WL ~ "??"     ~ SSId          ~> ActualAdaptingParameterTrans
-            | WL ~ '?'      ~ SSId          ~> ActualOutputParameterTrans
+              WL ~ "??"     ~ SSId                                              ~> ActualAdaptingParameterTrans
+            | WL ~ '?'      ~ SSId ~ "?if" ~ WSR0 ~ ScalaSimplePrefixExpression ~> ActualConstrainedParameterTrans
+            | WL ~ '?'      ~ SSId                                              ~> ActualOutputParameterTrans
             | NormalSimpleExpr
             )
           }

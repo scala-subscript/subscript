@@ -60,7 +60,7 @@ object SubscriptSbt extends sbt.AutoPlugin with SubscriptSbtHelpers {
     // , "org.scala-lang" % "scala-swing" % "2.11.0-M7"
     )
 
-  , addCompilerPlugin("org.subscript-lang" %% "enhancedmacros" % "3.0.2")
+  , addCompilerPlugin("org.subscript-lang" %% "enhancedmacros" % "3.0.2-SNAPSHOT")
 
   , ssDebug := {
       val r  = (runner        in Compile).value
