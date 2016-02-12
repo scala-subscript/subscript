@@ -95,13 +95,13 @@ class DataflowSuite extends FlatSpec with Matchers
   }
 
   "Dataflow map" should "work with pattern matches" in {
-    [n1 ~~(r: Int)~~^ r * 2].e shouldBe(Success(2))
+    [n1 ~~(r: Int)~~^ (r * 2)].e shouldBe(Success(2))
   }
 
   it should "work with multiple patterns" in {
     [
-      n2 ~~(r: Int if r <  0)~~^ -r * 2
-        +~~(r: Int if r >= 0)~~^  r * 2
+      n2 ~~(r: Int if r <  0)~~^ (-r * 2)
+        +~~(r: Int if r >= 0)~~^ ( r * 2)
     ].e shouldBe(Success(4))
   }
 

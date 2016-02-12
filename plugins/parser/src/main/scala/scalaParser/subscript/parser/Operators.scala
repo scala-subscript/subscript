@@ -235,7 +235,7 @@ trait Operators extends Terms {this: SubScript with Exprs =>
     rule {TermRaw ~ wspStrR0("~~^") ~ StatCtx.Expr ~> Ast.DataflowMapShort}
 
   def DataflowMapClauseGen(head: String): R[Ast.DataflowMapClause] =
-    rule {wspStrR0(head) ~ wspChR0('(') ~ CaseClauseHeader ~ wspChR0(')') ~ wspStrR0("~~^") ~ WLR0 ~ StatCtx.Expr ~> Ast.DataflowMapClause}
+    rule {wspStrR0(head) ~ wspChR0('(') ~ CaseClauseHeader ~ wspChR0(')') ~ wspStrR0("~~^") ~ WLR0 ~ ScalaSimplePrefixExpression ~> Ast.DataflowMapClause}
   
   def DataflowMapClause     : R[Ast.DataflowMapClause] = DataflowMapClauseGen("~~" )
   def DataflowMapClauseExtra: R[Ast.DataflowMapClause] = DataflowMapClauseGen("+~~")
