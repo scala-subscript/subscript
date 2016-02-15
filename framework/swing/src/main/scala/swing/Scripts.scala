@@ -347,7 +347,7 @@ object Scripts {
    mousePressed     (comp: Component) = event( MousePressedReactor[Any,N_code_eventhandling[Any]](comp)   )
    mouseReleased    (comp: Component) = event(MouseReleasedReactor[Any,N_code_eventhandling[Any]](comp)   )
 
-     guard(comp: Component, test: () => Boolean)           = if test() then ..? else ...
+     guard(comp: Component, test: => Boolean)              = if test then ..? else ...
                                                              anyEvent(comp)
 
      key2(publisher: Publisher, ??keyCode : Char     )     = event(         KeyTypedReactor[Any,N_code_eventhandling[Any]](publisher, ??keyCode ))
