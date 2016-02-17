@@ -61,5 +61,15 @@ class BugsSuite extends FlatSpec with Matchers
     runScript(live).$ shouldBe Success(3)
   }
 
+  it should "be possible to use nested nice calls" in {
+    def square(x: Int) = x * x
+
+    script..
+      fooBar(x: Int, y: Int) = ^(x + y)
+      live = foo: square: square: 2, bar: square: square: square: square: 2
+
+    runScript(live).$ shouldBe Success(65552)
+  }
+
 
 }

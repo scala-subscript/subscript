@@ -76,11 +76,19 @@ trait Terms {this: Operators with SubScript with Exprs with Switches =>
 
     def Trans5: Option[Seq[(String, String)]] => Seq[(String, String)] = _.getOrElse(Nil)
 
+    def Trans6: (String, String) => String = (base, arg) => s"$base($arg)"
 
     // Rules
+    def CompactCall: R1 = rule {ScriptCallBase ~ wspChR0(':') ~ ExprsStatHead ~> Trans6}
+
+    def CompactCallOrExpr: R1 = rule(
+      CompactCall
+    | ScalaSimplePrefixExpression
+    )
+
     def ExprsStat    : R[(String, String)]      = rule {ExprsStatHead ~ ((ch(',') ~ ExprsStatTail).? ~> Trans5) ~> Trans4 ~> Trans2}
-    def ExprsStatHead: R1                       = rule {                                  WSR0 ~ WithNiceScriptCall {() => ScalaSimplePrefixExpression}}
-    def ExprsStatTail: R[Seq[(String, String)]] = rule { ((WSR0 ~ IdS ~ wspChR0(':')).? ~ WSR0 ~ WithNiceScriptCall {() => ScalaSimplePrefixExpression} ~> Trans1).+(ch(',')) }
+    def ExprsStatHead: R1                       = rule {                                  WSR0 ~ WithNiceScriptCall {() => CompactCallOrExpr}}
+    def ExprsStatTail: R[Seq[(String, String)]] = rule { ((WSR0 ~ IdS ~ wspChR0(':')).? ~ WSR0 ~ WithNiceScriptCall {() => CompactCallOrExpr} ~> Trans1).+(ch(',')) }
 
     rule {ScriptCallBase ~ wspChR0(':') ~ ExprsStat ~> Trans3 ~> Ast.Literal ~> Ast.ScriptCall}
   }
