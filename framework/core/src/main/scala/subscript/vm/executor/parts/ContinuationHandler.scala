@@ -84,36 +84,43 @@ to have a recent success. A success of an operand is recent if after it
 has happened no atomic action it its subtree has happened.
 An and-like parallel operator has in principle success when all its operands
 have success, but the optional break complicates matters.
-E.g. in x&.&y, the optional break says that y is optional;
+
+E.g. in x & break? & y, the optional break says that y is optional;
 as long as no atomic action inside y has happened, the success
 of & depends on the x operand.
-Another effect of “.” here is that y only should be activated
-as soon as at least one atomic action inside x has happened;
-maybe it would be good to add here another possibility:
-no atomic actions inside x have been activated.
+
+Another effect of such an optional group of operands is that
+after another “break?” activation only continues
+as soon as the first atomic action in the optional operands has happened;
 
 To define "more precisely" when “next activations” of parallel operators
 happen, we consider their templates to be of the form
 
-xi & . & yi & . & zi
+xi & break? & yi & break? & zi
 
 Here xi etc stand for groups of operands that have no optional-breaks
 activated; each group size is 0 or higher.
 & stands here for any operator of: & && | || /
 
-On activation xi and “.” activate.
-Activation continues with the next group (yi) if no atomic actions in xi have been activated.
-Then when in this continuation again no atomic actions have been activated, zi is activated, etc.
+On activation xi and “break?” activate.
+Activation continues with the next group (yi).
 
-In other cases, so when in a group atomic actions had been activated,
-then the next group is activated shortly after for the first time in
-the previous group an atomic action has happened. 
+Then the second "break?" is activated. There are two possibilities:
+- no atomic actions had been activated in yi.
+  Then zi is activated, and maybe the next "break?" is activated etc.
+- some atomic actions had been activated in yi.
+  Then the yi are FTTB considered to be an "optional group", and activation stops.
+  The optionality disappears as soon as an atomic action happens in yi;
+  then also the activation resumes.
 
-For the determination of successfulness of a parallel operator
-such a newly activated group, of which no atomic actions have happened,
-does not count. Let's call such a group an "optional group".
+For the determination of successfulness of an and-parallel operator
+the members an optional group of operands do not count.
+
+So far for "break?".
+
 Note that for parallel operators not only the successfulness of the current operands is relevant,
-but also of the past operands. 
+but also of the past operands.
+
 E.g. a past operand of & that has deactivated without recent success
 is a failure, and it prevents & from ever having success.
 Likewise a past operand of | that has deactivated with a recent success makes sure that
