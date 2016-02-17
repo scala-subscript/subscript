@@ -58,10 +58,23 @@ trait Terms {this: Operators with SubScript with Exprs with Switches =>
     rule {ScriptCallBase ~> Ast.Literal ~> Ast.ScriptCall}
 
   def ScriptCallNice: R[Ast.ScriptCall] = {
-    def Trans1: Seq[String] => String = exprs => s"(${exprs.mkString(", ")})"
-    def ExprsStat: R1 = rule { (WSR0 ~ ScalaSimplePrefixExpression).+(ch(',')) ~> Trans1 }
+    def Trans1: (Option[String], String) => (String, String) = (suffix, arg) => {
+      val suffixUpper = suffix.map {s => s.head.toString.toUpperCase + s.tail.mkString}.getOrElse("")
+      (suffixUpper, arg)
+    }
 
-    rule {ScriptCallBase ~ wspChR0(':') ~ WithNiceScriptCall {() => ExprsStat} ~> Concat ~> Ast.Literal ~> Ast.ScriptCall}
+    def Trans2: Seq[(String, String)] => (String, String) = {seq =>
+      val funNameSuffixes: Seq[String] = seq.map(_._1)
+      val args           : Seq[String] = seq.map(_._2)
+
+      (funNameSuffixes.mkString, s"(${args.mkString(", ")})")
+    }
+
+    def Trans3: (String, (String, String)) => String = {case (base, (suffix, args)) => s"$base$suffix$args"}
+
+    def ExprsStat: R[(String, String)] = rule { ((WSR0 ~ IdS ~ wspChR0(':')).? ~ WSR0 ~ WithNiceScriptCall {() => ScalaSimplePrefixExpression} ~> Trans1).+(ch(',')) ~> Trans2 }
+
+    rule {ScriptCallBase ~ wspChR0(':') ~ ExprsStat ~> Trans3 ~> Ast.Literal ~> Ast.ScriptCall}
   }
 
 

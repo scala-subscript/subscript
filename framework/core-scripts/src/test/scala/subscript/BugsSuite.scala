@@ -53,5 +53,13 @@ class BugsSuite extends FlatSpec with Matchers
     runScript(live).$ shouldBe Success(3)
   }
 
+  it should "be possible to use Smalltalk-like script calls" in {
+    script..
+      fooBar(x: Int, y: Int) = ^(x + y)
+      live = foo: 1, bar: 2
+
+    runScript(live).$ shouldBe Success(3)
+  }
+
 
 }

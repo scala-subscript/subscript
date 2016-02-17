@@ -70,8 +70,8 @@ trait Core {this: SubScript with Exprs =>
    */
   def Spaces[T](r: () => R[T], ws: () => R0 = () => WSR0): R[T] = rule { ws() ~ r() }
 
-  def IdS       = Spaces(() => Id)
-  def StableIdS = Spaces(() => StableId)
+  def IdS      : R1 = Spaces(() => Id)
+  def StableIdS: R1 = Spaces(() => StableId)
 
   def Careted(r: () => R[Ast.Node], parseCaret: Boolean = true): R[Ast.Annotation] = {
     def MaybeCaret: R0 = if (parseCaret) rule {!WLOneOrMoreR0 ~ ch('^')} else rule {MATCH}
