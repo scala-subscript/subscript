@@ -15,7 +15,7 @@ import scala.language.postfixOps
 
 trait SubScriptActorRunner {
 
-  def launch(s: ScriptNode[_])
+  def launch(s: Script[_])
 
   def execute(debugger: MsgListener)
 
@@ -37,7 +37,7 @@ object SSARunnerV1Scheduler extends SubScriptActorRunner {
 
   def scheduledTaskDelay = 1 milliseconds
 
-  def launch(s: ScriptNode[_]) = executor.invokeFromET {launch_anchor.launch(s)}
+  def launch(s: Script[_]) = executor.invokeFromET {launch_anchor.launch(s)}
 
   script..
      // make a local anchor for launched actor processes,

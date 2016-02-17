@@ -30,7 +30,7 @@ abstract class Bag_AB_Application extends SimpleSubscriptApplication {
     }
   }
   override def live = _execute(liveScript)
-def liveScript: subscript.vm.ScriptNode[Any]
+def liveScript: subscript.vm.Script[Any]
 }
 
 object Bag_A extends Bag_AB_Application {

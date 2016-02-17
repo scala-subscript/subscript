@@ -6,7 +6,7 @@ import subscript.file
 import scala.util.{Try, Success, Failure}
 import subscript.Predef._
 import subscript.DSL._
-import subscript.vm.{N_code_unsure, SimpleScriptDebuggerClass, ScriptNode, Script}
+import subscript.vm.{N_code_unsure, SimpleScriptDebuggerClass, Script, Script}
 import subscript.vm.executor._
 import subscript.vm.model.template.TemplateNode.Child
 import subscript.vm.model.callgraph._
@@ -167,7 +167,7 @@ abstract class OperatorsSuiteBase {
   /*
    * Low level stuff
    */
-  def testScriptBehaviours(scriptDef: ScriptNode[Any], scriptString: String, behaviours: String) {
+  def testScriptBehaviours(scriptDef: Script[Any], scriptString: String, behaviours: String) {
     
     import scala.util.matching.Regex
     val pattern = new Regex(" +") // replace all multispaces by a single space, just before splitting behaviours:
@@ -192,7 +192,7 @@ abstract class OperatorsSuiteBase {
   var executor: ScriptExecutor[Any] = null
   var currentTestIndex = 0
 
-  def testScriptBehaviour(scriptDef: ScriptNode[Any], scriptString: String, input: String, expectedResult: String, expectTestFailure: Boolean) {
+  def testScriptBehaviour(scriptDef: Script[Any], scriptString: String, input: String, expectedResult: String, expectTestFailure: Boolean) {
     
     currentTestIndex += 1
     
@@ -347,7 +347,7 @@ subscript.DSL._maybeCall("", (here: subscript.vm.model.callgraph.CallGraphTreeNo
   def testBehaviours: Unit = {
     val behaviours = if (testIndexForDebugging==0) scriptBehaviourList_for_debug else scriptBehaviourList
     for ( (key, behaviours) <- behaviours) {
-      val aScript = key.asInstanceOf[ScriptNode[Any]]
+      val aScript = key.asInstanceOf[Script[Any]]
       val bodyString = toScriptBodyString(aScript)
       testScriptBehaviours(aScript, bodyString, behaviours.asInstanceOf[String])
     }

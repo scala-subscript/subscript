@@ -11,7 +11,7 @@ object Constants {
 
   def mkCall(name: String, content: String): String =
   s"""subscript.DSL._call[Any]("$name", ((here: subscript.vm.N_call[Any]) => {
-     |  val s: subscript.vm.ScriptNode[Any] = $content
+     |  val s: subscript.vm.Script[Any] = $content
      |  here.calls(s.template, (s.p: _*));
      |  s
      |}), true)
@@ -102,8 +102,8 @@ object Constants {
       val      ACTUAL_ADAPTING_PARAMETER = vm("ActualAdaptingParameter"     )
       val   FORMAL_CONSTRAINED_PARAMETER = vm("FormalConstrainedParameter"  )
       
-      val SCRIPT                         = vm("Script"                      )
-      val SCRIPT_NODE                    = vm("ScriptNode"                  )
+      val SCRIPT                         = vm("ScriptTrait"                 )
+      val SCRIPT_NODE                    = vm("Script"                      )
 
       val LOCAL_VAR            = vm("N_localvar")
       val SCRIPT_CALL          = vm("N_call"    )

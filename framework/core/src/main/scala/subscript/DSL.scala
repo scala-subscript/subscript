@@ -59,13 +59,13 @@ import subscript.vm.model.callgraph.generic._
  * Usage: see example programs
  */
 object DSL {
-  def _script[S](owner:AnyRef, name:Symbol, p: FormalParameter[_]*)(childTemplateAt: (Script[S])=>TemplateNode.Child): ScriptNode[S] = {
+  def _script[S](owner:AnyRef, name:Symbol, p: FormalParameter[_]*)(childTemplateAt: (Script[S])=>TemplateNode.Child): Script[S] = {
     // In order to create the Script, we need to know T_script, the tempalte
     // To create the template, we should not need to know its children
     // because to create the children, we need to know Script first
     
     val template = T_script(owner, "script", name)
-    val result: ScriptNode[S] = new ScriptNode(template, p:_*)
+    val result: Script[S] = new Script(template, p:_*)
     template.setChild(childTemplateAt(result))
     result
   }
@@ -79,26 +79,26 @@ object DSL {
 //    (_c: N_communication) => _c.inits(T_communication("communication", names.toList.map(_.asInstanceOf[Symbol])), owner)
 //  }
 
-  def getScriptTemplate    [S](s: ScriptNode[S]): T_script     = s.template // TBD: check; was: {val nc = N_call(T_call("", null)); s(nc); nc.t_callee}
-  def getScriptBodyTemplate[S](s: ScriptNode[S]): TemplateNode = getScriptTemplate(s).child0
-  def toScriptString       [S](s: ScriptNode[S]): String       = getScriptTemplate(s).hierarchyString
-  def toScriptBodyString   [S](s: ScriptNode[S]): String       = {val c = getScriptBodyTemplate(s); if(c==null) "" else c.hierarchyString}
+  def getScriptTemplate    [S](s: Script[S]): T_script     = s.template // TBD: check; was: {val nc = N_call(T_call("", null)); s(nc); nc.t_callee}
+  def getScriptBodyTemplate[S](s: Script[S]): TemplateNode = getScriptTemplate(s).child0
+  def toScriptString       [S](s: Script[S]): String       = getScriptTemplate(s).hierarchyString
+  def toScriptBodyString   [S](s: Script[S]): String       = {val c = getScriptBodyTemplate(s); if(c==null) "" else c.hierarchyString}
 //def _communication(body: N_communication => TemplateNode) = Communication(body)
 //def _communicator(name: Symbol) = Communicator(name)
 //def _relate(communication: Communication, crs: CommunicatorRole*): Unit = communication.setCommunicatorRoles(crs.toList)
 
 //implicit def communicatorToCommunicatorRole(c: Communicator) = new CommunicatorRole(c)
   
-  def _execute[S     ](_script: ScriptNode[S]                             ): ScriptExecutor[S] = _execute(_script, null, true)
-  def _execute[S<:X,X](_script: ScriptNode[S], executor: ScriptExecutor[X]): ScriptExecutor[X] = _execute(_script, null, executor)
-  def _execute[S     ](_script: ScriptNode[S], debugger: MsgListener      ): ScriptExecutor[S] = _execute(_script, debugger, false)
-  def _execute[S     ](_script: ScriptNode[S], allowDebugger: Boolean     ): ScriptExecutor[S] = _execute(_script, null, allowDebugger)
-  def _execute[S     ](_script: ScriptNode[S], debugger: MsgListener
+  def _execute[S     ](_script: Script[S]                             ): ScriptExecutor[S] = _execute(_script, null, true)
+  def _execute[S<:X,X](_script: Script[S], executor: ScriptExecutor[X]): ScriptExecutor[X] = _execute(_script, null, executor)
+  def _execute[S     ](_script: Script[S], debugger: MsgListener      ): ScriptExecutor[S] = _execute(_script, debugger, false)
+  def _execute[S     ](_script: Script[S], allowDebugger: Boolean     ): ScriptExecutor[S] = _execute(_script, null, allowDebugger)
+  def _execute[S     ](_script: Script[S], debugger: MsgListener
                                          , allowDebugger: Boolean     ): ScriptExecutor[S] = {
     val executor = ScriptExecutorFactory.createScriptExecutor[S](allowDebugger && debugger == null)
     _execute(_script, debugger, executor)
   }
-  def _execute[S<:X,X](_script: ScriptNode[S], debugger: MsgListener, executor: ScriptExecutor[X]): ScriptExecutor[X] = {
+  def _execute[S<:X,X](_script: Script[S], debugger: MsgListener, executor: ScriptExecutor[X]): ScriptExecutor[X] = {
     if (debugger!=null) debugger.attach(executor)
     
     try {
@@ -123,7 +123,7 @@ object DSL {
   def _eventhandling0     [R](cf: => R, mustPropagateResultValue: Boolean = false) = T_code_eventhandling     ((_here:N_code_eventhandling     [R]) => cf, mustPropagateResultValue)
   def _eventhandling_loop0[R](cf: => R, mustPropagateResultValue: Boolean = false) = T_code_eventhandling_loop((_here:N_code_eventhandling_loop[R]) => cf, mustPropagateResultValue)
 
-  def _call      [R](calleeName: String, code: N_call[R] => ScriptNode[R], mustPropagateResultValue: Boolean = false) = T_call[R](calleeName, code, mustPropagateResultValue)
+  def _call      [R](calleeName: String, code: N_call[R] => Script[R], mustPropagateResultValue: Boolean = false) = T_call[R](calleeName, code, mustPropagateResultValue)
   
   implicit def valueToActualValueParameter[T<:Any](value: T) = new ActualValueParameter(value)
 
@@ -314,7 +314,7 @@ object DSL {
     val tree =
       if (tpe <:< typeOf[Script[_]]) q"""
         subscript.DSL._call[Any](${calleeName.tree}, ((here: subscript.vm.N_call[Any]) => {
-          val s: subscript.vm.ScriptNode[Any] = ${expr.tree}(here)
+          val s: subscript.vm.Script[Any] = ${expr.tree}(here)
           here.calls(s.template, (s.p: _*));
           s
         }), true)
@@ -430,10 +430,10 @@ object DSL {
   }
 
   /** Propagates the result value of the `n` to the `s` on the success of `n`. */
-  def _caret(implicit n: CallGraphNode, s: Script[Any]) =
+  def _caret(implicit n: CallGraphNode, s: ScriptTrait[Any]) =
     n.onSuccess {s.$ = n.asInstanceOf[ScriptResultHolder[Any]].$}
 
-  def _double_caret(implicit n: CallGraphNode, s: Script[Any]) = n.onSuccess {
+  def _double_caret(implicit n: CallGraphNode, s: ScriptTrait[Any]) = n.onSuccess {
     val nResult = n.asInstanceOf[ScriptResultHolder[Any]].$success
     
     def grow(seq: Seq[Any], size: Int): Seq[Any] =
@@ -446,7 +446,7 @@ object DSL {
     }
   }
 
-  def _double_caret_number(id: Int)(implicit n: CallGraphNode, s: Script[Any]) = n.onSuccess {
+  def _double_caret_number(id: Int)(implicit n: CallGraphNode, s: ScriptTrait[Any]) = n.onSuccess {
     def tupleToSeq(t : Product ): Seq[Any] = (1 to t.productArity).map(n => t.productElement(n - 1))
     def seqToTuple(as:Seq[Any]):Product = {  // Credit: http://stackoverflow.com/a/11312245/3895471
       val tupleClass = Class.forName("scala.Tuple" + as.size)

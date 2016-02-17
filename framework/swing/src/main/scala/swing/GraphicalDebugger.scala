@@ -230,7 +230,7 @@ trait GraphicalDebugger extends MsgListener {
     def getScriptTemplates: List[T_script] = {
       val lb = new ListBuffer[T_script]
       def getScriptTemplates(n: CallGraphNode): Unit = {
-        n match {case ns: ScriptNode[_] => if (!lb.exists(_.name.name==ns.template.name.name)) lb += ns.template case _ =>}
+        n match {case ns: Script[_] => if (!lb.exists(_.name.name==ns.template.name.name)) lb += ns.template case _ =>}
         n match {case pn: CallGraphNode => pn.forEachChild{getScriptTemplates(_)} case _ =>}
       } 
       getScriptTemplates(rootNode)
@@ -437,7 +437,7 @@ trait GraphicalDebugger extends MsgListener {
         val vCenter   = boxTop  + BOX_H/2
         
         val s: String = n match {
-          case ns: ScriptNode[_]  => ns.template.name.name
+          case ns: Script[_]  => ns.template.name.name
           case no: N_n_ary_op => no.template.kind + (if (no.isIteration) " ..." else "")
           case _              => n .template.kind
         }

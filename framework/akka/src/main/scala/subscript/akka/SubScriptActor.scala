@@ -47,8 +47,8 @@ trait SubScriptActor extends Actor {
   script terminate = Terminator.block
   script die       = {!if (context ne null) context stop self!}
 
-  script r$(handler: PartialFunction[Any, ScriptNode[Any]])
-  = var s:ScriptNode[Any]=null
+  script r$(handler: PartialFunction[Any, Script[Any]])
+  = var s:Script[Any]=null
     @{var handlerWithExecuteAA = handler andThen {hr => {s = hr; there.eventHappened}}
                           synchronized {callHandlers += handlerWithExecuteAA}
       there.onDeactivate {synchronized {callHandlers -= handlerWithExecuteAA}}

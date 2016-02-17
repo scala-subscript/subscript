@@ -30,7 +30,7 @@ class SubScriptFuturesController(val view: View) extends Controller {
   val fSearch = InterruptableFuture {twitter.search(view.searchField.text, tweetsCount)}
   val faulter = InterruptableFuture {throw new Exception("Never faulter")}
 
-  implicit def f2s(intf: InterruptableFuture[_]): subscript.vm.ScriptNode[Any] = subscript.DSL._script[Any](None, Symbol("f2s")){(_node: subscript.vm.Script[Any]) =>
+  implicit def f2s(intf: InterruptableFuture[_]): subscript.vm.Script[Any] = subscript.DSL._script[Any](None, Symbol("f2s")){(_node: subscript.vm.Script[Any]) =>
   implicit val script = _node
 subscript.DSL._at[subscript.vm.N_code_eventhandling[Any], subscript.vm.model.template.concrete.T_code_eventhandling[Any]](here => {
   implicit val there: subscript.vm.N_code_eventhandling[Any] = here.there;

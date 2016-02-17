@@ -12,7 +12,7 @@ trait CommonHelpers {
   import subscript.vm._
   import subscript.DSL._
 
-  implicit class ScriptNodeEvaluator[T](n: ScriptNode[T]) {
+  implicit class ScriptEvaluator[T](n: Script[T]) {
     def e: Try[T] = _execute(n).$
   }
 

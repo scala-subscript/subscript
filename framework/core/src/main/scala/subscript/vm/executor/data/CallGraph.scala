@@ -33,8 +33,8 @@ class CallGraph[S](val executor: ScriptExecutor[S]) {
       case _             => createNode(template, executor)
     }
     
-    val scriptNode:ScriptNode[_] = parent match {
-      case s:ScriptNode[_]        => s
+    val scriptNode:Script[_] = parent match {
+      case s:Script[_]        => s
       case cgtn:CallGraphTreeNode => cgtn.scriptNode
       case _                      =>  null // should not happen
     }
@@ -44,7 +44,7 @@ class CallGraph[S](val executor: ScriptExecutor[S]) {
   /**
    * Links and activates a node that already exists.
    */
-  def linkNode(parent: CallGraphNode.Parent, n: CallGraphNode.Child, scriptNode: ScriptNode[_], pass: Option[Int]): CallGraphNode = {
+  def linkNode(parent: CallGraphNode.Parent, n: CallGraphNode.Child, scriptNode: Script[_], pass: Option[Int]): CallGraphNode = {
     import CallGraph._
     n.codeExecutor = CodeExecutor.defaultCodeFragmentExecutorFor(n, executor)
     n.pass = pass.getOrElse(if(parent.isInstanceOf[N_n_ary_op]) 0 else parent.pass)
@@ -56,7 +56,7 @@ class CallGraph[S](val executor: ScriptExecutor[S]) {
   }
 }
 object CallGraph {
-  def connect(parentNode: CallGraphNode.Parent, childNode: CallGraphNode.Child, scriptNode: ScriptNode[_]) {
+  def connect(parentNode: CallGraphNode.Parent, childNode: CallGraphNode.Child, scriptNode: Script[_]) {
     childNode.scriptExecutor = parentNode.scriptExecutor // this sets childNode.index
     childNode addParent parentNode // uses childNode.index, so do this after setting scriptExecutor
     childNode.scriptNode = scriptNode

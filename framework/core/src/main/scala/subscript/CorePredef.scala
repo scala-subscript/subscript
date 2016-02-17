@@ -42,24 +42,24 @@ import subscript.vm.model.callgraph.generic._
 object CorePredef extends CorePredefTrait
 trait CorePredefTrait {
   
-  def `$`         [R]               (implicit s: Script[R]): Try[R]    = s.$
-  def `$success`  [R]               (implicit s: Script[R]): R         = s.$ match {case Success(s) => s case null => null.asInstanceOf[R]}
-  def `$failure`  [R]               (implicit s: Script[R]): Throwable = s.$ match {case Failure(f) => f case null => null}
-  def `$_=`       [R] (v: Try[R]   )(implicit s: Script[R])            = {s.$=v; v match {case Failure(_) => s.fail /*; println("$=Failure(_)")*/ case _ => }}
-  def `$success_=`[R] (v: R        )(implicit s: Script[R])            = {s.$=Success(v)}
-  def `$failure_=`[R] (v: Throwable)(implicit s: Script[R])            = {s.$=Failure(v); s.fail /*; println("$failure_=")*/}
+  def `$`         [R]               (implicit s: ScriptTrait[R]): Try[R]    = s.$
+  def `$success`  [R]               (implicit s: ScriptTrait[R]): R         = s.$ match {case Success(s) => s case null => null.asInstanceOf[R]}
+  def `$failure`  [R]               (implicit s: ScriptTrait[R]): Throwable = s.$ match {case Failure(f) => f case null => null}
+  def `$_=`       [R] (v: Try[R]   )(implicit s: ScriptTrait[R])            = {s.$=v; v match {case Failure(_) => s.fail /*; println("$=Failure(_)")*/ case _ => }}
+  def `$success_=`[R] (v: R        )(implicit s: ScriptTrait[R])            = {s.$=Success(v)}
+  def `$failure_=`[R] (v: Throwable)(implicit s: ScriptTrait[R])            = {s.$=Failure(v); s.fail /*; println("$failure_=")*/}
 
   def pass    (implicit node: CallGraphTreeNode): Int = node.pass
   def pass_up1(implicit node: CallGraphTreeNode): Int = node.n_ary_op_ancestor.pass
   def pass_up2(implicit node: CallGraphTreeNode): Int = node.n_ary_op_ancestor.n_ary_op_ancestor.pass
 
 
-  def runScript[S     ](_script: ScriptNode[S]                             ): ScriptExecutor[S] = DSL._execute(_script               )
-  def runScript[S<:X,X](_script: ScriptNode[S], executor: ScriptExecutor[X]): ScriptExecutor[X] = DSL._execute(_script, executor     )
-  def runScript[S     ](_script: ScriptNode[S], debugger: MsgListener      ): ScriptExecutor[S] = DSL._execute(_script, debugger     )
-  def runScript[S     ](_script: ScriptNode[S], allowDebugger: Boolean     ): ScriptExecutor[S] = DSL._execute(_script, allowDebugger)
+  def runScript[S     ](_script: Script[S]                             ): ScriptExecutor[S] = DSL._execute(_script               )
+  def runScript[S<:X,X](_script: Script[S], executor: ScriptExecutor[X]): ScriptExecutor[X] = DSL._execute(_script, executor     )
+  def runScript[S     ](_script: Script[S], debugger: MsgListener      ): ScriptExecutor[S] = DSL._execute(_script, debugger     )
+  def runScript[S     ](_script: Script[S], allowDebugger: Boolean     ): ScriptExecutor[S] = DSL._execute(_script, allowDebugger)
   
-  def runScript[S     ](_script: ScriptNode[S], debugger: MsgListener, allowDebugger: Boolean     ): ScriptExecutor[S] = DSL._execute(_script, debugger, allowDebugger)
-  def runScript[S<:X,X](_script: ScriptNode[S], debugger: MsgListener, executor: ScriptExecutor[X]): ScriptExecutor[X] = DSL._execute(_script, debugger, executor)
+  def runScript[S     ](_script: Script[S], debugger: MsgListener, allowDebugger: Boolean     ): ScriptExecutor[S] = DSL._execute(_script, debugger, allowDebugger)
+  def runScript[S<:X,X](_script: Script[S], debugger: MsgListener, executor: ScriptExecutor[X]): ScriptExecutor[X] = DSL._execute(_script, debugger, executor)
 
 }

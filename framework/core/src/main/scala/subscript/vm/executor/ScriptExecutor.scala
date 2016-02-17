@@ -53,14 +53,14 @@ trait ScriptExecutor[S] extends MsgPublisher with TaskSupplyInterface with Trace
   /**
    * Launches this VM to execute given script.
    */
-  def run[R<:S](s: ScriptNode[R]): ScriptExecutor[S]
+  def run[R<:S](s: Script[R]): ScriptExecutor[S]
   
   /**
    * Performs initialization before this VM starts working.
    * Must be called before VM starts operating.
    * Must be called exactly once.
    */
-  def initializeExecution[R<:S](s: ScriptNode[R]): Unit
+  def initializeExecution[R<:S](s: Script[R]): Unit
   
   /**
    * Tries to dequeue and handle message from the messages queue.
@@ -102,7 +102,7 @@ abstract class AbstractScriptExecutor[S] extends ScriptExecutor[S] {
    * Must be called before VM starts operating.
    * Must be called exactly once.
    */
-  def initializeExecution[R<:S](s: ScriptNode[R]) {
+  def initializeExecution[R<:S](s: Script[R]) {
     val anchorNode = graph.anchorNode
     CallGraph.connect(parentNode = anchorNode, childNode = s, scriptNode = null) // code duplicated from Callgraph.activateFrom
     msgQueue insert Activation(s)                             // idem
@@ -142,7 +142,7 @@ class CommonScriptExecutor[S] extends AbstractScriptExecutor[S] with Tracer with
   
   def fail = () // needed because this is a ResultHolder; probably a different place for _fail would be better
   
-  def run[R<:S](s: ScriptNode[R]) = {
+  def run[R<:S](s: Script[R]) = {
     initializeExecution(s)
     while (hasActiveProcesses) {
       updateCollections()

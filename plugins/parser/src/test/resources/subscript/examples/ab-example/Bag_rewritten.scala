@@ -51,7 +51,7 @@ class BagApplication extends SimpleSubscriptApplication {
   override def liveScript = subscript.DSL._script[Any](None, Symbol("liveScript")){(_node: subscript.vm.Script[Any]) =>
   implicit val script = _node
 subscript.DSL._maybeCall("", (here: subscript.vm.model.callgraph.CallGraphTreeNode) => bag)}
-def bag: subscript.vm.ScriptNode[Any] = subscript.DSL._script[Any](None, Symbol("bag")){(_node: subscript.vm.Script[Any]) =>
+def bag: subscript.vm.Script[Any] = subscript.DSL._script[Any](None, Symbol("bag")){(_node: subscript.vm.Script[Any]) =>
   implicit val script = _node
 subscript.DSL._alt(subscript.DSL._seq(subscript.DSL._maybeCall("", (here: subscript.vm.model.callgraph.CallGraphTreeNode) => A), subscript.DSL._par(subscript.DSL._maybeCall("", (here: subscript.vm.model.callgraph.CallGraphTreeNode) => bag), subscript.DSL._maybeCall("", (here: subscript.vm.model.callgraph.CallGraphTreeNode) => ax))), subscript.DSL._seq(subscript.DSL._maybeCall("", (here: subscript.vm.model.callgraph.CallGraphTreeNode) => B), subscript.DSL._par(subscript.DSL._maybeCall("", (here: subscript.vm.model.callgraph.CallGraphTreeNode) => bag), subscript.DSL._maybeCall("", (here: subscript.vm.model.callgraph.CallGraphTreeNode) => bx))))}
 def A = subscript.DSL._script[Any](None, Symbol("A")){(_node: subscript.vm.Script[Any]) =>

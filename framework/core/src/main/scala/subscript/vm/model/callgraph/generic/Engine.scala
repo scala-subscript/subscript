@@ -1,6 +1,6 @@
 package subscript.vm.model.callgraph.generic
 
-import subscript.vm.ScriptNode
+import subscript.vm.Script
 import subscript.vm.executor._
 import subscript.vm.model.callgraph._
 import subscript.DSL._
@@ -17,7 +17,7 @@ trait Engine {this: CallGraphNode =>
   
   var codeExecutor: CodeExecutorTrait = null
   
-  def launch(aScript: ScriptNode[_]) = {_scriptExecutor.launch(this, aScript)}
+  def launch(aScript: Script[_]) = {_scriptExecutor.launch(this, aScript)}
 }
 
 object Engine {

@@ -28,16 +28,16 @@ trait ScriptDSLSuiteHelpers {this: CommonHelpers =>
   import subscript.DSL._
 
   // The one from the parser
-  val sampleFunction: Any => ScriptNode[Any] = {
+  val sampleFunction: Any => Script[Any] = {
     case x: Int    => [success(x)]
     case y: String => [success(y.toString)]
   }
 
-  val sampleExceptionsFunction: Throwable => ScriptNode[Any] = {
+  val sampleExceptionsFunction: Throwable => Script[Any] = {
     case e: RuntimeException => [success: "Runtime Exception"]
   }
 
-  def dataflowTest(s: ScriptNode[Any]): Try[Any] =
+  def dataflowTest(s: Script[Any]): Try[Any] =
     [ScriptDSL._dataflow(s, sampleFunction, sampleExceptionsFunction)].e
 
 }

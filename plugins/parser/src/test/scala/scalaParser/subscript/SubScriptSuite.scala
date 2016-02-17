@@ -19,7 +19,7 @@ object SubScriptSuite extends TestSuite with Checkers with Symbols {
 
       * - check(
         "script a(b: Int = 2, y: String, ?z: Foo)(c: String)(implicit m: X): Int",
-        "def a(b: Int = 2, y: String, z: subscript.vm.FormalOutputParameter[Foo])(c: String)(implicit m: X): subscript.vm.ScriptNode[Int]"
+        "def a(b: Int = 2, y: String, z: subscript.vm.FormalOutputParameter[Foo])(c: String)(implicit m: X): subscript.vm.Script[Int]"
       )
 
       * - check(

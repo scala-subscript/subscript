@@ -36,12 +36,12 @@ abstract class ABApplication extends SimpleSubscriptApplication {
   }
   
  override def  live = _execute(liveScript)
-def liveScript: subscript.vm.ScriptNode[Any]
+def liveScript: subscript.vm.Script[Any]
 def doExit = subscript.DSL._script[Any](None, Symbol("doExit")){(_node: subscript.vm.Script[Any]) =>
   implicit val script = _node
 subscript.DSL._alt(subscript.DSL._maybeCall("", (here: subscript.vm.model.callgraph.CallGraphTreeNode) => X), subscript.DSL._maybeCall("", (here: subscript.vm.model.callgraph.CallGraphTreeNode) => Key.Escape))}
            
- implicit def vkey(k: subscript.vm.FormalConstrainedParameter[Key.Value]): subscript.vm.ScriptNode[Any] = subscript.DSL._script[Any](None, Symbol("vkey"), k.~??(Symbol("k"))){(_node: subscript.vm.Script[Any]) =>
+ implicit def vkey(k: subscript.vm.FormalConstrainedParameter[Key.Value]): subscript.vm.Script[Any] = subscript.DSL._script[Any](None, Symbol("vkey"), k.~??(Symbol("k"))){(_node: subscript.vm.Script[Any]) =>
   implicit val script = _node
 subscript.DSL._maybeCall("", (here: subscript.vm.model.callgraph.CallGraphTreeNode) => vkey2(subscript.DSL._maybeVarCall("top"), subscript.DSL._maybeVarCall("subscript.vm.ActualAdaptingParameter(k)")))}
 }

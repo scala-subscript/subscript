@@ -25,7 +25,7 @@ trait CallGraphNode extends GraphNode
   
   def template: T
   var index = -1
-  var scriptNode: ScriptNode[_] = null
+  var scriptNode: Script[_] = null
   def resultPropagationDestination[R]: ScriptResultHolder[R] = (if (scriptNode!=null) scriptNode
                                                                else                   scriptExecutor).asInstanceOf[ScriptResultHolder[R]]
   

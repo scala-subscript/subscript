@@ -65,13 +65,13 @@ trait DefaultHandlers extends ContinuationHandler {this: ScriptExecutor[_] with 
            case n@N_do_else                    (t) => activateFrom(n, t.child0)
            case n@N_do_then_else               (t) => activateFrom(n, t.child0)
            case n@N_n_ary_op                   (t, isLeftMerge) => val cn = activateFrom(n, t.children.head); if (!isLeftMerge) insertContinuation(message, cn)
-           case n@N_call                       (t) => val s: ScriptNode[_] = executeCode(n)
+           case n@N_call                       (t) => val s: Script[_] = executeCode(n)
                                                       if (n.t_callee!=null) linkNode(n, s, s, None)
                                                       else {
                                                         insert(CAActivated   (n,null))
                                                         insert(CAActivatedTBD(n))
                                                       }
-           case n@ScriptNode                       (t, _*) => activateFrom(n, t.child0)   // ???????????
+           case n@Script                       (t, _*) => activateFrom(n, t.child0)   // ???????????
       }      
   }
   
@@ -79,7 +79,7 @@ trait DefaultHandlers extends ContinuationHandler {this: ScriptExecutor[_] with 
     //println(s"propagateResult child: $child node: $node hasSuccess: ${node.hasSuccess} forSuccess: $forSuccess")
     
     def propagate(): Unit = node.asInstanceOf[ScriptResultHolder[Any]].resultPropagationDestination[Any] match {
-      case sn: ScriptNode[Any] =>
+      case sn: Script[Any] =>
         def allChildren(n: TreeNode): Seq[TreeNode] = n.children.flatMap {c => allChildren(c) :+ c}
         val children = allChildren(sn.template).filter {c => c.isInstanceOf[T_code_fragment[_, _]] || c.isInstanceOf[T_call[_]]}
         // println(s"Child count for $sn: ${children.size}. Children: $children")
