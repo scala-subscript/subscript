@@ -38,7 +38,7 @@ trait Operators extends Terms {this: SubScript with Exprs =>
 
       def Trans1: (String, Seq[Ast.Node]) => Ast.Expr9 = (_, terms) => Ast.Expr9Identity(generator(terms))
 
-      rule {prefix() ~ Code {col1} ~ op() ~ term().+(separator(col1)) ~> Trans1}
+      rule {prefix() ~ op() ~ WLR0 ~ Code {col1} ~ term().+(separator(col1)) ~> Trans1}
     }
 
     def OrPar1           = Shorthand(() => `|`   , Ast.OrPar1          )
