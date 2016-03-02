@@ -7,5 +7,9 @@ class Trigger extends SSProcess {
   def trigger = listeners.foreach(_())
   def addListener(f: () => Unit) {listeners ::= f}
 
-  script live = @{addListener {() => there.codeExecutor.executeAA}}: {. .}
+  script live = @{
+    val listener = {() => there.codeExecutor.executeAA}
+    addListener(listener)
+    there.onDeactivate {listeners = listeners.filter(_ != listener)}
+  }: {. .}
 }
