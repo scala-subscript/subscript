@@ -71,5 +71,14 @@ class BugsSuite extends FlatSpec with Matchers
     runScript(live).$ shouldBe Success(65552)
   }
 
+  "#39" should "work" in {
+    def ifZeroThenDoElseDo(a: Int, b: Int, c: Int) = if (a == 0) b else c
+
+    script s2(i: Int) = ^ifZero: i , thenDo:  1, elseDo:  2
+
+    runScript(s2(0)).$ shouldBe Success(1)
+    runScript(s2(1)).$ shouldBe Success(2)
+  }
+
 
 }

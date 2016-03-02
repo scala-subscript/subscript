@@ -86,7 +86,7 @@ trait Terms {this: Operators with SubScript with Exprs with Switches =>
     | ScalaSimplePrefixExpression
     )
 
-    def ExprsStat    : R[(String, String)]      = rule {ExprsStatHead ~ ((ch(',') ~ ExprsStatTail).? ~> Trans5) ~> Trans4 ~> Trans2}
+    def ExprsStat    : R[(String, String)]      = rule {ExprsStatHead ~ ((wspChR0(',') ~ ExprsStatTail).? ~> Trans5) ~> Trans4 ~> Trans2}
     def ExprsStatHead: R1                       = rule {                                  WSR0 ~ WithNiceScriptCall {() => CompactCallOrExpr}}
     def ExprsStatTail: R[Seq[(String, String)]] = rule { ((WSR0 ~ IdS ~ wspChR0(':')).? ~ WSR0 ~ WithNiceScriptCall {() => CompactCallOrExpr} ~> Trans1).+(ch(',')) }
 
