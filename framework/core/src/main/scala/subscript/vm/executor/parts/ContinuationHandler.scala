@@ -358,7 +358,7 @@ These effects do not hold when the operand is in an optional group.
         
       // nodesToBeExcluded ++= node.children.filter{n => val index = n.index; index<maxIndex && !indexes_aaHappenedChildren.contains(index)}
 
-        //println(s">>>>>>>>> disrupt maxIndex=$maxIndex nodesToBeExcluded=$nodesToBeExcluded")      
+        //println(s">>>>>>>>> disrupt maxIndex=$maxIndex nodesToBeExcluded=$nodesToBeExcluded)      
       }
       
       // deactivate to the right when one has finished successfully

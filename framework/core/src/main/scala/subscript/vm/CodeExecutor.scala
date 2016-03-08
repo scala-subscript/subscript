@@ -86,11 +86,12 @@ CodeExecutorTrait.afterExecuteAA
 object CodeExecutor {
   def defaultCodeFragmentExecutorFor(node: CallGraphNode, scriptExecutor: ScriptExecutor[_]): CodeExecutorTrait = {
     node match {
-      case n@N_code_normal       (_) => new        NormalCodeFragmentExecutor(n, scriptExecutor)
-      case n@N_code_unsure       (_) => new        UnsureCodeFragmentExecutor(n, scriptExecutor)
-      case n@N_code_threaded     (_) => new      ThreadedCodeFragmentExecutor(n, scriptExecutor)
-      case n@N_code_eventhandling(_) => new EventHandlingCodeFragmentExecutor(n, scriptExecutor)
-      case _                         => new          TinyCodeExecutor(node, scriptExecutor)
+      case n@N_code_normal            (_) => new        NormalCodeFragmentExecutor(n, scriptExecutor)
+      case n@N_code_unsure            (_) => new        UnsureCodeFragmentExecutor(n, scriptExecutor)
+      case n@N_code_threaded          (_) => new      ThreadedCodeFragmentExecutor(n, scriptExecutor)
+      case n@N_code_eventhandling     (_) => new EventHandlingCodeFragmentExecutor(n, scriptExecutor)
+      case n@N_code_eventhandling_loop(_) => new EventHandlingCodeFragmentExecutor(n, scriptExecutor)
+      case n                              => new                  TinyCodeExecutor(n, scriptExecutor)
     } 
   }
 
