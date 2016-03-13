@@ -75,6 +75,7 @@ This section will describe how to create a simple "Hello World" application in S
 ## Further learning
 - [Koans](https://github.com/scala-subscript/koans) is an easy way to learn the fundamentals of SubScript by doing.
 - To check out the official examples, go to the [examples repository](https://github.com/scala-subscript/examples) and follow its "Getting Started" guide.
+- A larger example is our [eye test application](https://github.com/scala-subscript/eye-test).
 - [Cheat sheet](http://www.cheatography.com/anatoliykmetyuk/cheat-sheets/subscript/) will help you to remember the language.
 
 ## Getting Started for Contributors
