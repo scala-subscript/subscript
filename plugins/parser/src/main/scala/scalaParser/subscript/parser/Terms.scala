@@ -224,4 +224,13 @@ trait Terms {this: Operators with SubScript with Exprs with Switches =>
 
   def ScalaExprTerm : R[String] = rule {wspChR0('(') ~ StatCtx.Expr ~ wspChR0(')')}
   def ScalaTupleTerm: R[String] = rule {'(' ~ OneOrMore(() => StatCtx.Expr, () => ',') ~ ')' ~> Concat3}
+
+
+  // Formal params
+
+  def FormalParam: R[Ast.FormalParam] = rule {OutputParam}
+
+  def OutputParam: R[Ast.OutputParam] =
+    rule {wspChR0('?') ~ !SSKeyword ~ capture(Identifiers.Id) ~> Ast.Literal ~> Ast.OutputParam}
+
 }

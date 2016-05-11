@@ -247,6 +247,7 @@ trait Operators extends Terms {this: SubScript with Exprs =>
   | WithParentheses  {() => Parenthesised}
   | Declaration
   | ActorScriptCall
+  | FormalParam
   | ScriptCall
   | CodeFragment
   | ScalaTerm

@@ -17,6 +17,17 @@ trait Terms {this: Ast =>
     }
   }
 
+  // Formal params
+  trait FormalParam extends Term
+
+  case class OutputParam(content: Node) extends FormalParam {
+    val method = "subscript.DSL._maybeCall"
+
+    def rewrite(implicit context: Context, output: Output): String = {
+      val str = s"subscript.DSL._actualOutputParameter(${Ast.metaString(content.compile)})"
+      s"""$method("", (${Name.HERE}: ${Type.CALL_GRAPH_TREE_NODE}) => $str)"""  
+    }
+  }
 
   // Code fragments
   trait CodeFragment extends Term {

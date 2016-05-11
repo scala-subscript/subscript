@@ -50,4 +50,15 @@ class SubScriptSuite extends FlatSpec with Matchers
     flag shouldBe true
   }
 
+  "Output params" should "be usable from a script" in {
+    implicit script param2script(?x: Int) = let x = 10
+
+    script foo =
+      var bar = 3
+      ?bar
+      ^bar
+
+    foo.e shouldBe Success(10)
+  }
+
 }
