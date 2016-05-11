@@ -79,17 +79,21 @@ trait Operators extends Terms {this: SubScript with Exprs =>
 
     def Trans2: (String, Ast.Expr7) => Ast.Expr7 = (_, x) => x
 
-    def Trans3: (String, Ast.Expr7, Option[Ast.Expr7], Option[Ast.Expr7]) => Ast.Expr7 = (_, nDo, mThen, mElse) => {
+    def doThenElseGen: (Ast.Expr7, Option[Ast.Expr7], Option[Ast.Expr7]) => Ast.Expr7 = (nDo, mThen, mElse) => {
            if ( mThen.isDefined && mElse.isDefined) Ast.DoThenElse(Seq(nDo, mThen.get, mElse.get))
       else if (!mThen.isDefined                   ) Ast.DoElse    (Seq(nDo, mElse.get)           )
       else if (!mElse.isDefined                   ) Ast.DoThen    (Seq(nDo, mThen.get)           )
-      else throw new RuntimeException("You must specify at least one of 'then' or 'else' after 'do'")
+      else throw new RuntimeException("You must specify at least one of 'then' or 'else' after 'do'")      
     }
+
+    def Trans3: (String, Ast.Expr7, Ast.Expr7, Option[Ast.Expr7]) => Ast.Expr7 = (_, nDo, then, mElse) => doThenElseGen(nDo, Some(then), mElse   )
+    def Trans4: (String, Ast.Expr7, Ast.Expr7)                    => Ast.Expr7 = (_, nDo, elseNode   ) => doThenElseGen(nDo, None, Some(elseNode))
 
 
     rule (
       `if` ~ WLR0 ~ SimpleValueExpr ~ `then` ~ Expr7 ~ (`else` ~ Expr7 ~> Trans2).? ~> Trans1
-    | `do` ~ Expr7 ~ (`then` ~ Expr7 ~> Trans2).? ~ (`else` ~ Expr7 ~> Trans2).? ~> Trans3
+    | `do` ~ Expr7 ~ (`then` ~ Expr7 ~> Trans2) ~ (`else` ~ Expr7 ~> Trans2).? ~> Trans3
+    | `do` ~ Expr7 ~ (`else` ~ Expr7 ~> Trans2) ~> Trans4
     | Expr6 ~> Ast.IdentityOp
     )
   }

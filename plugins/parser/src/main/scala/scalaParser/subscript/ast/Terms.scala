@@ -18,15 +18,28 @@ trait Terms {this: Ast =>
   }
 
   // Formal params
-  trait FormalParam extends Term
-
-  case class OutputParam(content: Node) extends FormalParam {
+  trait FormalParam extends Term {
     val method = "subscript.DSL._maybeCall"
 
-    def rewrite(implicit context: Context, output: Output): String = {
-      val str = s"subscript.DSL._actualOutputParameter(${Ast.metaString(content.compile)})"
-      s"""$method("", (${Name.HERE}: ${Type.CALL_GRAPH_TREE_NODE}) => $str)"""  
-    }
+    def payload(implicit context: Context, output: Output): String
+
+    def rewrite(implicit context: Context, output: Output): String =
+      s"""$method("", (${Name.HERE}: ${Type.CALL_GRAPH_TREE_NODE}) => $payload)"""
+  }
+
+  case class OutputParam(content: Node) extends FormalParam {
+    def payload(implicit context: Context, output: Output): String =
+      s"subscript.DSL._actualOutputParameter(${Ast.metaString(content.compile)})"
+  }
+
+  case class ConstrainedParam(content: Node, condition: Node) extends FormalParam {
+    def payload(implicit context: Context, output: Output): String =
+      s"subscript.DSL._actualConstrainedParameter(${Ast.metaString(content.compile)}, ${Ast.metaString(condition.compile)})"
+  }
+
+  case class AdaptingParam(content: Node) extends FormalParam {
+    def payload(implicit context: Context, output: Output): String =
+      s"${Type.ACTUAL_ADAPTING_PARAMETER}(${content.compile})"
   }
 
   // Code fragments

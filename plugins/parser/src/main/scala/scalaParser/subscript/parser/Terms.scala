@@ -228,9 +228,21 @@ trait Terms {this: Operators with SubScript with Exprs with Switches =>
 
   // Formal params
 
-  def FormalParam: R[Ast.FormalParam] = rule {OutputParam}
+  def FormalParam: R[Ast.FormalParam] = rule (
+    AdaptingParam
+  | ConstrainedParam
+  | OutputParam
+  )
 
   def OutputParam: R[Ast.OutputParam] =
     rule {wspChR0('?') ~ !SSKeyword ~ capture(Identifiers.Id) ~> Ast.Literal ~> Ast.OutputParam}
+
+  def ConstrainedParam: R[Ast.ConstrainedParam] = {    
+    def Trans1: (Ast.Node, Ast.Node) => Ast.ConstrainedParam = (id, condition) => Ast.ConstrainedParam(id, condition)
+    rule {wspChR0('?') ~ !SSKeyword ~ (capture(Identifiers.Id) ~> Ast.Literal) ~ wspStrR0("?if") ~ WSR0 ~ (ScalaSimplePrefixExpression ~> Ast.Literal) ~> Trans1}
+  }
+
+  def AdaptingParam: R[Ast.AdaptingParam] =
+    rule {wspStrR0("??") ~ !SSKeyword ~ capture(Identifiers.Id) ~> Ast.Literal ~> Ast.AdaptingParam}
 
 }
