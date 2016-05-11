@@ -151,6 +151,7 @@ trait Terms {this: Operators with SubScript with Exprs with Switches =>
   | Neutral
   | WhileLeaf
   | Let
+  | DoNormal
   | Loop
   | OptionalBreakLoop
   | OptionalBreak
@@ -183,6 +184,8 @@ trait Terms {this: Operators with SubScript with Exprs with Switches =>
   }
 
   def Let: R[Ast.Tiny] = rule {`let` ~ WSR0 ~ StatCtx.Expr ~ (WSR0 ~ ch(';')).? ~> SecondStr ~> Ast.Tiny}
+  
+  def DoNormal: R[Ast.Normal] = rule {`do` ~ WSR0 ~ StatCtx.Expr ~ (WSR0 ~ ch(';')).? ~> SecondStr ~> Ast.Normal}
 
 
   // Actors

@@ -61,4 +61,8 @@ class SubScriptSuite extends FlatSpec with Matchers
     foo.e shouldBe Success(10)
   }
 
+  "Do construct for normal code" should "be usable" in {
+    
+  }
+
 }
