@@ -61,8 +61,23 @@ class SubScriptSuite extends FlatSpec with Matchers
     foo.e shouldBe Success(10)
   }
 
+  "Constrained params" should "work" in {
+    implicit script param2script(??x: Int) = let x = 10
+
+    script foo =
+      var bar = 3
+      ?bar ?if (bar > 0)
+      ^bar
+
+    foo.e shouldBe Success(10)    
+  }
+
   "Do construct for normal code" should "be usable" in {
-    
+    ([
+      var foo = 3
+      do foo += 1
+      ^foo
+    ]).e shouldBe Success(4)
   }
 
 }
