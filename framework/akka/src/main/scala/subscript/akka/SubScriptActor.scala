@@ -14,7 +14,7 @@ import akka.actor._
 import subscript.vm.model.callgraph._
 
 
-trait SubScriptActorPlus extends Actor {
+trait SubScriptActor extends Actor {
 
   val runner    = SSARunnerV1Scheduler
   val terminate = new Trigger
