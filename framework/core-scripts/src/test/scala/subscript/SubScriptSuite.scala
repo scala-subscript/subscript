@@ -71,13 +71,20 @@ class SubScriptSuite extends FlatSpec with Matchers
 
     foo.e shouldBe Success(10)    
   }
-
+  
   "Do construct for normal code" should "be usable" in {
     ([
       var foo = 3
       do foo += 1
       ^foo
     ]).e shouldBe Success(4)
+  }
+
+  "Call graph nodes' parameters" should "work" in {
+    ([
+      do here.n_ary_op_ancestor.setProperty("FOO", 1)
+      {!here.n_ary_op_ancestor.getProperty[String, Int]("FOO")!}^
+    ]).e shouldBe Success(Some(1))
   }
 
 }
