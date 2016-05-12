@@ -61,7 +61,10 @@ trait ScriptResultHolder[R] {
     resultPropagationDestination.setResult($)
   }
 }
-trait CallGraphTreeNode extends CallGraphNode     with GraphTreeNode /* TBD: `with Variables` to be moved to here*/
+trait CallGraphTreeNode extends CallGraphNode     with GraphTreeNode { /* TBD: `with Variables` to be moved to here*/
+  def ancestor(n: Int): CallGraphTreeNode =
+    if (n == 0) this else ancestor(n - 1).parent.asInstanceOf[CallGraphTreeNode]
+}
 trait CallGraphLeafNode extends CallGraphTreeNode with GraphLeafNode
 
 trait N_code_fragment[R] extends CallGraphLeafNode with ScriptResultHolder[R] with ExecutionResult {

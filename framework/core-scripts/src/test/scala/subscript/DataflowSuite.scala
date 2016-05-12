@@ -94,6 +94,27 @@ class DataflowSuite extends FlatSpec with Matchers
     i shouldBe 0
   }
 
+  it should "store its `then` and `else` partial functions in the `do-then-else` operator" in {
+    import subscript.vm.model.callgraph.CallGraphTreeNode
+    import subscript.vm.Script
+
+    ([
+      var definedAt1  = false
+      var definedAt11 = false
+      
+      {!
+        val fun = here.ancestor(5).getProperty[String, PartialFunction[Any, Script[Any]]]("then").get
+        definedAt1  = fun.isDefinedAt(1 )
+        definedAt11 = fun.isDefinedAt(11)
+        11
+      !}^ ~~(x: Int if x > 10)~~> [+]
+      
+      ^definedAt1^^1
+      ^definedAt11^^2
+
+    ]).e shouldBe Success((false, true))
+  }
+
   "Dataflow map" should "work with pattern matches" in {
     [n1 ~~(r: Int)~~^ (r * 2)].e shouldBe(Success(2))
   }

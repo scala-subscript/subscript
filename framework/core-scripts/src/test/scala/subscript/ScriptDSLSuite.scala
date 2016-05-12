@@ -28,12 +28,12 @@ trait ScriptDSLSuiteHelpers {this: CommonHelpers =>
   import subscript.DSL._
 
   // The one from the parser
-  val sampleFunction: Any => Script[Any] = {
+  val sampleFunction: PartialFunction[Any, Script[Any]] = {
     case x: Int    => [success(x)]
     case y: String => [success(y.toString)]
   }
 
-  val sampleExceptionsFunction: Throwable => Script[Any] = {
+  val sampleExceptionsFunction: PartialFunction[Throwable, Script[Any]] = {
     case e: RuntimeException => [success: "Runtime Exception"]
   }
 
