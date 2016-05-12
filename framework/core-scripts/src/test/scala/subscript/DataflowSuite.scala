@@ -101,18 +101,30 @@ class DataflowSuite extends FlatSpec with Matchers
     ([
       var definedAt1  = false
       var definedAt11 = false
+
+      var elseDefinedAt1 = false
+      var elseDefinedAt2 = false
       
       {!
-        val fun = here.ancestor(5).getProperty[String, PartialFunction[Any, Script[Any]]]("then").get
-        definedAt1  = fun.isDefinedAt(1 )
-        definedAt11 = fun.isDefinedAt(11)
+        val thenFun = here.ancestor(5).getProperty[String, PartialFunction[Any, Script[Any]]]("then").get
+        definedAt1  = thenFun.isDefinedAt(1 )
+        definedAt11 = thenFun.isDefinedAt(11)
+
+        val elseFun = here.ancestor(5).getProperty[String, PartialFunction[Throwable, Script[Any]]]("else").get
+        elseDefinedAt1 = elseFun.isDefinedAt(new RuntimeException("foo"))
+        elseDefinedAt2 = elseFun.isDefinedAt(new RuntimeException("sample"))
+
         11
-      !}^ ~~(x: Int if x > 10)~~> [+]
+      !}^  ~~(x: Int if x > 10)~~> [+]
+         +~/~(t: RuntimeException if t.getMessage == "sample")~~> [+]
       
       ^definedAt1^^1
       ^definedAt11^^2
 
-    ]).e shouldBe Success((false, true))
+      ^elseDefinedAt1^^3
+      ^elseDefinedAt2^^4
+
+    ]).e shouldBe Success((false, true, false, true))
   }
 
   "Dataflow map" should "work with pattern matches" in {
