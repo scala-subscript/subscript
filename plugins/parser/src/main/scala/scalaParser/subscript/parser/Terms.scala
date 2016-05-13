@@ -151,7 +151,7 @@ trait Terms {this: Operators with SubScript with Exprs with Switches =>
   | Neutral
   | WhileLeaf
   | Let
-  | DoNormal
+  | DoFragment
   | Loop
   | OptionalBreakLoop
   | OptionalBreak
@@ -183,9 +183,31 @@ trait Terms {this: Operators with SubScript with Exprs with Switches =>
     rule (Standard | Nice)
   }
 
+
+  // START: Shorthands for one linear code fragments
   def Let: R[Ast.Tiny] = rule {`let` ~ WSR0 ~ StatCtx.Expr ~ (WSR0 ~ ch(';')).? ~> SecondStr ~> Ast.Tiny}
   
-  def DoNormal: R[Ast.Normal] = rule {`do` ~ WSR0 ~ StatCtx.Expr ~ (WSR0 ~ ch(';')).? ~> SecondStr ~> Ast.Normal}
+  def DoFragment: R[Ast.CodeFragment] = {
+    def Body = rule (
+        DoEventhandlingLoop
+      | DoThreaded
+      | DoUnsure
+      | DoNormal
+      | DoEventhandling
+    )
+
+    WithNormalInScript {() => Body}
+  }
+
+  def DoFragmentMeta[T <: Ast.CodeFragment](symbol: String, generator: String => T): R[T] =
+    rule {`do` ~ str(symbol) ~ WSR0 ~ StatCtx.Expr ~ (WSR0 ~ ch(';')).? ~> SecondStr ~> generator}
+
+  def DoNormal           : R[Ast.Normal           ] = DoFragmentMeta("!"  , Ast.Normal           )
+  def DoThreaded         : R[Ast.Threaded         ] = DoFragmentMeta("*"  , Ast.Threaded         )
+  def DoUnsure           : R[Ast.Unsure           ] = DoFragmentMeta("?"  , Ast.Unsure           )
+  def DoEventhandling    : R[Ast.Eventhandling    ] = DoFragmentMeta("."  , Ast.Eventhandling    )
+  def DoEventhandlingLoop: R[Ast.EventhandlingLoop] = DoFragmentMeta("...", Ast.EventhandlingLoop)
+  // END: Shorthands for one linear code fragments
 
 
   // Actors

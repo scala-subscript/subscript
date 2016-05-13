@@ -34,8 +34,8 @@ trait SubScriptActor extends Actor {
       val handlerFun = here.ancestor(9).getProperty[String, PartialFunction[Any, Script[Any]]]("then").get  // PartialFunction from the dataflow this `act` is LHS of. Will handle the matching messages. TBD: ancestor(n) should be replaced by a more descriptive methods, no guessing on the argument `n` should be done.
       val handler    = (act, vt, handlerFun)  // Everything together
 
-      do handlers += handler  // Save the actor, the trigger and the handler function of the dataflow
-      [vt ~~(msg)~~> [do handlers -= handler; ^msg]]^  // Wait for a suitable message to pop from `vt`, then deregister the handler and return the message to be handled normally by the dataflow.
+      do! handlers += handler  // Save the actor, the trigger and the handler function of the dataflow
+      [vt ~~(msg)~~> [do! handlers -= handler; ^msg]]^  // Wait for a suitable message to pop from `vt`, then deregister the handler and return the message to be handled normally by the dataflow.
 
   implicit script..
     actorRef2script(a: ActorRef)        = registerHandler(Left ( a))
