@@ -71,6 +71,19 @@ class SubScriptSuite extends FlatSpec with Matchers
 
     foo.e shouldBe Success(10)    
   }
+
+  "Adapting params" should "work" in {
+    implicit script param2script(??x: Int) = let x = 10
+
+    script..
+      f(??x: Int) = ??x
+      foo =
+        var bar = 3
+        f(?bar)
+        ^bar
+
+    foo.e shouldBe Success(10)    
+  }
   
   "Do construct" should "work for normal code" in {
     ([
