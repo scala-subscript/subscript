@@ -21,7 +21,7 @@ trait SubScriptActor extends Actor {
 
   // Ability to handle a message is defined by a sender and a handler partial function. Message is communicated to the parent dataflow via trigger.
   // `Either` allows to check via a predefined ActorRef or accept an arbitrary ActorRef as a parameter, so that it will be set to a `sender` later.
-  private val handlers = ListBuffer[(Either[ActorRef, ActualOutputParameter[ActorRef]], Trigger, PartialFunction[Any, Script[Any]])]()
+  private val handlers = ListBuffer[(Either[ActorRef, ActualAdaptingParameter[ActorRef]], Trigger, PartialFunction[Any, Script[Any]])]()
 
   // Scripts
   script..
@@ -29,7 +29,7 @@ trait SubScriptActor extends Actor {
     die       = {!if (context ne null) context stop self!}
     lifecycle = [live || terminate] ; die
 
-    registerHandler(act: Either[ActorRef, ActualOutputParameter[ActorRef]]) =
+    registerHandler(act: Either[ActorRef, ActualAdaptingParameter[ActorRef]]) =
       val vt         = new Trigger  // The value sent from `act` will pop from `vt` and will be returned from this script to be handled by the parent dataflow
       val handlerFun = here.ancestor(9).getProperty[String, PartialFunction[Any, Script[Any]]]("then").get  // PartialFunction from the dataflow this `act` is LHS of. Will handle the matching messages. TBD: ancestor(n) should be replaced by a more descriptive methods, no guessing on the argument `n` should be done.
       val handler    = (act, vt, handlerFun)  // Everything together
@@ -38,8 +38,8 @@ trait SubScriptActor extends Actor {
       [vt ~~(msg)~~> [do! handlers -= handler; ^msg]]^  // Wait for a suitable message to pop from `vt`, then deregister the handler and return the message to be handled normally by the dataflow.
 
   implicit script..
-    actorRef2script(a: ActorRef)        = registerHandler(Left ( a))
-    actorRefParam2script(??a: ActorRef) = registerHandler(Right(?a))
+    actorRef2script(a: ActorRef)        = registerHandler(Left (  a))
+    actorRefParam2script(??a: ActorRef) = registerHandler(Right(??a))
 
   
   // Callbacks
