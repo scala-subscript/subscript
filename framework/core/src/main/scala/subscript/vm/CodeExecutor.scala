@@ -317,7 +317,7 @@ case class EventHandlingCodeFragmentExecutor[R](_n: N_code_fragment[R], _scriptE
      try {//println(s"executeAA before executeCode; _n: ${_n}")
            //_n.result = ExecutionResult.Success
            _n.$ = tryResult
-           println(s"executeForTry n.$$: ${_n.$}")
+           //println(s"executeForTry n.$$: ${_n.$}")
            val r:R = CodeExecutor executeCode _n
      }
      catch {case f : Throwable => f.printStackTrace()} //; println(s"captured: $f") }
