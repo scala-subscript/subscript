@@ -1,2 +1,2 @@
 resolvers += Resolver.sonatypeRepo("snapshots")
-addSbtPlugin("org.subscript-lang" %% "subscript-sbt-plugin" % "3.0.4")
+addSbtPlugin("org.subscript-lang" %% "subscript-sbt-plugin" % "3.0.5")
