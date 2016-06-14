@@ -1,0 +1,42 @@
+# Count the number of lines in SubScript source directories
+# Results as of 15 June 2016:
+#
+# subscript/framework/akka:          180
+# subscript/framework/core:         5097
+# subscript/framework/core-scripts:  687
+# subscript/framework/swing:        1252
+# subscript/plugins/parser:        11039
+# subscript/plugins/plugin-parser:    92
+# koans:                            2023
+# eye-test:                          679
+# examples/ab-example:               220
+# examples/filedownloader:           204
+# examples/helloworld-example:        46
+# examples/life-example:             673
+# examples/lookupframe-example:      233
+# examples/pingpong-example:          55
+# examples/storage:                   82
+# examples/subscript-twitter-search: 691
+# examples/taskprocessor:           1210
+
+SOURCE_DIRS=
+SOURCE_DIRS="$SOURCE_DIRS subscript/framework/akka"
+SOURCE_DIRS="$SOURCE_DIRS subscript/framework/core"
+SOURCE_DIRS="$SOURCE_DIRS subscript/framework/core-scripts"
+SOURCE_DIRS="$SOURCE_DIRS subscript/framework/swing"
+SOURCE_DIRS="$SOURCE_DIRS subscript/plugins/parser"
+SOURCE_DIRS="$SOURCE_DIRS subscript/plugins/plugin-parser"
+SOURCE_DIRS="$SOURCE_DIRS koans"
+SOURCE_DIRS="$SOURCE_DIRS eye-test"
+SOURCE_DIRS="$SOURCE_DIRS examples/ab-example"
+SOURCE_DIRS="$SOURCE_DIRS examples/filedownloader"
+SOURCE_DIRS="$SOURCE_DIRS examples/helloworld-example"
+SOURCE_DIRS="$SOURCE_DIRS examples/life-example"
+SOURCE_DIRS="$SOURCE_DIRS examples/lookupframe-example"
+SOURCE_DIRS="$SOURCE_DIRS examples/pingpong-example"
+SOURCE_DIRS="$SOURCE_DIRS examples/storage"
+SOURCE_DIRS="$SOURCE_DIRS examples/subscript-twitter-search"
+SOURCE_DIRS="$SOURCE_DIRS examples/taskprocessor"
+
+for source_dir in $SOURCE_DIRS;
+do echo -n "$source_dir: "; ( find ../$source_dir/src -name '*.scala' -print0 | xargs -0 cat ) | wc -l; done
