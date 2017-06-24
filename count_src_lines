@@ -39,4 +39,4 @@ SOURCE_DIRS="$SOURCE_DIRS examples/subscript-twitter-search"
 SOURCE_DIRS="$SOURCE_DIRS examples/taskprocessor"
 
 for source_dir in $SOURCE_DIRS;
-do echo -n "$source_dir: "; ( find ../$source_dir/src -name '*.scala' -print0 | xargs -0 cat ) | wc -l; done
+do echo -n "$source_dir: "; find ../$source_dir/src -name '*.scala' -print0 | xargs -0 cat | wc -l; done
