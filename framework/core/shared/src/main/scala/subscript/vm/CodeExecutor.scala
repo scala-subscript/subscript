@@ -247,21 +247,6 @@ trait CodeExecutorAdapter[R,CE<:CodeExecutorTrait] extends CodeExecutorTrait {
   def adapt[R](codeExecutor: CE) = {adaptee = codeExecutor}
   def asynchronousAllowed = adaptee.asynchronousAllowed
 }
-class ThreadedCodeFragmentExecutor[R](n: N_code_threaded[R], scriptExecutor: ScriptExecutor[_]) extends NormalCodeFragmentExecutor[R](n, scriptExecutor)  {
-  override def interruptAA: Unit = if (myThread!=null) try myThread.interrupt catch {case _: InterruptedException =>}  // Don't pollute the outout
-  regardStartAndEndAsSeparateAtomicActions = true
-  var myThread: Thread = null
-
-  override def doCodeExecutionIn(lowLevelCodeExecutor: CodeExecutorTrait): Unit = {
-      val runnable = new Runnable {
-        def run() {
-          ThreadedCodeFragmentExecutor.super.doCodeExecutionIn(lowLevelCodeExecutor) // does scriptExecutor.insert(CFExecutionFinished)
-        }
-      }
-      myThread = new Thread(runnable)
-      myThread.start()
-  }
-}
 case class EventHandlingCodeFragmentExecutor[R](_n: N_code_fragment[R], _scriptExecutor: ScriptExecutor[_])
    extends AACodeFragmentExecutor[R](_n, _scriptExecutor)  {
 
