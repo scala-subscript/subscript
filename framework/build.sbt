@@ -1,6 +1,6 @@
 lazy val commonSettings = Seq(
   organization       := "org.subscript-lang"
-, version            := "3.0.5"
+, version            := "3.0.5-SNAPSHOT"
   
 , publishTo := {
     if (isSnapshot.value)
@@ -38,21 +38,24 @@ lazy val commonSettings = Seq(
 ) ++ SubscriptSbt.projectSettings
 
 lazy val root = (project in file("."))
-  .aggregate(core, akka, swing, corescripts)
+  .aggregate(coreJVM, coreJS, akka, swing, corescripts)
   .settings(
     packagedArtifacts := Map.empty  // Don't publish root to maven
   )
 
-lazy val core = (project in file("core"))
+lazy val core = (crossProject in file("core"))
   .settings(commonSettings)
   .settings(
     name    := "subscript-core"
   , libraryDependencies += "org.scala-lang" % "scala-reflect" % "2.11.7"
-  , excludeFilter in (Test, unmanagedSources) := "*.scala"
+  // , excludeFilter in (Test, unmanagedSources) := "*.scala"
   )
 
+lazy val coreJVM = core.jvm
+lazy val coreJS  = core.js
+
 lazy val akka = (project in file("akka"))
-  .dependsOn(core, corescripts)
+  .dependsOn(coreJVM, corescripts)
   .settings(commonSettings)
   .settings(
     name := "subscript-akka"
@@ -60,7 +63,7 @@ lazy val akka = (project in file("akka"))
   )
 
 lazy val swing = (project in file("swing"))
-  .dependsOn(core, corescripts)
+  .dependsOn(coreJVM, corescripts)
   .settings(commonSettings)
   .settings(
     name := "subscript-swing"
@@ -69,7 +72,7 @@ lazy val swing = (project in file("swing"))
   )
 
 lazy val corescripts = (project in file("core-scripts"))
-  .dependsOn(core)
+  .dependsOn(coreJVM)
   .settings(commonSettings)
   .settings(
     name := "subscript-core-scripts"

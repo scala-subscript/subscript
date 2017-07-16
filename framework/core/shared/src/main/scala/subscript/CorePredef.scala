@@ -25,7 +25,6 @@
 */
 
 package subscript
-import subscript.language
 
 import scala.util.{Try,Success,Failure}
 
